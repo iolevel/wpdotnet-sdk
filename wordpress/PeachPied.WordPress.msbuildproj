@@ -9,7 +9,7 @@
     <VersionPrefix>$(WordPressVersion)</VersionPrefix>
     <PackageVersion>$(WordPressVersion)</PackageVersion>
     <NoWarn>PHPX0125</NoWarn>
-    <ContentFiles>**/*.js;**/*.css;**/*.png;**/*.svg;**/*.gif</ContentFiles>
+    <ContentFiles>**/*.js;**/*.css;**/*.png;**/*.svg;**/*.gif;**/*.jpg</ContentFiles>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.php" Exclude="wp-config-sample.php;wp-content/plugins/hello.php" />
