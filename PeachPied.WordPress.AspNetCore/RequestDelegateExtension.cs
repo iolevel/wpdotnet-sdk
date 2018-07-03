@@ -27,6 +27,7 @@ namespace PeachPied.WordPress.AspNetCore
                 if (subpath.IndexOf("wp-content/", StringComparison.Ordinal) != -1 ||
                     files.GetFileInfo(subpath).Exists ||
                     context.StaticFileProvider.GetFileInfo(subpath).Exists ||
+                    subpath.EndsWith(".php") || // TODO: !!! TEMPORARY, use ScriptsMap.GetDeclaredScript instead
                     subpath == "/favicon.ico") // 404
                 {
                     // proceed to Static Files
