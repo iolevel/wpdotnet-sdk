@@ -2,7 +2,7 @@
 
 ## WordPress on .NET SDK
 
-The solution compiles all of WordPress into a .NET assembly and additionally provides C# wrappers for the utilization of yhe compiled sources. The project consists of several parts:
+The solution compiles all of WordPress into a .NET assembly and additionally provides C# wrappers for the utilization of the compiled sources. The project consists of several parts:
 
 - `wordpress` contains the sources of WordPress that are compiled into a single .NET Core assembly (`wordpress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project additionally contains the "must-use" plugin `peachpie-api.php`, which exposes the WordPress API to .NET.
 - `PeachPied.WordPress.Sdk` defines an abstraction layer providing .NET interfaces over the PHP WordPress instance. The interface is implemented and provided by `peachpie-api.php`.
@@ -19,7 +19,7 @@ Therefore, if everything works as it should, you will see the standard unchanged
 
 The PHP sources in `wordpress` directory are compiled to .NET Core by PeachPie compiler, which is seamlessly downloaded by *dotnet* itself.
 
-The sample instantiates Kestrel - the opensource web server - and the ASP.NET Core pipeline. The pipeline handles requests to PHP files using the PeachPie `RequestDelegate` by calling the corresponding compiled scripts in `wordpress.dll`.
+The sample instantiates Kestrel - the open source web server - and the ASP.NET Core pipeline. The pipeline handles requests to PHP files using the PeachPie `RequestDelegate` by calling the corresponding compiled scripts in `wordpress.dll`.
 
 Note that the original PHP sources (\*.php files) in `wordpress` are not needed to run the compiled application.
 
@@ -27,7 +27,7 @@ Note that the original PHP sources (\*.php files) in `wordpress` are not needed 
 
 - **Improve performance**: compiled code is fast and also optimized by the .NET 'JITter' for your actual system. Additionally, the .NET performance profiler may be used to resolve bottlenecks.
 - **Write plugins in C#**: plugin functionality can be implemented in a separate C# project and/or PHP plugins may use .NET libraries. Utilize .NET with all its advantages like sourceless distribution or type safe and compiled code, which is further optimized and checked for the actual platform.
-- **Integrate WP into a .NET application**: drive the WordPress lifecycle from a C# app, run within the Kestrel Web Server.
+- **Integrate WP into a .NET application**: drive the WordPress life cycle from a C# app, run within the Kestrel Web Server.
 - **Sourceless distribution**: after the compilation, most of the source files are not needed. Some files contain meta-data (like plugins and themes) and should be kept in the output.
 - **Take advantage** of the .NET runtime: JITted, secure and manageable platform.
 
