@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.AspNetCore.Rewrite;
@@ -18,17 +19,18 @@ namespace PeachPied.WordPress.AspNetCore
     /// </summary>
     public static class RequestDelegateExtension
     {
+        /// <summary>Redirect to `index.php` if the the file does not exist.</summary>
         static void ShortUrlRule(RewriteContext context, IFileProvider files)
         {
             var req = context.HttpContext.Request;
             var subpath = req.Path.Value;
             if (subpath != "/")
             {
-                if (subpath.IndexOf("wp-content/", StringComparison.Ordinal) != -1 ||
-                    files.GetFileInfo(subpath).Exists ||
-                    context.StaticFileProvider.GetFileInfo(subpath).Exists ||
-                    subpath.EndsWith(".php") || // TODO: !!! TEMPORARY, use ScriptsMap.GetDeclaredScript instead
-                    subpath == "/favicon.ico") // 404
+                if (subpath.IndexOf("wp-content/", StringComparison.Ordinal) != -1 ||   // it is in the wp-content -> definitely a file
+                    files.GetFileInfo(subpath).Exists ||                            // the script is in the file system
+                    Context.TryGetDeclaredScript(subpath.Substring(1)).IsValid ||   // the script is declared (compiled) in Context but not in the file system
+                    context.StaticFileProvider.GetFileInfo(subpath).Exists ||       // the script is in the file system
+                    subpath == "/favicon.ico") // 404 // even the favicon is not there, let the request proceed
                 {
                     // proceed to Static Files
                     return;
@@ -54,6 +56,25 @@ namespace PeachPied.WordPress.AspNetCore
             context.Result = RuleResult.SkipRemainingRules;
         }
 
+        /// <summary>Resolves address of `wp-cron.php` script to be fired on background.</summary>
+        static bool TryGetWpCronUri(IServerAddressesFeature addresses, out Uri uri)
+        {
+            // http://localhost:5004/wp-cron.php?doing_wp_cron
+
+            foreach (var addr in addresses.Addresses)
+            {
+                if (Uri.TryCreate(addr.Replace("*", "localhost"), UriKind.Absolute, out var addrUri))
+                {
+                    uri = new Uri(addrUri, "wp-cron.php?doing_wp_cron");
+                    return true;
+                }
+            }
+
+            //
+            uri = null;
+            return false;
+        }
+
         /// <summary>
         /// Defines WordPress configuration constants and initializes runtime before proceeding to <c>index.php</c>.
         /// </summary>
@@ -72,6 +93,9 @@ namespace PeachPied.WordPress.AspNetCore
 
             // MySQL hostname
             ctx.DefineConstant("DB_HOST", (PhpValue)config.DbHost); // define('DB_HOST', 'localhost');
+
+            // disable wp_cron() during the request, we have our own scheduler to fire the job
+            ctx.DefineConstant("DISABLE_WP_CRON", PhpValue.True);   // define('DISABLE_WP_CRON', true);
 
             // $peachpie-wp-loader : WpLoader
             ctx.Globals["peachpie_wp_loader"] = PhpValue.FromClass(new WpLoader(plugins.ConcatSafe(config.Plugins)));
@@ -112,6 +136,13 @@ namespace PeachPied.WordPress.AspNetCore
             // static files
             app.UseStaticFiles(new StaticFileOptions() { FileProvider = fprovider });
 
+            // fire wp-cron.php asynchronously
+            if (TryGetWpCronUri(app.ServerFeatures.Get<IServerAddressesFeature>(), out var wpcronUri))
+            {
+                WpCronScheduler.StartScheduler(HttpMethods.Post, wpcronUri, TimeSpan.FromSeconds(60));
+            }
+
+            //
             return app;
         }
     }
