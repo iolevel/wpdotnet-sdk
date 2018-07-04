@@ -30,7 +30,7 @@ namespace PeachPied.WordPress.AspNetCore
         /// Whether to enable or disable response caching.
         /// Enabled by default.
         /// </summary>
-        public bool ResponseCaching { get; set; } = true;
+        public bool EnableResponseCaching { get; set; } = true;
 
         /// <summary>
         /// Enumeration of assembly names with compiled PHP plugins, themes or other additions.

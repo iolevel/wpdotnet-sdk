@@ -120,7 +120,10 @@ namespace PeachPied.WordPress.AspNetCore
             var cachekey = new WpResponseCachingKeyProvider();
 
             // response caching:
-            app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
+            if (config.EnableResponseCaching)
+            {
+                app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
+            }
 
             // url rewriting:
             app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider)));
