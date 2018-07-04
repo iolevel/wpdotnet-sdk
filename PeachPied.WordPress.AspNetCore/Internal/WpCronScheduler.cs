@@ -29,11 +29,18 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             this.Interval = interval;
         }
 
-        Task<WebResponse> ExecuteAsync()
+        void ExecuteAsync()
         {
             var request = HttpWebRequest.CreateHttp(_uri);
             request.Method = _method;
-            return request.GetResponseAsync();
+            try
+            {
+                request.GetResponseAsync();
+            }
+            catch
+            {
+                // TODO: log the exception
+            }
         }
 
         public void Stop()
@@ -51,8 +58,8 @@ namespace PeachPied.WordPress.AspNetCore.Internal
         {
             while (!_cancel.IsCancellationRequested)
             {
-                await ExecuteAsync();
                 await Task.Delay(Interval);
+                ExecuteAsync();
             }
         }
     }
