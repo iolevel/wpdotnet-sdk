@@ -2,12 +2,12 @@
 
 ## WordPress on .NET SDK
 
-The solution compiles entire WordPress into .NET assembly and additionaly provides C# wrappers for utilizaton of compiled sources. The project consists of several parts:
+The solution compiles all of WordPress into a .NET assembly and additionally provides C# wrappers for utilization of compiled sources. The project consists of several parts:
 
-- `wordpress` contains sources of WordPress that are compiled into a single .NET Core assembly (`wordpress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project additionaly contains "must-use" plugin `peachpie-api.php` which exposes WordPress API to .NET.
+- `wordpress` contains sources of WordPress that are compiled into a single .NET Core assembly (`wordpress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project additionally contains the "must-use" plugin `peachpie-api.php` which exposes the WordPress API to .NET.
 - `PeachPied.WordPress.Sdk` defines abstraction layer providing .NET interfaces over PHP WordPress instance. The interface is implemented and provided by `peachpie-api.php`.
-- `PeachPied.WordPress.AspNetCore` is ASP.NET Core request handler that configures ASP.NET pipeline in which it passes requests to compiled `WordPress` scripts. The configuration includes response caching, short URL mapping, various .NET enhancements and settings of WordPress database.
-- `app` project is executable demo ASP.NET Core web server making use of compiled `WordPress`.
+- `PeachPied.WordPress.AspNetCore` is an ASP.NET Core request handler that configures the ASP.NET pipeline to pass requests to compiled `WordPress` scripts. The configuration includes response caching, short URL mapping, various .NET enhancements and the settings of WordPress database.
+- `app` project is the executable demo ASP.NET Core web server making use of compiled `WordPress`.
 
 ## What does this do?
 
@@ -25,11 +25,11 @@ Note that the original PHP sources (\*.php files) in `wordpress` are not needed 
 
 ## Possible Use Cases
 
-- **Improve performance**: compiled code is fast and also optimized by the .NET 'Jitter' for your actual system. Additionally, the .NET performance profiler may be used to resolve bottlenecks.
+- **Improve performance**: compiled code is fast and also optimized by the .NET 'JITter' for your actual system. Additionally, the .NET performance profiler may be used to resolve bottlenecks.
 - **Write plugins in C#**: plugin functionality can be implemented in a separate C# project and/or PHP plugins may use .NET libraries. Utilize .NET with all its advantages like sourceless distribution or type safe and compiled code, which is further optimized and checked for the actual platform.
 - **Integrate WP into a .NET application**: drive the WordPress lifecycle from a C# app, run within the Kestrel Web Server.
 - **Sourceless distribution**: after the compilation, most of the source files are not needed. Some files contain meta-data (like plugins and themes) and should be kept in output.
-- **Take advantage** of the .NET runtime: jittered, secure and manageable platform.
+- **Take advantage** of the .NET runtime: JITted, secure and manageable platform.
 
 ## Prerequisites
 
