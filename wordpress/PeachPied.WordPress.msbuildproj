@@ -9,11 +9,10 @@
     <VersionPrefix>$(WordPressVersion)</VersionPrefix>
     <PackageVersion>$(WordPressVersion)</PackageVersion>
     <NoWarn>PHPX0125</NoWarn>
-    <ContentFiles>**/*.js;**/*.css;**/*.png;**/*.svg;**/*.gif;**/*.jpg</ContentFiles>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.php" Exclude="wp-config-sample.php;wp-content/plugins/hello.php" />
-    <Content Include="$(ContentFiles)" Exclude="obj/**;bin/**;wp-content/uploads/**">
+    <Content Include="**" Exclude="obj/**;bin/**;wp-content/uploads/**;**/*.php;*.msbuildproj">
       <PackagePath>contentFiles/any/netcoreapp2.0/wordpress/</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
