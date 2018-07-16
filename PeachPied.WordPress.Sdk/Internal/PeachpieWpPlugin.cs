@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 
@@ -10,9 +11,9 @@ namespace PeachPied.WordPress.Sdk.Internal
     {
         public static readonly string InformationalVersion = typeof(PeachpieWpPlugin).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
-        static string GetDashboardRightNow()
+        static void DashboardRightNow(TextWriter output)
         {
-            return string.Format(
+            output.Write(
                 "<ul>" +
                 "<li><img src='{0}' style='width:76px;margin:0 auto;display:block;'/></li>" +
                 "<li>{1}</li>" +
@@ -23,14 +24,14 @@ namespace PeachPied.WordPress.Sdk.Internal
 
         static readonly string GeneratorHtml = "<meta name=\"generator\" content=\"WpDotNet (PeachPie) " + InformationalVersion + " \" />";
 
-        public void Configure(IWpApp app)
+        public void Configure(WpApp app)
         {
             //
             // Dashboard:
             //
 
             // add information into Right Now section
-            app.DashboardRightNow(GetDashboardRightNow);
+            app.DashboardRightNow(DashboardRightNow);
 
             // do not allow editing of .php files:
             app.AddFilter("editable_extensions", new Func<IList, IList>(editable_extensions =>

@@ -12,6 +12,6 @@ namespace PeachPied.WordPress.Sdk
         /// <summary>
         /// Initializes request to WordPress site.
         /// </summary>
-        void Configure(IWpApp app);
+        void Configure(WpApp app);
     }
 }

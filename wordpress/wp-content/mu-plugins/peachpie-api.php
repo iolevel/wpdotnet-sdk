@@ -14,20 +14,17 @@ Version: 1.0
 namespace PeachPied\WordPress\Sdk;
 
 /** Implementation of IWpApp providing functionality to .NET code */
-final class WpApp implements IWpApp
+final class WpAppImpl extends WpApp
 {
-	/** Gets WordPress version string. */
-	function GetVersion() : string { return $GLOBALS['wp_version']; }
-
 	/** Calls `add_filter`. */
 	function AddFilter(string $tag, \System\Delegate $delegate) : void { add_filter($tag, $delegate); }
 
 	/** Calls `add_shortcode`. */
 	function AddShortcode(string $tag, \System\Delegate $delegate) : void { add_shortcode($tag, $delegate); }
 
-	/** Outputs text. */
-	function Echo(string $text) : void { echo $text; }
+	/** Adds a new dashboard widget. */
+    function AddDashboardWidget(string $widget_id, string $widget_name, \System\Delegate $callback) : void { wp_add_dashboard_widget($widget_id, $widget_name, $callback); }
 }
 
 /** @var \PeachPied\WordPress\Sdk\WpLoader $peachpie_wp_loader  */
-$peachpie_wp_loader->AppStarted(new WpApp);
+$peachpie_wp_loader->AppStarted(new WpAppImpl);

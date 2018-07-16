@@ -32,7 +32,7 @@ namespace PeachPied.WordPress.Sdk
         /// <summary>
         /// Invoked by PHP plugin implementation (peachpie-api.php) to bridge into .NET.
         /// </summary>
-        public virtual void AppStarted(IWpApp app)
+        public virtual void AppStarted(WpApp app)
         {
             // activate plugins:
             foreach (var plugin in _plugins)

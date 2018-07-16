@@ -2,7 +2,7 @@
   "profiles": {
     "app": {
       "commandName": "Project",
-      "workingDirectory": "C:\\Users\\jmise\\Projects\\peachpie-wordpress/"
+      "workingDirectory": "D:\\Documents\\Projects\\wpdotnet-sdk"
     }
   }
 }

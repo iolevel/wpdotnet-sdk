@@ -126,7 +126,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             return true;
         }
 
-        void IWpPlugin.Configure(IWpApp app)
+        void IWpPlugin.Configure(WpApp app)
         {
             Action updated = () =>
             {

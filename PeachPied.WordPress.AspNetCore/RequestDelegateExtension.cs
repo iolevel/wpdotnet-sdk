@@ -78,7 +78,7 @@ namespace PeachPied.WordPress.AspNetCore
         /// <summary>
         /// Defines WordPress configuration constants and initializes runtime before proceeding to <c>index.php</c>.
         /// </summary>
-        static void Apply(Context ctx, WordPressConfig config, params IWpPlugin[] plugins)
+        static void Apply(Context ctx, WordPressConfig config, WpLoader loader)
         {
             // see wp-config.php:
 
@@ -111,11 +111,11 @@ namespace PeachPied.WordPress.AspNetCore
             ctx.DefineConstant("DISABLE_WP_CRON", PhpValue.True);   // define('DISABLE_WP_CRON', true);
 
             // $peachpie-wp-loader : WpLoader
-            ctx.Globals["peachpie_wp_loader"] = PhpValue.FromClass(new WpLoader(plugins.ConcatSafe(config.Plugins)));
+            ctx.Globals["peachpie_wp_loader"] = PhpValue.FromClass(loader);
         }
 
         /// <summary> `WpApp` is compiled in PHP assembly WordPress.dll.</summary>
-        static string WordPressAssemblyName => typeof(WpApp).Assembly.FullName;
+        static string WordPressAssemblyName => typeof(WpAppImpl).Assembly.FullName;
 
         /// <summary>
         /// Installs WordPress middleware.
@@ -131,6 +131,7 @@ namespace PeachPied.WordPress.AspNetCore
 
             var cachepolicy = new WpResponseCachingPolicyProvider();
             var cachekey = new WpResponseCachingKeyProvider();
+            var wploader = new WpLoader(config.Plugins.ConcatSafe(new[] { cachepolicy }));
 
             // response caching:
             if (config.EnableResponseCaching)
@@ -145,7 +146,7 @@ namespace PeachPied.WordPress.AspNetCore
             app.UsePhp(new PhpRequestOptions()
             {
                 ScriptAssembliesName = WordPressAssemblyName.ArrayConcat(config.LegacyPluginAssemblies),
-                BeforeRequest = ctx => Apply(ctx, config, cachepolicy),
+                BeforeRequest = ctx => Apply(ctx, config, wploader),
                 RootPath = root,
             });
 
