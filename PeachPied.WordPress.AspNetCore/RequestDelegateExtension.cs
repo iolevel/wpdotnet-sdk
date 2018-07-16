@@ -94,6 +94,19 @@ namespace PeachPied.WordPress.AspNetCore
             // MySQL hostname
             ctx.DefineConstant("DB_HOST", (PhpValue)config.DbHost); // define('DB_HOST', 'localhost');
 
+            // WordPress Database Table prefix.
+            ctx.Globals["table_prefix"] = (PhpValue)config.DbTablePrefix; // $table_prefix  = 'wp_';
+
+            // SALT
+            ctx.DefineConstant("AUTH_KEY", (PhpValue)config.SALT.AUTH_KEY);
+            ctx.DefineConstant("SECURE_AUTH_KEY", (PhpValue)config.SALT.SECURE_AUTH_KEY);
+            ctx.DefineConstant("LOGGED_IN_KEY", (PhpValue)config.SALT.LOGGED_IN_KEY);
+            ctx.DefineConstant("NONCE_KEY", (PhpValue)config.SALT.NONCE_KEY);
+            ctx.DefineConstant("AUTH_SALT", (PhpValue)config.SALT.AUTH_SALT);
+            ctx.DefineConstant("SECURE_AUTH_SALT", (PhpValue)config.SALT.SECURE_AUTH_SALT);
+            ctx.DefineConstant("LOGGED_IN_SALT", (PhpValue)config.SALT.LOGGED_IN_SALT);
+            ctx.DefineConstant("NONCE_SALT", (PhpValue)config.SALT.NONCE_SALT);
+
             // disable wp_cron() during the request, we have our own scheduler to fire the job
             ctx.DefineConstant("DISABLE_WP_CRON", PhpValue.True);   // define('DISABLE_WP_CRON', true);
 
