@@ -21,9 +21,6 @@ final class WpAppImpl extends WpApp
 
 	/** Calls `add_shortcode`. */
 	function AddShortcode(string $tag, \System\Delegate $delegate) : void { add_shortcode($tag, $delegate); }
-
-	/** Adds a new dashboard widget. */
-    function AddDashboardWidget(string $widget_id, string $widget_name, \System\Delegate $callback) : void { wp_add_dashboard_widget($widget_id, $widget_name, $callback); }
 }
 
 /** @var \PeachPied\WordPress\Sdk\WpLoader $peachpie_wp_loader  */

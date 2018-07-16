@@ -39,10 +39,5 @@ namespace PeachPied.WordPress.Sdk
         /// <param name="tag">Shortcode tag name.</param>
         /// <param name="delegate"><see cref="shortcode_handler"/> to process shortcode in posts.</param>
         public abstract void AddShortcode(string tag, Delegate @delegate);
-
-        /// <summary>
-        /// Adds a new dashboard widget.
-        /// </summary>
-        public abstract void AddDashboardWidget(string widget_id, string widget_name, Delegate callback);
     }
 }
