@@ -31,19 +31,15 @@ namespace peachserver
     {
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration configuration)
         {
-            // settings:
-            var wpconfig = new WordPressConfig();
-            configuration
-                .GetSection("WordPress")
-                .Bind(wpconfig);
-
-            //
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseWordPress(wpconfig);
+            // add wordpress into the pipeline
+            // using default configuration from appsettings.json (IConfiguration), section WordPress
+            // using empty set of .NET plugins
+            app.UseWordPress();
 
             app.UseDefaultFiles();
         }

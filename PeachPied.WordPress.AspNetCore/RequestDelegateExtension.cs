@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Pchp.Core;
 using Peachpie.Web;
@@ -122,22 +123,38 @@ namespace PeachPied.WordPress.AspNetCore
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="config">WordPress instance configuration.</param>
+        /// <param name="plugins">Container describing what plugins will be loaded.</param>
         /// <param name="path">Physical location of wordpress folder. Can be absolute or relative to the current directory.</param>
-        public static IApplicationBuilder UseWordPress(this IApplicationBuilder app, WordPressConfig config, string path = "wordpress")
+        public static IApplicationBuilder UseWordPress(this IApplicationBuilder app, WordPressConfig config = null, WpPluginContainer plugins = null, string path = "wordpress")
         {
             // wordpress root path:
             var root = System.IO.Path.GetFullPath(path);
             var fprovider = new PhysicalFileProvider(root);
 
-            var cachepolicy = new WpResponseCachingPolicyProvider();
-            var cachekey = new WpResponseCachingKeyProvider();
-            var wploader = new WpLoader(config.Plugins.ConcatSafe(new[] { cachepolicy }));
+            plugins = new WpPluginContainer(plugins);
+
+            if (config == null)
+            {
+                config = new WordPressConfig();
+
+                var appconfig = (IConfiguration)app.ApplicationServices.GetService(typeof(IConfiguration));
+                if (appconfig != null)
+                {
+                    appconfig.GetSection("WordPress").Bind(config);
+                }
+            }
 
             // response caching:
             if (config.EnableResponseCaching)
             {
+                var cachepolicy = new WpResponseCachingPolicyProvider();
+                var cachekey = new WpResponseCachingKeyProvider();
+                plugins.Add(cachepolicy);
+
                 app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
             }
+
+            var wploader = new WpLoader(plugins.GetPlugins(app.ApplicationServices));
 
             // url rewriting:
             app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider)));

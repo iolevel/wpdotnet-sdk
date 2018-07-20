@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using PeachPied.WordPress.Sdk;
 
 namespace PeachPied.WordPress.AspNetCore
@@ -70,11 +73,6 @@ namespace PeachPied.WordPress.AspNetCore
         // 
 
         /// <summary>
-        /// Enumeration of WordPress plugins to be loaded.
-        /// </summary>
-        public IEnumerable<IWpPlugin> Plugins { get; set; }
-
-        /// <summary>
         /// Whether to enable or disable response caching.
         /// Enabled by default.
         /// </summary>
@@ -82,6 +80,7 @@ namespace PeachPied.WordPress.AspNetCore
 
         /// <summary>
         /// Enumeration of assembly names with compiled PHP plugins, themes or other additions.
+        /// These assemblies will be loaded, treated as PHP assemblies containing script files and will be loaded into the entire application context.
         /// </summary>
         public IEnumerable<string> LegacyPluginAssemblies { get; set; }
     }
