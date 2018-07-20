@@ -7,9 +7,9 @@ using System.Text;
 
 namespace PeachPied.WordPress.Sdk.Internal
 {
-    sealed class PeachpieWpPlugin : IWpPlugin
+    sealed class WordPressOverridesPlugin : IWpPlugin
     {
-        public static readonly string InformationalVersion = typeof(PeachpieWpPlugin).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+        public static readonly string InformationalVersion = typeof(WordPressOverridesPlugin).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
         static void DashboardRightNow(TextWriter output)
         {

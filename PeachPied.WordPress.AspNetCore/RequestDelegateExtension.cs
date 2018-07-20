@@ -115,7 +115,7 @@ namespace PeachPied.WordPress.AspNetCore
             ctx.Globals["peachpie_wp_loader"] = PhpValue.FromClass(loader);
         }
 
-        /// <summary> `WpApp` is compiled in PHP assembly WordPress.dll.</summary>
+        /// <summary> <see cref="WpAppImpl"/> is compiled in PHP assembly WordPress.dll.</summary>
         static string WordPressAssemblyName => typeof(WpAppImpl).Assembly.FullName;
 
         /// <summary>
@@ -131,6 +131,7 @@ namespace PeachPied.WordPress.AspNetCore
             var root = System.IO.Path.GetFullPath(path);
             var fprovider = new PhysicalFileProvider(root);
 
+            // plugins & configuration
             plugins = new WpPluginContainer(plugins);
 
             if (config == null)

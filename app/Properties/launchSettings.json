@@ -1,8 +1,7 @@
 {
   "profiles": {
     "app": {
-      "commandName": "Project",
-      "workingDirectory": "D:\\Documents\\Projects\\wpdotnet-sdk"
+      "commandName": "Project"
     }
   }
 }

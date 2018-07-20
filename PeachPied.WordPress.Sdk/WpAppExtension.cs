@@ -63,8 +63,8 @@ namespace PeachPied.WordPress.Sdk
         {
             app.AddFilter(
                 "wp_dashboard_setup",
-                new Action<Context>(ctx1 => ctx1.Call("wp_add_dashboard_widget",
-                    (PhpValue)widget_id, (PhpValue)widget_name, PhpValue.FromClass(new Action<Context>(ctx2 => htmlwriter(ctx2.Output))))));
+                new Action(() => app.Context.Call("wp_add_dashboard_widget",
+                    (PhpValue)widget_id, (PhpValue)widget_name, PhpValue.FromClass(new Action(() => htmlwriter(app.Context.Output))))));
         }
     }
 }

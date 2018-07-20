@@ -26,7 +26,7 @@ namespace PeachPied.WordPress.Sdk
             }
 
             // internal plugins:
-            _plugins.Add(new Internal.PeachpieWpPlugin());
+            _plugins.Add(new Internal.WordPressOverridesPlugin());
         }
 
         /// <summary>
