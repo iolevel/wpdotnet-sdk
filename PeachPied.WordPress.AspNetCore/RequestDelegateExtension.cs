@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Pchp.Core;
-using Peachpie.Web;
+using Peachpie.AspNetCore.Web;
 using PeachPied.WordPress.AspNetCore.Internal;
 using PeachPied.WordPress.Sdk;
 
