@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6E1CEF7D-93BD-45D8-92AE-CDA550BAB928}"
 	ProjectSection(SolutionItems) = preProject
 		appsettings.json = appsettings.json
+		NuGet.Config = NuGet.Config
 		README.MD = README.MD
 		build\Settings.props = build\Settings.props
 	EndProjectSection
