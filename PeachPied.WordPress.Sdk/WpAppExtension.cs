@@ -66,5 +66,37 @@ namespace PeachPied.WordPress.Sdk
                 new Action(() => app.Context.Call("wp_add_dashboard_widget",
                     (PhpValue)widget_id, (PhpValue)widget_name, PhpValue.FromClass(new Action(() => htmlwriter(app.Context.Output))))));
         }
+
+        /// <summary>
+        /// Adds meta data to a user.
+        /// </summary>
+        public static bool AddUserMeta(this WpApp app, int userid, string metakey, PhpValue metavalue, bool unique = false)
+        {
+            return app.Context
+                .Call("add_user_meta", (PhpValue)userid, (PhpValue)metakey, metavalue, unique)
+                .IsInteger();
+        }
+
+        /// <summary>
+        /// Retrieve user meta field for a user.
+        /// </summary>
+        /// <returns>
+        /// Will be an array if <paramref name="single"/> is <c>false</c>.
+        /// Will be value of meta data field if <paramref name="single"/> is <c>true</c>.
+        /// </returns>
+        public static PhpValue GetUserMeta(this WpApp app, int userId, string metaKey, bool single = false)
+            => GetMetaData(app, "user", userId, metaKey, single);
+
+        /// <summary>
+        /// Retrieve metadata for the specified object.
+        /// </summary>
+        /// <returns>
+        /// Will be an array if <paramref name="single"/> is <c>false</c>.
+        /// Will be value of meta data field if <paramref name="single"/> is <c>true</c>.
+        /// </returns>
+        public static PhpValue GetMetaData(this WpApp app, string metaType, int objectId, string metaKey, bool single = false)
+        {
+            return app.Context.Call("get_metadata", metaType, (PhpValue)objectId, metaKey, single);
+        }
     }
 }
