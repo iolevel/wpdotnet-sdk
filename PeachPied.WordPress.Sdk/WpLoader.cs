@@ -24,9 +24,6 @@ namespace PeachPied.WordPress.Sdk
             {
                 _plugins.AddRange(plugins);
             }
-
-            // internal plugins:
-            _plugins.Add(new Internal.WordPressOverridesPlugin());
         }
 
         /// <summary>

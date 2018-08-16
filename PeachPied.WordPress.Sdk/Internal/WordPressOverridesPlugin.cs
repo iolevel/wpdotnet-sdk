@@ -1,12 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Composition;
 using System.IO;
 using System.Reflection;
 using System.Text;
 
 namespace PeachPied.WordPress.Sdk.Internal
 {
+    [Export(typeof(IWpPluginProvider))]
+    sealed class PluginsProvider : IWpPluginProvider
+    {
+        public IEnumerable<IWpPlugin> GetPlugins(IServiceProvider provider)
+        {
+            yield return new WordPressOverridesPlugin();
+        }
+    }
+
     sealed class WordPressOverridesPlugin : IWpPlugin
     {
         public static readonly string InformationalVersion = typeof(WordPressOverridesPlugin).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;

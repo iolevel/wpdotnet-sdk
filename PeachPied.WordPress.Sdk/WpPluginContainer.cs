@@ -50,7 +50,7 @@ namespace PeachPied.WordPress.Sdk
         {
             return _descriptors
                 .Select(x => x.GetOrCreateInstance(provider))
-                .OfType<IWpPlugin>();
+                .Cast<IWpPlugin>();
         }
 
         /// <summary>

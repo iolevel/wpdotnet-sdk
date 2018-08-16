@@ -155,7 +155,7 @@ namespace PeachPied.WordPress.AspNetCore
                 app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
             }
 
-            var wploader = new WpLoader(plugins.GetPlugins(app.ApplicationServices));
+            var wploader = new WpLoader(CompositionHelpers.GetPlugins(app.ApplicationServices).Concat(plugins.GetPlugins(app.ApplicationServices)));
 
             // url rewriting:
             app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider)));
