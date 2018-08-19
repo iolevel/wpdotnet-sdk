@@ -17,7 +17,7 @@ namespace PeachPied\WordPress\Sdk;
 final class WpAppImpl extends WpApp
 {
 	/** Calls `add_filter`. */
-	function AddFilter(string $tag, \System\Delegate $delegate) : void { add_filter($tag, $delegate); }
+	function AddFilter(string $tag, \System\Delegate $delegate, int $priority, int $accepted_args) : void { add_filter($tag, $delegate, $priority, $accepted_args); }
 
 	/** Calls `add_shortcode`. */
 	function AddShortcode(string $tag, \System\Delegate $delegate) : void { add_shortcode($tag, $delegate); }

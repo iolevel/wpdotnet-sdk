@@ -31,7 +31,7 @@ namespace PeachPied.WordPress.Sdk
         /// <summary>
         /// Calls <c>add_filter</c> function, see https://developer.wordpress.org/reference/functions/add_filter/.
         /// </summary>
-        public abstract void AddFilter(string tag, Delegate @delegate);
+        public abstract void AddFilter(string tag, Delegate @delegate, long priority = 10, long accepted_args = 1);
 
         /// <summary>
         /// Adds shortcode.
