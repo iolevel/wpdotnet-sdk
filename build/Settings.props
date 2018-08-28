@@ -6,7 +6,7 @@
     <!-- common version -->
     <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">1.0.0</VersionPrefix>
     
-    <PeachpieVersion>0.9.0-CI01080</PeachpieVersion>
+    <PeachpieVersion>0.9.0-CI01101</PeachpieVersion>
     <WordPressVersion>4.9.6</WordPressVersion>
 
     <!-- metadata generation -->
@@ -32,6 +32,7 @@
     <RepositoryUrl>https://github.com/iolevel/peachpie-wordpress</RepositoryUrl>
     <PackageProjectUrl>https://github.com/iolevel/peachpie-wordpress</PackageProjectUrl>
     <PackageOutputPath>$(MSBuildThisFileDirectory)../output</PackageOutputPath>
+    <PackageIconUrl>https://s.w.org/style/images/about/WordPress-logotype-wmark-white.png</PackageIconUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PublishDocumentationFile>true</PublishDocumentationFile>
   </PropertyGroup>
