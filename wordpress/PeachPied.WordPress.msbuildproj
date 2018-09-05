@@ -9,10 +9,6 @@
     <!--PackageVersion>$(WordPressVersion)</PackageVersion-->
     <NoWarn>PHP0125</NoWarn>
   </PropertyGroup>
-  <PropertyGroup>
-    <GenerateDocumentation>true</GenerateDocumentation> <!-- our SDK uses this property to enable XML documentation -->
-    <DocumentationFile>PeachPied.WordPress.xml</DocumentationFile> <!-- same as project name, relative to output dir -->
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.php" Exclude="wp-config-sample.php;wp-content/plugins/hello.php" />
     <Content Include="**" Exclude="obj/**;bin/**;wp-content/uploads/**;**/*.php;*.msbuildproj">

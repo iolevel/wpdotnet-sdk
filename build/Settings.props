@@ -34,7 +34,6 @@
     <PackageOutputPath>$(MSBuildThisFileDirectory)../output</PackageOutputPath>
     <PackageIconUrl>https://s.w.org/style/images/about/WordPress-logotype-wmark-white.png</PackageIconUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PublishDocumentationFile>true</PublishDocumentationFile>
   </PropertyGroup>
 
 </Project>
