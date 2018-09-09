@@ -4,7 +4,7 @@
 
 The solution compiles all of WordPress into a .NET assembly and additionally provides C# wrappers for the utilization of the compiled sources. The project consists of several parts:
 
-- `wordpress` contains the sources of WordPress that are compiled into a single .NET Core assembly (`wordpress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project additionally contains the "must-use" plugin `peachpie-api.php`, which exposes the WordPress API to .NET.
+- `wordpress` contains the sources of WordPress that are compiled into a single .NET Core assembly (`wordpress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project additionally contains the "must-use" plugin `wp-content/mu-plugins/peachpie-api.php` exposing the WordPress API to .NET, and `wp-dummy.php` declaring `WP_CLI_Command` required by most plugins to be compiled successfully.
 - `PeachPied.WordPress.Sdk` defines an abstraction layer providing .NET interfaces over the PHP WordPress instance. The interface is implemented and provided by `peachpie-api.php`.
 - `PeachPied.WordPress.AspNetCore` is an ASP.NET Core request handler that configures the ASP.NET pipeline to pass requests to compiled `WordPress` scripts. The configuration includes response caching, short URL mapping, various .NET enhancements and the settings of the WordPress database.
 - The `app` project is an executable demo ASP.NET Core web server making use of compiled `WordPress`.

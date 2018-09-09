@@ -14,6 +14,10 @@
  * @package WordPress
  */
 
+// Following settings have been moved to the SDK
+// so they are read from the app's configuration.
+// See \PeachPied.WordPress.AspNetCore\RequestDelegateExtension.cs
+
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 //define('DB_NAME', 'wordpress');
