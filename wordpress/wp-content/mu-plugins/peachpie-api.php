@@ -5,7 +5,7 @@
  */
 /*
 Plugin Name: Peachpie API
-Plugin URI: https://wpdotnet.peachpie.io/
+Plugin URI: https://wordpress.peachpied.com/
 Description: Plugin that provides bridge between WordPress API and .NET.
 Author: Peachpie
 Version: 1.0
