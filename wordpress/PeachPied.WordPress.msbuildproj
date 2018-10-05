@@ -18,7 +18,6 @@
   </ItemGroup>
   <ItemGroup>
     <!--PackageReference Include="Peachpie.RequestHandler" Version="$(PeachpieVersion)" /-->
-    <PackageReference Include="Peachpie.Library.Graphics" Version="$(PeachpieVersion)" />
     <ProjectReference Include="..\PeachPied.WordPress.Sdk\PeachPied.WordPress.Sdk.csproj" />
   </ItemGroup>
 </Project>
