@@ -4,10 +4,12 @@
 
 The solution compiles all of WordPress into a .NET assembly and additionally provides C# wrappers for the utilization of the compiled sources. The project consists of several parts:
 
-- `wordpress` contains the sources of WordPress that are compiled into a single .NET Core assembly (`wordpress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project additionally contains the "must-use" plugin `wp-content/mu-plugins/peachpie-api.php` exposing the WordPress API to .NET, and `wp-dummy.php` declaring `WP_CLI_Command` required by most plugins to be compiled successfully.
-- `PeachPied.WordPress.Sdk` defines an abstraction layer providing .NET interfaces over the PHP WordPress instance. The interface is implemented and provided by `peachpie-api.php`.
-- `PeachPied.WordPress.AspNetCore` is an ASP.NET Core request handler that configures the ASP.NET pipeline to pass requests to compiled `WordPress` scripts. The configuration includes response caching, short URL mapping, various .NET enhancements and the settings of the WordPress database.
-- The `app` project is an executable demo ASP.NET Core web server making use of compiled `WordPress`.
+- The **app** project is a demo project that runs WordPress as a part of ASP.NET Core application.
+- **PeachPied.WordPress** contains the sources of WordPress that are compiled into a single .NET Core assembly (`PeachPied.WordPress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project contains additional files:
+  - `wp-content/mu-plugins/peachpie-api.php` is a "must-use" plugin exposing the WordPress API to .NET.
+  - `wp-dummy.php` declaring dummy classes required by most plugins to be compiled successfully.
+- **PeachPied.WordPress.Sdk** defines an abstraction layer providing .NET interfaces over the PHP WordPress instance. The interface is implemented and provided by `peachpie-api.php` above.
+- **PeachPied.WordPress.AspNetCore** is an ASP.NET Core request handler that configures the ASP.NET pipeline to pass requests to compiled `WordPress` scripts. The configuration includes response caching, short URL mapping, various .NET enhancements and the settings of the WordPress database.
 
 ## What does this do?
 
@@ -39,5 +41,5 @@ Note that the original PHP sources (\*.php files) in `wordpress` are not needed 
 
 ## How to run demo `app`
 
-0. start mysql, at `localhost:3306`, user `root`, password `password`
-1. `dotnet run -p app`
+1. start mysql, at `localhost:3306`, user `root`, password `password`
+2. `dotnet run -p app`
