@@ -136,14 +136,12 @@ namespace PeachPied.WordPress.AspNetCore
 
             if (config == null)
             {
-                config = new WordPressConfig();
-
-                var appconfig = (IConfiguration)app.ApplicationServices.GetService(typeof(IConfiguration));
-                if (appconfig != null)
-                {
-                    appconfig.GetSection("WordPress").Bind(config);
-                }
+                config = WpConfigurationLoader
+                    .CreateDefault()
+                    .LoadFromSettings(app.ApplicationServices);
             }
+
+            config.LoadFromEnvironment(app.ApplicationServices);
 
             // response caching:
             if (config.EnableResponseCaching)
