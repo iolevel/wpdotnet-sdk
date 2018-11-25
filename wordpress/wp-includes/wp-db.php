@@ -2924,6 +2924,7 @@ class wpdb {
 
 			// utf8 can be handled by regex, which is a bunch faster than a DB lookup.
 			if ( ( 'utf8' === $charset || 'utf8mb3' === $charset || 'utf8mb4' === $charset ) && function_exists( 'mb_strlen' ) ) {
+				/*
 				$regex = '/
 					(
 						(?: [\x00-\x7F]                  # single-byte sequences   0xxxxxxx
@@ -2951,6 +2952,7 @@ class wpdb {
 				if ( false !== $length && mb_strlen( $value['value'], 'UTF-8' ) > $length ) {
 					$value['value'] = mb_substr( $value['value'], 0, $length, 'UTF-8' );
 				}
+				*/
 				continue;
 			}
 
