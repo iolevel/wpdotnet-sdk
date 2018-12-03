@@ -1,4 +1,4 @@
-﻿<Project Sdk="Peachpie.NET.Sdk/0.9.18">
+﻿<Project Sdk="Peachpie.NET.Sdk/0.9.20">
   <Import Project="..\build\Settings.props" />
   <PropertyGroup Label="Globals">
     <ProjectGuid>0e51d101-0992-4aa6-a134-26ea3f2e3934</ProjectGuid>
