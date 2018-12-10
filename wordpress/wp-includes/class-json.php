@@ -913,27 +913,48 @@ class Services_JSON
 
 }
 
-/**
-    * @todo Ultimately, this class shall be descended from PEAR_Error
-    */
-class Services_JSON_Error
-{
-	/**
-	    * PHP5 constructor.
-	    */
-    function __construct( $message = 'unknown error', $code = null,
-                                    $mode = null, $options = null, $userinfo = null )
+//if (class_exists('PEAR_Error')) {
+
+//    class Services_JSON_Error extends PEAR_Error
+//    {
+//        function __construct($message = 'unknown error', $code = null,
+//                                     $mode = null, $options = null, $userinfo = null)
+//        {
+//            parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
+//        }
+//
+//	public function Services_JSON_Error($message = 'unknown error', $code = null,
+//                                     $mode = null, $options = null, $userinfo = null) {
+//		self::__construct($message = 'unknown error', $code = null,
+//                                     $mode = null, $options = null, $userinfo = null);
+//	}
+//    }
+//
+//} else {
+
+    /**
+     * @todo Ultimately, this class shall be descended from PEAR_Error
+     */
+    class Services_JSON_Error
     {
+	    /**
+	     * PHP5 constructor.
+	     */
+        function __construct( $message = 'unknown error', $code = null,
+                                     $mode = null, $options = null, $userinfo = null )
+        {
 
+        }
+
+	    /**
+	     * PHP4 constructor.
+	     */
+		public function Services_JSON_Error( $message = 'unknown error', $code = null,
+	                                     $mode = null, $options = null, $userinfo = null ) {
+			self::__construct( $message, $code, $mode, $options, $userinfo );
+		}
     }
-
-	/**
-	    * PHP4 constructor.
-	    */
-	public function Services_JSON_Error( $message = 'unknown error', $code = null,
-	                                    $mode = null, $options = null, $userinfo = null ) {
-		self::__construct( $message, $code, $mode, $options, $userinfo );
-	}
-}
+    
+//}
 
 endif;
