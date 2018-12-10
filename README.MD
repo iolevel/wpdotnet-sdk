@@ -15,9 +15,9 @@ The solution compiles all of WordPress into a .NET assembly and additionally pro
 
 1. start mysql, at `localhost:3306`, user `root`, password `password`
 2.
-  a. *cmd:* `dotnet run -p app`
-  b. *vs:* open solution and start `app` project
-  c. *vscode*: open folder and hit `F5`
+    - **cmd:** `dotnet run -p app`
+    - **vs:** open solution and start `app` project
+    - **vscode**: open folder and hit `F5`
 
 ## Configuration
 
