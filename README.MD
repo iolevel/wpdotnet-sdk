@@ -4,12 +4,35 @@
 
 The solution compiles all of WordPress into a .NET assembly and additionally provides C# wrappers for the utilization of the compiled sources. The project consists of several parts:
 
-- The **app** project is a demo project that runs WordPress as a part of ASP.NET Core application.
+- **app** is a demo project that runs WordPress as a part of ASP.NET Core application.
 - **PeachPied.WordPress** contains the sources of WordPress that are compiled into a single .NET Core assembly (`PeachPied.WordPress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project contains additional files:
   - `wp-content/mu-plugins/peachpie-api.php` is a "must-use" plugin exposing the WordPress API to .NET.
-  - `wp-dummy.php` declaring dummy classes required by most plugins to be compiled successfully.
+  - `wp-dummy.php` declaring dummy classes required but not used by most plugins to be compiled successfully.
 - **PeachPied.WordPress.Sdk** defines an abstraction layer providing .NET interfaces over the PHP WordPress instance. The interface is implemented and provided by `peachpie-api.php` above.
 - **PeachPied.WordPress.AspNetCore** is an ASP.NET Core request handler that configures the ASP.NET pipeline to pass requests to compiled `WordPress` scripts. The configuration includes response caching, short URL mapping, various .NET enhancements and the settings of the WordPress database.
+
+## How to run demo `app`
+
+1. start mysql, at `localhost:3306`, user `root`, password `password`
+2.
+  a. *cmd:* `dotnet run -p app`
+  b. *vs:* open solution and start `app` project
+  c. *vscode*: open folder and hit `F5`
+
+## Configuration
+
+Note: to configure the WordPress instance on .NET you are no longer editing `wp-config.php` source file. All the configuration is placed in `app.settings` file:
+
+```json
+{
+  "WordPress": {
+    "dbhost": "localhost",
+    "dbpassword": "password",
+    "dbuser": "root",
+    "dbname": "wordpress",
+  }
+}
+```
 
 ## What does this do?
 
@@ -19,11 +42,11 @@ Therefore, if everything works as it should, you will see the standard unchanged
 
 ## How does this work?
 
-The PHP sources in `wordpress` directory are compiled to .NET Core by PeachPie compiler, which is seamlessly downloaded by *dotnet* itself.
+The PHP sources in `PeachPied.WordPress` project are compiled to .NET Core by [PeachPie compiler](https://github.com/peachpiecompiler/peachpie), which is seamlessly downloaded by *dotnet* itself.
 
-The sample instantiates Kestrel - the open source web server - and the ASP.NET Core pipeline. The pipeline handles requests to PHP files using the PeachPie `RequestDelegate` by calling the corresponding compiled scripts in `wordpress.dll`.
+The sample instantiates Kestrel - the open source web server - and the ASP.NET Core pipeline. The pipeline handles requests to PHP files using the PeachPie `RequestDelegate` by calling the corresponding compiled scripts in `Peachpied.WordPress.dll`.
 
-Note that the original PHP sources (\*.php files) in `wordpress` are not needed to run the compiled application.
+Note that the original PHP sources (\*.php files) in `Peachpied.WordPress` are not needed to run the compiled application.
 
 ## Possible Use Cases
 
@@ -38,8 +61,3 @@ Note that the original PHP sources (\*.php files) in `wordpress` are not needed 
 - .NET Core 2.1 or newer
 - MySQL server
 - Optionally - Visual Studio 2017 or Visual Studio Code using the official Peachpie for VSCode extension available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=iolevel.peachpie-vscode)
-
-## How to run demo `app`
-
-1. start mysql, at `localhost:3306`, user `root`, password `password`
-2. `dotnet run -p app`
