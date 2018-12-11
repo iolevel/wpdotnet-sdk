@@ -200,7 +200,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
 
                     // arr[browse|search|author|tag]
                     var browse = arr["browse"].AsString();
-                    var searchTerm = arr["search"].AsString() ?? "";
+                    var searchTerm = arr["search"].AsString() ?? arr["author"].AsString() ?? arr["tag"].AsString() ?? string.Empty;
 
                     if (browse != null)
                     {
@@ -222,6 +222,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                     //    skip: page * per_page, take: per_page, log: null, cancellationToken: CancellationToken.None).Result.ToList();
 
                     // TODO: list versions that are compatible with current wpdotnet ?
+                    // TODO: SearchFilter.PackageType to list only WpPlugin|WpTheme
 
                     var raw = RawSearchResourceV3.SearchPage(searchTerm, searchFilter, page * per_page, per_page, log, CancellationToken.None).Result;
                     var results = (raw[JsonProperties.Data] as JArray ?? Enumerable.Empty<JToken>())
