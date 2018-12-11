@@ -56,8 +56,6 @@ namespace PeachPied.WordPress.Sdk.Internal
 
             // alter generator metadata
             app.AddFilter("get_the_generator_xhtml", new Func<string>(() => GeneratorHtml));
-
-            // add analytics
         }
     }
 }

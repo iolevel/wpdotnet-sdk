@@ -115,8 +115,8 @@ namespace PeachPied.WordPress.AspNetCore
             ctx.Globals["peachpie_wp_loader"] = PhpValue.FromClass(loader);
         }
 
-        /// <summary> <see cref="WpAppImpl"/> is compiled in PHP assembly WordPress.dll.</summary>
-        static string WordPressAssemblyName => typeof(WpAppImpl).Assembly.FullName;
+        /// <summary>Class <see cref="WP"/> is compiled in PHP assembly <c>Peachpied.WordPress.dll</c>.</summary>
+        static string WordPressAssemblyName => typeof(WP).Assembly.FullName;
 
         /// <summary>
         /// Installs WordPress middleware.
