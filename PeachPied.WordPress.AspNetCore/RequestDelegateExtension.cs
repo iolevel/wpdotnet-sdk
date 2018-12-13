@@ -158,6 +158,9 @@ namespace PeachPied.WordPress.AspNetCore
             // url rewriting:
             app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider)));
 
+            // log exceptions:
+            app.UseDiagnostic();
+            
             // handling php files:
             app.UsePhp(new PhpRequestOptions()
             {

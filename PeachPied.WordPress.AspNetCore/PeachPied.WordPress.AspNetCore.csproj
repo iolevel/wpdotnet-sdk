@@ -14,6 +14,7 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.1.1" />
     <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
     <PackageReference Include="Peachpie.AspNetCore.Web" Version="$(PeachpieVersion)" />
+    <PackageReference Include="Peachpie.Compiler.Diagnostics" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
