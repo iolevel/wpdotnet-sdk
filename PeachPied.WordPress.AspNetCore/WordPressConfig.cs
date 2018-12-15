@@ -70,6 +70,11 @@ namespace PeachPied.WordPress.AspNetCore
         /// </summary>
         public SaltData SALT { get; private set; } = new SaltData();
 
+        /// <summary>
+        /// Additional PHP constants to be set before each request starts.
+        /// </summary>
+        public Dictionary<string, string> Constants { get; set; }
+
         // 
 
         /// <summary>
