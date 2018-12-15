@@ -21,7 +21,7 @@ The solution compiles all of WordPress into a .NET assembly and additionally pro
 
 ## Configuration
 
-Note: to configure the WordPress instance on .NET you are no longer editing `wp-config.php` source file. All the configuration is placed in `app.settings` file:
+Note: to configure the WordPress instance on .NET you are no longer editing `wp-config.php` source file. All the configuration is placed in `appsettings.json` file:
 
 ```json
 {
@@ -33,6 +33,13 @@ Note: to configure the WordPress instance on .NET you are no longer editing `wp-
   }
 }
 ```
+
+## Usage within your ASP.NET Core app
+
+The project is available as a NuGet package - to add WordPress **into your ASP.NET Core application**, follow these steps:
+
+1. Add package reference to `Peachpied.WordPress.AspNetCore`, version `1.0.0-alpha4`
+2. Use WordPress within your `Configure` startup method: `app.UseWordPress();`
 
 ## What does this do?
 
