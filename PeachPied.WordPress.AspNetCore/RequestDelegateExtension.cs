@@ -108,6 +108,15 @@ namespace PeachPied.WordPress.AspNetCore
             ctx.DefineConstant("LOGGED_IN_SALT", (PhpValue)config.SALT.LOGGED_IN_SALT);
             ctx.DefineConstant("NONCE_SALT", (PhpValue)config.SALT.NONCE_SALT);
 
+            // Additional constants
+            if (config.Constants != null)
+            {
+                foreach (var pair in config.Constants)
+                {
+                    ctx.DefineConstant(pair.Key, pair.Value);
+                }
+            }
+
             // disable wp_cron() during the request, we have our own scheduler to fire the job
             ctx.DefineConstant("DISABLE_WP_CRON", PhpValue.True);   // define('DISABLE_WP_CRON', true);
 
