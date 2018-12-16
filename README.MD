@@ -1,27 +1,29 @@
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/WordPress_logo.svg/2000px-WordPress_logo.svg.png" width="400"/>
+<center><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/WordPress_logo.svg/2000px-WordPress_logo.svg.png" width="400"/></center>
 
-## WordPress on .NET SDK
+**All of WordPress as a .NET Standard assembly, without PHP.**
 
-The solution compiles all of WordPress into a .NET assembly and additionally provides C# wrappers for the utilization of the compiled sources. The project consists of several parts:
+## How to add WordPress into your ASP.NET Core app
 
-- **app** is a demo project that runs WordPress as a part of ASP.NET Core application.
-- **PeachPied.WordPress** contains the sources of WordPress that are compiled into a single .NET Core assembly (`PeachPied.WordPress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project contains additional files:
-  - `wp-content/mu-plugins/peachpie-api.php` is a "must-use" plugin exposing the WordPress API to .NET.
-  - `wp-dummy.php` declaring dummy classes required but not used by most plugins to be compiled successfully.
-- **PeachPied.WordPress.Sdk** defines an abstraction layer providing .NET interfaces over the PHP WordPress instance. The interface is implemented and provided by `peachpie-api.php` above.
-- **PeachPied.WordPress.AspNetCore** is an ASP.NET Core request handler that configures the ASP.NET pipeline to pass requests to compiled `WordPress` scripts. The configuration includes response caching, short URL mapping, various .NET enhancements and the settings of the WordPress database.
+Use WordPress as the [ASP.NET Core Middleware](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2).
 
-## How to run demo `app`
+1. Add package reference to `Peachpied.WordPress.AspNetCore`, version `1.0.0-alpha4`
+2. Add middleware within your `Configure` startup method:
 
-1. start mysql, at `localhost:3306`, user `root`, password `password`
-2.
-    - **cmd:** `dotnet run -p app`
-    - **vs:** open solution and start `app` project
-    - **vscode**: open folder and hit `F5`
+```C#
+public class Startup
+{
+    public void Configure(IApplicationBuilder app)
+    {
+        // ...
+        app.UseWordPress();
+        // ...
+    }
+}
+```
 
 ## Configuration
 
-Note: to configure the WordPress instance on .NET you are no longer editing `wp-config.php` source file. All the configuration is placed in `appsettings.json` file:
+WordPress on .NET is configured using standard [`appsettings.json`](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.2), you are no longer editing the `wp-config.php` source file.
 
 ```json
 {
@@ -29,31 +31,36 @@ Note: to configure the WordPress instance on .NET you are no longer editing `wp-
     "dbhost": "localhost",
     "dbpassword": "password",
     "dbuser": "root",
-    "dbname": "wordpress",
+    "dbname": "wordpress"
   }
 }
 ```
 
-## Usage within your ASP.NET Core app
+Note, WordPress expects the MySql database running, with the database `dbname` already created. Otherwise you'll get an error.
 
-The project is available as a NuGet package - to add WordPress **into your ASP.NET Core application**, follow these steps:
+## Running this repo from sources:
 
-1. Add package reference to `Peachpied.WordPress.AspNetCore`, version `1.0.0-alpha4`
-2. Use WordPress within your `Configure` startup method: `app.UseWordPress();`
+1. Start mysql, at `localhost:3306`, user `root`, password `password`
+2.
+    - **cmd:** `dotnet run -p app`
+    - **vs:** open solution and start `app` project
+    - **vscode**: open folder and hit `F5`
 
-## What does this do?
+
+## WordPress on .NET SDK
+
+The solution provides all of WordPress as a .NET standard assembly. Consisting of following projects:
+
+- **app** is a demo project that runs WordPress as a part of ASP.NET Core application.
+- **PeachPied.WordPress** contains the sources of WordPress that are compiled into a single .NET standard assembly (`PeachPied.WordPress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project contains additional files:
+  - `wp-content/mu-plugins/peachpie-api.php` is a "must-use" plugin exposing the WordPress API to .NET.
+  - `wp-dummy.php` declaring dummy classes required but not used by most plugins to be compiled successfully.
+- **PeachPied.WordPress.Sdk** defines an abstraction layer providing .NET interfaces over the PHP WordPress instance. The interface is implemented and provided by `peachpie-api.php` above.
+- **PeachPied.WordPress.AspNetCore** is an ASP.NET Core request handler that configures the ASP.NET pipeline to pass requests to compiled `WordPress` scripts. The configuration includes response caching, short URL mapping, various .NET enhancements and the settings of the WordPress database.
 
 This project contains the complete source code of WordPress with the additional "must use" WordPress plugin that exposes the PHP API to .NET. The purpose is for this code to be compiled by PeachPie, resulting in the output running purely on Microsoft .NET Core. 
 
 Therefore, if everything works as it should, you will see the standard unchanged WordPress in the same way as you would in the traditional PHP version. The difference is that the compiled website runs on .NET Core in the background. Also this approach allows to take advantage of ASP.NET Core request handling and makes it possible to extend WordPress with C# (i.e. plugins, themes, etc.).
-
-## How does this work?
-
-The PHP sources in `PeachPied.WordPress` project are compiled to .NET Core by [PeachPie compiler](https://github.com/peachpiecompiler/peachpie), which is seamlessly downloaded by *dotnet* itself.
-
-The sample instantiates Kestrel - the open source web server - and the ASP.NET Core pipeline. The pipeline handles requests to PHP files using the PeachPie `RequestDelegate` by calling the corresponding compiled scripts in `Peachpied.WordPress.dll`.
-
-Note that the original PHP sources (\*.php files) in `Peachpied.WordPress` are not needed to run the compiled application.
 
 ## Possible Use Cases
 
