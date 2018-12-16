@@ -4,9 +4,9 @@
 
 ## How to add WordPress into your ASP.NET Core app
 
-Use WordPress as the [ASP.NET Core Middleware](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2).
+Use WordPress as [ASP.NET Core Middleware](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2).
 
-1. Add package reference to `Peachpied.WordPress.AspNetCore`, version `1.0.0-alpha4`
+1. Add a package reference to `Peachpied.WordPress.AspNetCore`, version `1.0.0-alpha4`
 2. Add WordPress as middleware within your `Configure` startup method:
 
 ```C#
@@ -23,7 +23,7 @@ public class Startup
 
 ## Configuration
 
-WordPress on .NET is configured using standard [`appsettings.json`](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.2), you are no longer editing the `wp-config.php` source file.
+WordPress on .NET is configured using the standard [`appsettings.json`](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.2), you are no longer editing the `wp-config.php` source file.
 
 ```json
 {
@@ -36,9 +36,9 @@ WordPress on .NET is configured using standard [`appsettings.json`](https://docs
 }
 ```
 
-Note, WordPress expects the MySql database running, with the database `dbname` already created. Otherwise you'll get an error.
+Note: WordPress expects the MySql database to be running, with the database `dbname` already created. Otherwise you'll get an error.
 
-## Running this repo from sources:
+## Running this repo from the sources:
 
 1. Start mysql, at `localhost:3306`, user `root`, password `password`
 2.
