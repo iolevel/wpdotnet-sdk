@@ -7,7 +7,7 @@
 Use WordPress as the [ASP.NET Core Middleware](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2).
 
 1. Add package reference to `Peachpied.WordPress.AspNetCore`, version `1.0.0-alpha4`
-2. Add middleware within your `Configure` startup method:
+2. Add WordPress as middleware within your `Configure` startup method:
 
 ```C#
 public class Startup
