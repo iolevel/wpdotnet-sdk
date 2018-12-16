@@ -1,4 +1,4 @@
-<center><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/WordPress_logo.svg/2000px-WordPress_logo.svg.png" width="400"/></center>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/WordPress_logo.svg/2000px-WordPress_logo.svg.png" width="400" style="display: block;margin-left: auto;margin-right: auto;"/>
 
 **All of WordPress as a .NET Standard assembly, without PHP.**
 
