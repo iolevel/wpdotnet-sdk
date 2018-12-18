@@ -47,6 +47,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
 
         static void SavePackagesJson(Marketplace.Scheme.Packages json)
         {
+            Directory.CreateDirectory(PackagesPath);
             File.WriteAllText(PackagesJsonPath, JsonConvert.SerializeObject(json));
         }
 
