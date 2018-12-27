@@ -139,6 +139,8 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
     {
         static string NuGetFeed => "http://wordpress.peachpied.com/v3/index.json";
         readonly PackagesHelper _packages = new PackagesHelper();
+        static string[] WpPluginPackageType => new[] { "WpPlugin" };
+        static string[] WpThemePackageType => new[] { "WpTheme" };
 
         SourceRepository SourceRepository
         {
@@ -217,12 +219,13 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                         searchFilter = new SearchFilter(includePrerelease: browse == "beta");
                     }
 
+                    searchFilter.PackageTypes = WpPluginPackageType;
+
                     //var results = PackageSearchResource.SearchAsync(
                     //    "", new SearchFilter(true), 
                     //    skip: page * per_page, take: per_page, log: null, cancellationToken: CancellationToken.None).Result.ToList();
 
                     // TODO: list versions that are compatible with current wpdotnet ?
-                    // TODO: SearchFilter.PackageType to list only WpPlugin|WpTheme
 
                     var raw = RawSearchResourceV3.SearchPage(searchTerm, searchFilter, page * per_page, per_page, log, CancellationToken.None).Result;
                     var results = (raw[JsonProperties.Data] as JArray ?? Enumerable.Empty<JToken>())
