@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pchp.Core;
+using System;
 using System.Collections.Generic;
 using System.Composition.Hosting;
 using System.IO;
@@ -11,6 +12,7 @@ namespace PeachPied.WordPress.Sdk
     /// <summary>
     /// Helper class providing composition host and exported components.
     /// </summary>
+    [PhpHidden]
     public static class CompositionHelpers
     {
         /// <summary>

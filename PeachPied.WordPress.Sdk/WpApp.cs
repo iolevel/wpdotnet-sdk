@@ -6,6 +6,7 @@ namespace PeachPied.WordPress.Sdk
     /// <summary>
     /// Represents a WordPress website.
     /// </summary>
+    [PhpType]   // The class is visible to the PHP code that references this assembly.
     public abstract class WpApp
     {
         /// <summary>

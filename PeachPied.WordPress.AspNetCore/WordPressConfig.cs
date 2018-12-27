@@ -84,6 +84,11 @@ namespace PeachPied.WordPress.AspNetCore
         public bool EnableResponseCaching { get; set; } = true;
 
         /// <summary>
+        /// Overrides <c>WP_DEBUG</c> constant.
+        /// </summary>
+        public bool Debug { get; set; } = false;
+
+        /// <summary>
         /// Enumeration of assembly names with compiled PHP plugins, themes or other additions.
         /// These assemblies will be loaded, treated as PHP assemblies containing script files and will be loaded into the entire application context.
         /// </summary>

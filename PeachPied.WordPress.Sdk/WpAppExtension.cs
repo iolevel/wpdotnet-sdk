@@ -24,6 +24,7 @@ namespace PeachPied.WordPress.Sdk
     /// <summary>
     /// Provides extension functions to <see cref="WpApp"/> instances.
     /// </summary>
+    [PhpHidden]
     public static class WpAppExtension
     {
         /// <summary>

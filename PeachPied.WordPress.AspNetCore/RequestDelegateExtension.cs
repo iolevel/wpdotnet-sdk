@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCaching;
@@ -162,6 +163,9 @@ namespace PeachPied.WordPress.AspNetCore
                 app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
             }
 
+            var env = (IHostingEnvironment)app.ApplicationServices.GetService(typeof(IHostingEnvironment));
+            WpStandard.WP_DEBUG = config.Debug || env.IsDevelopment();
+
             var wploader = new WpLoader(CompositionHelpers.GetPlugins(app.ApplicationServices).Concat(plugins.GetPlugins(app.ApplicationServices)));
 
             // url rewriting:
@@ -169,7 +173,7 @@ namespace PeachPied.WordPress.AspNetCore
 
             // log exceptions:
             app.UseDiagnostic();
-            
+
             // handling php files:
             app.UsePhp(new PhpRequestOptions()
             {
