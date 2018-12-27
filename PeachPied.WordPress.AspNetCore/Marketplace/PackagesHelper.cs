@@ -100,7 +100,16 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                     {
                         try
                         {
-                            Context.AddScriptReference(Assembly.LoadFrom(fname));
+                            var ass = Assembly.LoadFrom(fname);
+                            foreach(var refass in ass.GetReferencedAssemblies())
+                            {
+                                if (refass.Name == "PeachPied.WordPress.Sdk" && refass.Version != typeof(PeachPied.WordPress.Sdk.WpApp).Assembly.GetName().Version)
+                                {
+                                    throw new FileLoadException($"The plugin '{package.pluginId}' is built for a different WpDotNet SDK version and won't be loaded.");
+                                }
+                            }
+
+                            Context.AddScriptReference(ass);
                             loaded = true;
                         }
                         catch
