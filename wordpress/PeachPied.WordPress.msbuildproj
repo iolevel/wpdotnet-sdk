@@ -10,7 +10,7 @@
     <NoWarn>PHP0125,PHP5011</NoWarn>
     <Copyright>WordPress</Copyright>
     <Description>WordPress project transformed to managed .NET Standard library.</Description>
-    <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.en.html</PackageLicenseUrl>
+    <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-2.0.en.html</PackageLicenseUrl>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.php" Exclude="wp-config-sample.php;wp-content/plugins/hello.php" />
