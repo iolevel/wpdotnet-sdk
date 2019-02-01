@@ -26,5 +26,12 @@ namespace PeachPied.WordPress.Sdk
 
         /// <summary></summary>
         public const bool WP_CACHE = false;
+
+        /// <summary>
+        /// Overwrite how installing plugins is handled, skips the fs check.
+        /// </summary>
+        public const string FS_METHOD = "direct";
+
+        // TODO: ABSPATH, WPINC, ... // frequently used constants that can be resolved statically
     }
 }

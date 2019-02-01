@@ -157,6 +157,11 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                 this.last_updated = lastupdate.ToString("R");
             }
 
+            if (p.Identity is SourcePackageDependencyInfo srcpkg)
+            {
+                this.download_link = srcpkg.DownloadUri.AbsoluteUri;
+            }
+
             // ...
         }
 
@@ -244,8 +249,6 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             page = (int)wp_args["page"] - 1;
             per_page = (int)wp_args["per_page"];
 
-            var searchFilter = new SearchFilter(true);
-
             // arr[browse|search|author|tag]
             var browse = wp_args["browse"].AsString();
             var searchTerm = wp_args["search"].AsString() ?? wp_args["author"].AsString() ?? wp_args["tag"].AsString() ?? string.Empty;
@@ -263,11 +266,12 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                     default:
                         break;
                 }
-
-                searchFilter = new SearchFilter(includePrerelease: browse == "beta");
             }
 
-            searchFilter.PackageTypes = packageTypes;
+            var searchFilter = new SearchFilter(includePrerelease: browse == "beta")
+            {
+                PackageTypes = packageTypes,
+            };
 
             //var results = PackageSearchResource.SearchAsync(
             //    "", new SearchFilter(true), 
@@ -325,9 +329,10 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                         var version = p.Identity.Version.ToNormalizedString().ToLowerInvariant();
                         var url = $"{packageBaseAddress}/{id}/{version}/{id}.{version}.nupkg";
 
-                        var plugin = new PluginResult(p);
-                        plugin.download_link = url;
-                        return PhpValue.FromClass(plugin);
+                        return PhpValue.FromClass(new PluginResult(p)
+                        {
+                            download_link = url
+                        });
                     }
                     else
                     {
@@ -385,9 +390,10 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                     var version = p.Identity.Version.ToNormalizedString().ToLowerInvariant();
                     var url = $"{packageBaseAddress}/{id}/{version}/{id}.{version}.nupkg";
 
-                    var theme = new ThemeResult(p);
-                    theme.download_link = url;
-                    return PhpValue.FromClass(theme);
+                    return PhpValue.FromClass(new ThemeResult(p)
+                    {
+                        download_link = url
+                    });
                 }
                 else
                 {
@@ -459,7 +465,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                     tabs["recommended"] = "Premium";
                     return tabs;
                 }));
-                app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
+                // defined in PeachPied.WordPress.Sdk: // app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
             }));
         }
     }
