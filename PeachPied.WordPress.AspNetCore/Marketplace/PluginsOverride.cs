@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -37,6 +38,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
     /// <summary>
     /// Plugin information object.
     /// </summary>
+    [DebuggerDisplay("Plugin: {slug,nq} {version,nq}")]
     sealed class PluginResult
     {
         static string DefaultIconFormat => "https://ps.w.org/{0}/assets/icon-256x256.png";
@@ -59,7 +61,6 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             this.name = p.Title;
             this.slug = IdToSlug(p.Identity); //$"{p.Identity.Id},{p.Identity.}";
             this.downloaded = p.DownloadCount ?? 0;
-            this.external = true; // set later by wp anyway
 
             this.icons = new PhpArray { { "2x", p.IconUrl?.AbsoluteUri ?? string.Format(DefaultIconFormat, this.slug) } };
 
@@ -135,6 +136,56 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
         public bool external = true;
     }
 
+    [DebuggerDisplay("Theme: {slug,nq} {version,nq}")]
+    sealed class ThemeResult
+    {
+        public ThemeResult(RawPackageSearchMetadata p)
+        {
+            this.name = p.Title;
+            this.slug = p.Identity.Id; //$"{p.Identity.Id},{p.Identity.}";
+            this.downloaded = p.DownloadCount ?? 0;
+            this.version = p.Identity.Version.ToNormalizedString();
+            this.author = p.Authors;
+            this.homepage = p.ProjectUrl?.AbsoluteUri;
+            this.description = p.Description;
+
+            if (p.RawVersions != null && p.RawVersions.Length != 0)
+            {
+                var lastupdate = p.RawVersions
+                    .Select(x => x.Published.HasValue ? x.Published.Value : DateTime.MinValue)
+                    .Max();
+                this.last_updated = lastupdate.ToString("R");
+            }
+
+            // ...
+        }
+
+        public string name;
+        public string slug;
+        public string version;
+        public string preview_url;
+        public string author;
+        public string screenshot_url;
+        public double rating = 100;
+        public long num_ratings = 0;
+        public long downloaded = 0;
+        public string last_updated = DateTime.UtcNow.ToString("R");
+        public string homepage;
+        public string description;
+        public string download_link;
+
+        public string install_url; // set by wp
+        public string activate_url; // set by wp
+        public string customize_url; // set by wp
+        public PhpValue stars = PhpValue.Null; // set by wp
+    }
+
+    sealed class QueryThemesResult
+    {
+        public PhpArray info; // [page : int, pages : int, results : int]
+        public PhpArray themes; // ThemeResult[]
+    }
+
     sealed class PluginsOverride : IWpPlugin
     {
         static string NuGetFeed => "http://wordpress.peachpied.com/v3/index.json";
@@ -186,6 +237,57 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             return p;
         }
 
+        IEnumerable<RawPackageSearchMetadata> SearchFeed(PhpArray wp_args, string[] packageTypes, out int page, out int per_page, out int total_count)
+        {
+            var log = NuGet.Common.NullLogger.Instance;
+
+            page = (int)wp_args["page"] - 1;
+            per_page = (int)wp_args["per_page"];
+
+            var searchFilter = new SearchFilter(true);
+
+            // arr[browse|search|author|tag]
+            var browse = wp_args["browse"].AsString();
+            var searchTerm = wp_args["search"].AsString() ?? wp_args["author"].AsString() ?? wp_args["tag"].AsString() ?? string.Empty;
+
+            if (browse != null)
+            {
+                switch (browse)
+                {
+                    case "featured":
+                    case "popular":
+                    case "new":         // theme
+                    case "favorites":   // theme
+                    case "beta":
+                    case "recommended": // = premium
+                    default:
+                        break;
+                }
+
+                searchFilter = new SearchFilter(includePrerelease: browse == "beta");
+            }
+
+            searchFilter.PackageTypes = packageTypes;
+
+            //var results = PackageSearchResource.SearchAsync(
+            //    "", new SearchFilter(true), 
+            //    skip: page * per_page, take: per_page, log: null, cancellationToken: CancellationToken.None).Result.ToList();
+
+            // TODO: list versions that are compatible with current wpdotnet ?
+
+            var raw = RawSearchResourceV3.SearchPage(searchTerm, searchFilter, page * per_page, per_page, log, CancellationToken.None).Result;
+            var items = Enumerable.Empty<RawPackageSearchMetadata>();
+
+            if (raw[JsonProperties.Data] is JArray jarr)
+            {
+                items = jarr.OfType<JObject>().Select(PackageSearchMetadataFromJObject);
+            }
+
+            total_count = raw["totalHits"].ToObject<int>();
+
+            return items;
+        }
+
         PhpValue/*object|array|WP_Error*/PluginsApi(PhpValue result, string action, object args)
         {
             var arr = (PhpArray)PhpValue.FromClass(args);
@@ -195,44 +297,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             {
                 case "query_plugins":
 
-                    int page = (int)arr["page"] - 1;
-                    int per_page = (int)arr["per_page"];
-
-                    var searchFilter = new SearchFilter(true);
-
-                    // arr[browse|search|author|tag]
-                    var browse = arr["browse"].AsString();
-                    var searchTerm = arr["search"].AsString() ?? arr["author"].AsString() ?? arr["tag"].AsString() ?? string.Empty;
-
-                    if (browse != null)
-                    {
-                        switch (browse)
-                        {
-                            case "beta":
-                            case "featured":
-                            //case "popular":
-                            case "recommended": // = premium
-                            default:
-                                break;
-                        }
-
-                        searchFilter = new SearchFilter(includePrerelease: browse == "beta");
-                    }
-
-                    searchFilter.PackageTypes = WpPluginPackageType;
-
-                    //var results = PackageSearchResource.SearchAsync(
-                    //    "", new SearchFilter(true), 
-                    //    skip: page * per_page, take: per_page, log: null, cancellationToken: CancellationToken.None).Result.ToList();
-
-                    // TODO: list versions that are compatible with current wpdotnet ?
-
-                    var raw = RawSearchResourceV3.SearchPage(searchTerm, searchFilter, page * per_page, per_page, log, CancellationToken.None).Result;
-                    var results = (raw[JsonProperties.Data] as JArray ?? Enumerable.Empty<JToken>())
-                        .OfType<JObject>()
-                        .Select(PackageSearchMetadataFromJObject)
-                        .ToList();
-                    var totalHits = raw["totalHits"].ToObject<int>();
+                    var results = SearchFeed(arr, WpPluginPackageType, out var page, out var per_page, out var totalHits).ToList();
 
                     return PhpValue.FromClass(new QueryPluginsResult
                     {
@@ -278,6 +343,63 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="override"></param>
+        /// <param name="action"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        PhpValue/*object|array|WP_Error*/ThemesApi(PhpValue/*false|object|array*/@override, string action, object args)
+        {
+            var arr = (PhpArray)PhpValue.FromClass(args);
+            var log = NuGet.Common.NullLogger.Instance;
+
+            if (action == "query_themes")
+            {
+                var results = SearchFeed(arr, WpThemePackageType, out var page, out var per_page, out var totalHits).ToList();
+
+                // return new QueryThemesResult;
+                return PhpValue.FromClass(new QueryThemesResult
+                {
+                    info = new PhpArray()
+                    {
+                        {"page", page},
+                        {"pages", (totalHits / per_page) + ((totalHits % per_page) == 0 ? 0 : 1)},
+                        {"results", results.Count},
+                    },
+                    themes = new PhpArray(results.Select(_ => new ThemeResult(_))),
+                });
+            }
+            else if (action == "theme_information")
+            {
+                var p = RegistrationResourceV3.GetPackageMetadata(PluginResult.SlugToId(arr["slug"].ToString()), true, true, log, CancellationToken.None)
+                        .Result
+                        .Select(PackageSearchMetadataFromJObject)
+                        .FirstOrDefault();
+
+                if (p != null)
+                {
+                    var packageBaseAddress = ServiceIndexResourceV3.GetServiceEntryUri(ServiceTypes.PackageBaseAddress)?.AbsoluteUri;
+                    var id = p.Identity.Id.ToLowerInvariant();
+                    var version = p.Identity.Version.ToNormalizedString().ToLowerInvariant();
+                    var url = $"{packageBaseAddress}/{id}/{version}/{id}.{version}.nupkg";
+
+                    var theme = new ThemeResult(p);
+                    theme.download_link = url;
+                    return PhpValue.FromClass(theme);
+                }
+                else
+                {
+                    return PhpValue.Null;
+                }
+            }
+
+            // default, fallback to WP API:
+
+            return PhpValue.False;
+        }
+
         PhpValue InstallSourceSelection(string source)
         {
             if (_packages.InstallPackage(source, out var nuspec))
@@ -285,14 +407,21 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                 // TODO: check the plugin has dependency on the current wpdotnet+runtime (is compatible)
 
                 // get content of the plugin to be copied to wp-content/[plugins|themes]/
-                // TODO: themes
-                return Path.Combine(source, "contentFiles/any/netcoreapp2.0/wordpress/wp-content/plugins", nuspec.GetId()) + "/"; // ends with / because wp expects so
+                var contentsource = Path.Combine(source, "contentFiles/any/netcoreapp2.0/wordpress/wp-content");
+                Debug.Assert(Directory.Exists(contentsource));
+
+                foreach (var type in new[] { "plugins", "themes" })
+                {
+                    var fullcontentsource = Path.Combine(contentsource, type, nuspec.GetId()) + "/";    // ends with / because wp expects so
+                    if (Directory.Exists(fullcontentsource))
+                    {
+                        return fullcontentsource;
+                    }
+                }
             }
-            else
-            {
-                // fallback to regular WP plugin, results in error
-                return source; // PhpValue.FromClass( new WP_Error );
-            }
+
+            // fallback to regular WP plugin, results in error
+            return source; // PhpValue.FromClass( new WP_Error(...) );
         }
 
         void DeletePlugin(string plugin_file)
@@ -300,30 +429,38 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             _packages.UninstallPackage(PackagesHelper.PluginFileToPluginId(plugin_file));
         }
 
-        void AdminInit(WpApp app)
+        void SwitchTheme(string new_name, WP_Theme new_theme, WP_Theme old_theme = null)
         {
-            // plugins_api
-            app.AddFilter("plugins_api", new Func<PhpValue, string, object, PhpValue>(PluginsApi), accepted_args: 3);
-            app.AddFilter("delete_plugin", new Action<string>(DeletePlugin));
-            app.AddFilter("upgrader_source_selection", new Func<string, PhpValue>(InstallSourceSelection), priority: 0);
-            app.AddFilter("activate_plugin", new Action<string>(plugin_file => _packages.ActivatePackage(PackagesHelper.PluginFileToPluginId(plugin_file))));
-            app.AddFilter("deactivate_plugin", new Action<string>(plugin_file => _packages.DeactivatePackage(PackagesHelper.PluginFileToPluginId(plugin_file))));
-            app.AddFilter("install_plugins_tabs", new Func<PhpArray, PhpArray>(tabs => // remove unsupported tabs
-            {
-                //tabs.Remove(new IntStringKey("upload"));
-                tabs.Remove(new IntStringKey("popular"));
-                tabs.Remove(new IntStringKey("recommended"));
-                tabs.Remove(new IntStringKey("favorites"));
-                tabs["recommended"] = "Premium";
-                return tabs;
-            }));
-            app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
+            Debug.WriteLine($"Switching theme from {old_theme.get_stylesheet()} to {new_theme.get_stylesheet()} ...");
+
+            _packages.DeactivatePackage(old_theme.get_stylesheet().ToString());
+            _packages.ActivatePackage(new_theme.get_stylesheet().ToString());
         }
 
         void IWpPlugin.Configure(WpApp app)
         {
             // postpone admin actions
-            app.AddFilter("admin_init", new Action(() => AdminInit(app)));
+            app.AddFilter("admin_init", new Action(() =>
+            {
+                // plugins_api
+                app.AddFilter("plugins_api", new Func<PhpValue, string, object, PhpValue>(PluginsApi), accepted_args: 3);
+                app.AddFilter("themes_api", new Func<PhpValue, string, object, PhpValue>(ThemesApi), accepted_args: 3);
+                app.AddFilter("delete_plugin", new Action<string>(DeletePlugin));
+                app.AddFilter("upgrader_source_selection", new Func<string, PhpValue>(InstallSourceSelection), priority: 0);
+                app.AddFilter("activate_plugin", new Action<string>(plugin_file => _packages.ActivatePackage(PackagesHelper.PluginFileToPluginId(plugin_file))));
+                app.AddFilter("deactivate_plugin", new Action<string>(plugin_file => _packages.DeactivatePackage(PackagesHelper.PluginFileToPluginId(plugin_file))));
+                app.AddFilter("switch_theme", new Action<string, WP_Theme, WP_Theme>(SwitchTheme), accepted_args: 3);
+                app.AddFilter("install_plugins_tabs", new Func<PhpArray, PhpArray>(tabs => // remove unsupported tabs
+                {
+                    //tabs.Remove(new IntStringKey("upload"));
+                    tabs.Remove(new IntStringKey("popular"));
+                    tabs.Remove(new IntStringKey("recommended"));
+                    tabs.Remove(new IntStringKey("favorites"));
+                    tabs["recommended"] = "Premium";
+                    return tabs;
+                }));
+                app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
+            }));
         }
     }
 }
