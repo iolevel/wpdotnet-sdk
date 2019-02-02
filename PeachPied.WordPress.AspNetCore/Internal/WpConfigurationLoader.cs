@@ -100,6 +100,12 @@ namespace PeachPied.WordPress.AspNetCore.Internal
                          return true;
                      }
 
+                     if (name.Equals("Database", StringComparison.OrdinalIgnoreCase))
+                     {
+                         config.DbName = value;
+                         return true;
+                     }
+
                      return false;
                  });
         }
