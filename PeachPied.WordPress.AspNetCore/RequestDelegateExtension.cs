@@ -84,18 +84,6 @@ namespace PeachPied.WordPress.AspNetCore
         {
             // see wp-config.php:
 
-            // The name of the database for WordPress
-            ctx.DefineConstant("DB_NAME", (PhpValue)config.DbName); // define('DB_NAME', 'wordpress');
-
-            // MySQL database username
-            ctx.DefineConstant("DB_USER", (PhpValue)config.DbUser); // define('DB_USER', 'root');
-
-            // MySQL database password
-            ctx.DefineConstant("DB_PASSWORD", (PhpValue)config.DbPassword); // define('DB_PASSWORD', 'password');
-
-            // MySQL hostname
-            ctx.DefineConstant("DB_HOST", (PhpValue)config.DbHost); // define('DB_HOST', 'localhost');
-
             // WordPress Database Table prefix.
             ctx.Globals["table_prefix"] = (PhpValue)config.DbTablePrefix; // $table_prefix  = 'wp_';
 
@@ -163,6 +151,13 @@ namespace PeachPied.WordPress.AspNetCore
                 app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
             }
 
+            // update globals
+            WpStandard.DB_HOST = config.DbHost;
+            WpStandard.DB_NAME = config.DbName;
+            WpStandard.DB_PASSWORD = config.DbPassword;
+            WpStandard.DB_USER = config.DbUser;
+
+            //
             var env = (IHostingEnvironment)app.ApplicationServices.GetService(typeof(IHostingEnvironment));
             WpStandard.WP_DEBUG = config.Debug || env.IsDevelopment();
 

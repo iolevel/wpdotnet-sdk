@@ -10,6 +10,18 @@ namespace PeachPied.WordPress.Sdk
     /// </summary>
     public static class WpStandard
     {
+        /// <summary>The name of the database for WordPress</summary>
+        public static string DB_NAME { get; set; } = "wordpress";
+
+        /// <summary>MySQL database username</summary>
+        public static string DB_USER { get; set; } = "root";
+
+        /// <summary>MySQL database password</summary>
+        public static string DB_PASSWORD { get; set; } = "";
+
+        /// <summary>MySQL hostname</summary>
+        public static string DB_HOST { get; set; } = "localhost";
+
         /// <summary>
         /// Implicitly defined <c>WP_DEBUG</c> constant that will be used in compile time.
         /// </summary>
