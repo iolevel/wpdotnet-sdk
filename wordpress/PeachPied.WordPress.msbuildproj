@@ -22,4 +22,7 @@
     <!--PackageReference Include="Peachpie.RequestHandler" Version="$(PeachpieVersion)" /-->
     <ProjectReference Include="..\PeachPied.WordPress.Sdk\PeachPied.WordPress.Sdk.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All"/>
+  </ItemGroup>
 </Project>

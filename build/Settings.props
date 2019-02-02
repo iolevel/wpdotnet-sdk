@@ -35,6 +35,7 @@
     <PackageIconUrl>https://s.w.org/style/images/about/WordPress-logotype-wmark-white.png</PackageIconUrl>
     <PackageLicenseExpression>GPL-2.0-or-later</PackageLicenseExpression >
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
 </Project>
