@@ -40,7 +40,7 @@ Note: WordPress expects the MySql database to be running, with the database `dbn
 
 ## Running this repo from the sources:
 
-1. Start mysql, at `localhost:3306`, user `root`, password `password`
+1. Start mysql, at `localhost:3306`, user `root`, password `password`, created database `wordpress`
 2.
     - **cmd:** `dotnet run -p app`
     - **vs:** open solution and start `app` project
