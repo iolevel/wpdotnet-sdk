@@ -148,6 +148,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             this.author = p.Authors;
             this.homepage = p.ProjectUrl?.AbsoluteUri;
             this.description = p.Description;
+            this.screenshot_url = p.IconUrl?.AbsoluteUri;
 
             if (p.RawVersions != null && p.RawVersions.Length != 0)
             {
