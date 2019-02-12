@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -123,9 +125,14 @@ namespace PeachPied.WordPress.AspNetCore
         /// <param name="config">WordPress instance configuration.</param>
         /// <param name="plugins">Container describing what plugins will be loaded.</param>
         /// <param name="path">Physical location of wordpress folder. Can be absolute or relative to the current directory.</param>
-        public static IApplicationBuilder UseWordPress(this IApplicationBuilder app, WordPressConfig config = null, WpPluginContainer plugins = null, string path = "wordpress")
+        public static IApplicationBuilder UseWordPress(this IApplicationBuilder app, WordPressConfig config = null, WpPluginContainer plugins = null, string path = null)
         {
             // wordpress root path:
+            if (path == null)
+            {
+                path = Path.Combine(Assembly.GetExecutingAssembly().Location, "../wordpress");
+            }
+
             var root = System.IO.Path.GetFullPath(path);
             var fprovider = new PhysicalFileProvider(root);
 

@@ -13,4 +13,10 @@
     <ProjectReference Include="..\PeachPied.WordPress.AspNetCore\PeachPied.WordPress.AspNetCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
