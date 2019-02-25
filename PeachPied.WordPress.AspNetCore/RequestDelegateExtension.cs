@@ -130,7 +130,7 @@ namespace PeachPied.WordPress.AspNetCore
             // wordpress root path:
             if (path == null)
             {
-                path = Path.Combine(Assembly.GetExecutingAssembly().Location, "../wordpress");
+                path = Path.Combine(Assembly.GetEntryAssembly().Location, "../wordpress");
             }
 
             var root = System.IO.Path.GetFullPath(path);
