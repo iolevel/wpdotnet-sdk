@@ -7,7 +7,7 @@
     <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">1.0.0</VersionPrefix>
     
     <PeachpieVersion>0.9.35</PeachpieVersion>
-    <WordPressVersion>5.0.3</WordPressVersion>
+    <WordPressVersion>5.1.0</WordPressVersion>
 
     <!-- metadata generation -->
     <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
