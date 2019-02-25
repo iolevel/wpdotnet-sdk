@@ -15,7 +15,7 @@ public class Startup
     public void Configure(IApplicationBuilder app)
     {
         // ...
-        app.UseWordPress();
+        app.UseWordPress(path: "wordpress");
         // ...
     }
 }
