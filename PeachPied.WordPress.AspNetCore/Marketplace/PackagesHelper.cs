@@ -9,13 +9,31 @@ using Newtonsoft.Json;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using Pchp.Core;
+using PeachPied.WordPress.AspNetCore.Internal;
 
 namespace Peachpied.WordPress.AspNetCore.Marketplace
 {
     sealed class PackagesHelper
     {
-        static string PackagesPath => Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "packages"); // TODO: configurable
+        /*
+         * Plugins are installed into a bin folder of our choice
+         * Since we frequently change runtime and API itself, plugins for older version are not compatible with newer version and so on:
+         * !! folder with plugins changes with every update !!
+         */
 
+        static string PackagesPath
+        {
+            get
+            {
+                var appass = Assembly.GetEntryAssembly();
+                var wpversion = DiagnosticExtensions.InformationalVersion;
+
+                // TODO: configurable "packages"
+
+                return Path.Combine(Path.GetDirectoryName(appass.Location), "packages", wpversion);
+            }
+        }
+        
         static string PackagesJsonPath => Path.Combine(PackagesPath, "packages.json");
 
         public static string PluginFileToPluginId(string plugin_file)
