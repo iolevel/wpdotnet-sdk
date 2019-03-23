@@ -73,7 +73,7 @@ function register_rest_route( $namespace, $route, $args = array(), $override = f
 		'callback' => null,
 		'args'     => array(),
 	);
-	foreach ( $args as $key => &$arg_group ) {
+	foreach ( $args as $key => $arg_group ) {
 		if ( ! is_numeric( $key ) ) {
 			// Route option, skip here.
 			continue;
@@ -81,6 +81,10 @@ function register_rest_route( $namespace, $route, $args = array(), $override = f
 
 		$arg_group         = array_merge( $defaults, $arg_group );
 		$arg_group['args'] = array_merge( $common_args, $arg_group['args'] );
+
+		// WPDOTNET: &$arg_group changed to $arg_group
+		// &$arg_group on .NET caused persistent aliased value causing problems in further enumeration and lazy copying
+		$args[$key] = $arg_group;
 	}
 
 	$full_route = '/' . trim( $namespace, '/' ) . '/' . trim( $route, '/' );
