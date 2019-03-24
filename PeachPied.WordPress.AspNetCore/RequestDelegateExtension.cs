@@ -131,17 +131,17 @@ namespace PeachPied.WordPress.AspNetCore
             if (path == null)
             {
                 // bin/wordpress
-                path = Path.Combine(Assembly.GetEntryAssembly().Location, "../wordpress");
+                path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/wordpress";
 
                 if (Directory.Exists(path) == false)
                 {
                     // cwd/wordpress
-                    path = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory() + "/"), "wordpress");
+                    path = Path.GetDirectoryName(Directory.GetCurrentDirectory()) + "/wordpress";
 
                     if (Directory.Exists(path) == false)
                     {
                         // cwd/../wordpress
-                        path = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory())), "wordpress");
+                        path = Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory())) + "/wordpress";
                     }
                 }
             }
