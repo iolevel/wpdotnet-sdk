@@ -52,11 +52,33 @@ namespace PeachPied.WordPress.Sdk
 
         static IEnumerable<Assembly> CollectCompositionAssemblies()
         {
-            var bindir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            // {app} itself
+            yield return Assembly.GetEntryAssembly();
 
-            return Directory.GetFiles(bindir, "*.dll", SearchOption.TopDirectoryOnly)
-                .Select(TryLoadAssemblyFromFile)
-                .Where(x => x != null);
+            // built-in plugins (this assembly)
+            yield return typeof(Internal.PluginsProvider).Assembly;
+
+            // PeachPied.WordPress.AspNetCore
+            if (TryLoadAssembly("PeachPied.WordPress.AspNetCore", out var ass))
+            {
+                yield return ass;
+            }
+
+            // TODO: config with assembly names?
+        }
+
+        static bool TryLoadAssembly(string name, out Assembly ass)
+        {
+            try
+            {
+                ass = Assembly.Load(new AssemblyName(name));
+            }
+            catch
+            {
+                ass = null;
+            }
+
+            return ass != null;
         }
 
         static Assembly TryLoadAssemblyFromFile(string fname)
