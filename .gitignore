@@ -252,7 +252,8 @@ paket-files/
 .idea/
 *.sln.iml
 
-# WordPress default plugins and twentysixteen theme
+# WordPress
 wordpress/wp-content/plugins/akismet
 wordpress/wp-content/plugins/hello.php
 wordpress/wp-content/themes/twentysixteen
+wordpress/wp-content/uploads/
