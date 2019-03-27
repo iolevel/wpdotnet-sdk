@@ -9,7 +9,7 @@
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/app/bin/Debug/netcoreapp2.1/app.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/app",
             "console": "internalConsole",
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
