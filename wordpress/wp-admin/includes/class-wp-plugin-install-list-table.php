@@ -537,16 +537,23 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 
 					case 'update_available':
 						if ( $status['url'] ) {
-							$action_links[] = sprintf(
-								'<a class="update-now button aria-button-if-js" data-plugin="%s" data-slug="%s" href="%s" aria-label="%s" data-name="%s">%s</a>',
-								esc_attr( $status['file'] ),
-								esc_attr( $plugin['slug'] ),
-								esc_url( $status['url'] ),
-								/* translators: %s: plugin name and version */
-								esc_attr( sprintf( __( 'Update %s now' ), $name ) ),
-								esc_attr( $name ),
-								__( 'Update Now' )
-							);
+							if ( $compatible_php && $compatible_wp ) {
+								$action_links[] = sprintf(
+									'<a class="update-now button aria-button-if-js" data-plugin="%s" data-slug="%s" href="%s" aria-label="%s" data-name="%s">%s</a>',
+									esc_attr( $status['file'] ),
+									esc_attr( $plugin['slug'] ),
+									esc_url( $status['url'] ),
+									/* translators: %s: plugin name and version */
+									esc_attr( sprintf( __( 'Update %s now' ), $name ) ),
+									esc_attr( $name ),
+									__( 'Update Now' )
+								);
+							} else {
+								$action_links[] = sprintf(
+									'<button type="button" class="button button-disabled" disabled="disabled">%s</button>',
+									_x( 'Cannot Update', 'plugin' )
+								);
+							}
 						}
 						break;
 
@@ -642,7 +649,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 							self_admin_url( 'update-core.php' ),
 							esc_url( wp_get_update_php_url() )
 						);
-						wp_update_php_annotation();
+						wp_update_php_annotation( '</p><p><em>', '</em>' );
 					} elseif ( current_user_can( 'update_core' ) ) {
 						printf(
 							/* translators: %s: "Update WordPress" screen URL */
@@ -655,7 +662,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 							' ' . __( '<a href="%s">Learn more about updating PHP</a>.' ),
 							esc_url( wp_get_update_php_url() )
 						);
-						wp_update_php_annotation();
+						wp_update_php_annotation( '</p><p><em>', '</em>' );
 					}
 				} elseif ( ! $compatible_wp ) {
 					_e( 'This plugin doesn&#8217;t work with your version of WordPress.' );
@@ -674,7 +681,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 							' ' . __( '<a href="%s">Learn more about updating PHP</a>.' ),
 							esc_url( wp_get_update_php_url() )
 						);
-						wp_update_php_annotation();
+						wp_update_php_annotation( '</p><p><em>', '</em>' );
 					}
 				}
 				echo '</p></div>';

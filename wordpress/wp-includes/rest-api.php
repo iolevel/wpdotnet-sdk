@@ -73,18 +73,17 @@ function register_rest_route( $namespace, $route, $args = array(), $override = f
 		'callback' => null,
 		'args'     => array(),
 	);
-	foreach ( $args as $key => $arg_group ) {
+
+	foreach ( $args as $key => $arg ) {
 		if ( ! is_numeric( $key ) ) {
 			// Route option, skip here.
 			continue;
 		}
 
-		$arg_group         = array_merge( $defaults, $arg_group );
-		$arg_group['args'] = array_merge( $common_args, $arg_group['args'] );
+		$args[$key] = array_merge( $defaults, $arg ); // WPDOTNET // CHANGED: &$arg_group on .NET caused persistent aliased value causing problems in further enumeration and lazy copying
 
-		// WPDOTNET: &$arg_group changed to $arg_group
-		// &$arg_group on .NET caused persistent aliased value causing problems in further enumeration and lazy copying
-		$args[$key] = $arg_group;
+		//$arg_group = array_merge( $defaults, $arg_group );
+		//$arg_group['args'] = array_merge( $common_args, $arg_group['args'] );
 	}
 
 	$full_route = '/' . trim( $namespace, '/' ) . '/' . trim( $route, '/' );
@@ -619,10 +618,25 @@ function rest_handle_options_request( $response, $handler, $request ) {
 	$data     = array();
 
 	foreach ( $handler->get_routes() as $route => $endpoints ) {
-		$match = preg_match( '@^' . $route . '$@i', $request->get_route() );
+		$match = preg_match( '@^' . $route . '$@i', $request->get_route(), $matches );
 
 		if ( ! $match ) {
 			continue;
+		}
+
+		$args = array();
+		foreach ( $matches as $param => $value ) {
+			if ( ! is_int( $param ) ) {
+				$args[ $param ] = $value;
+			}
+		}
+
+		foreach ( $endpoints as $endpoint ) {
+			// Remove the redundant preg_match argument.
+			unset( $args[0] );
+
+			$request->set_url_params( $args );
+			$request->set_attributes( $endpoint );
 		}
 
 		$data = $handler->get_data_for_route( $route, $endpoints, 'help' );

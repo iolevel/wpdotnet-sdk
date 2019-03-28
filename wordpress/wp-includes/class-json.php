@@ -805,7 +805,7 @@ class Services_JSON
                                  ($top['what'] == SERVICES_JSON_IN_STR) &&
                                  (($this->strlen8($this->substr8($chrs, 0, $c)) - $this->strlen8(rtrim($this->substr8($chrs, 0, $c), '\\'))) % 2 != 1)) {
                             // found a quote, we're in a string, and it's not escaped
-                            // we know that it's not escaped becase there is _not_ an
+                            // we know that it's not escaped because there is _not_ an
                             // odd number of backslashes at the end of the string so far
                             array_pop($stk);
                             //print("Found end of string at {$c}: ".$this->substr8($chrs, $top['where'], (1 + 1 + $c - $top['where']))."\n");
@@ -914,7 +914,7 @@ class Services_JSON
 }
 
 // if (class_exists('PEAR_Error')) {
-
+// 
 //     class Services_JSON_Error extends PEAR_Error
 //     {
 //         function __construct($message = 'unknown error', $code = null,
@@ -922,14 +922,14 @@ class Services_JSON
 //         {
 //             parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
 //         }
-
+// 
 // 	public function Services_JSON_Error($message = 'unknown error', $code = null,
 //                                      $mode = null, $options = null, $userinfo = null) {
 // 		self::__construct($message = 'unknown error', $code = null,
 //                                      $mode = null, $options = null, $userinfo = null);
 // 	}
 //     }
-
+// 
 // } else {
 
     /**
