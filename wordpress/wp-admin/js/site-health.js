@@ -4,7 +4,7 @@
  * @output wp-admin/js/site-health.js
  */
 
-/* global ajaxurl, SiteHealth, wp */
+/* global ajaxurl, ClipboardJS, SiteHealth, wp */
 
 jQuery( document ).ready( function( $ ) {
 
@@ -30,14 +30,6 @@ jQuery( document ).ready( function( $ ) {
 		} else {
 			$( this ).attr( 'aria-expanded', 'true' );
 			$( '#' + $( this ).attr( 'aria-controls' ) ).attr( 'hidden', false );
-		}
-	} );
-
-	$( '.health-check-accordion' ).on( 'keyup', '.health-check-accordion-trigger', function( e ) {
-		if ( '38' === e.keyCode.toString() ) {
-			$( '.health-check-accordion-trigger', $( this ).closest( 'dt' ).prevAll( 'dt' ) ).focus();
-		} else if ( '40' === e.keyCode.toString() ) {
-			$( '.health-check-accordion-trigger', $( this ).closest( 'dt' ).nextAll( 'dt' ) ).focus();
 		}
 	} );
 
@@ -76,7 +68,7 @@ jQuery( document ).ready( function( $ ) {
 	function RecalculateProgression() {
 		var r, c, pct;
 		var $progress = $( '.site-health-progress' );
-		var $progressCount = $progress.find( '.progress-count' );
+		var $progressCount = $progress.find( '.site-health-progress-count' );
 		var $circle = $( '.site-health-progress svg #bar' );
 		var totalTests = parseInt( SiteHealth.site_status.issues.good, 0 ) + parseInt( SiteHealth.site_status.issues.recommended, 0 ) + ( parseInt( SiteHealth.site_status.issues.critical, 0 ) * 1.5 );
 		var failedTests = parseInt( SiteHealth.site_status.issues.recommended, 0 ) + ( parseInt( SiteHealth.site_status.issues.critical, 0 ) * 1.5 );

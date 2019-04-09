@@ -32,23 +32,13 @@ class WP_Debug_Data {
 	 */
 	static function debug_data( $locale = null ) {
 		global $wpdb;
-
 		if ( ! empty( $locale ) ) {
 			// Change the language used for translations
-			if ( function_exists( 'switch_to_locale' ) ) {
-				$original_locale = get_locale();
-				$switched_locale = switch_to_locale( $locale );
-			}
+			$original_locale = get_user_locale();
+			$switched_locale = switch_to_locale( $locale );
 		}
 
-		$upload_dir = wp_upload_dir();
-		if ( file_exists( ABSPATH . 'wp-config.php' ) ) {
-			$wp_config_path = ABSPATH . 'wp-config.php';
-			// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
-		} elseif ( @file_exists( dirname( ABSPATH ) . '/wp-config.php' ) && ! @file_exists( dirname( ABSPATH ) . '/wp-settings.php' ) ) {
-			$wp_config_path = dirname( ABSPATH ) . '/wp-config.php';
-		}
-
+		$upload_dir           = wp_get_upload_dir();
 		$core_current_version = get_bloginfo( 'version' );
 		$core_updates         = get_core_updates();
 		$core_update_needed   = '';
@@ -73,7 +63,7 @@ class WP_Debug_Data {
 					),
 					'language'               => array(
 						'label' => __( 'Language' ),
-						'value' => ( ! empty( $locale ) ? $original_locale : get_locale() ),
+						'value' => ( ! empty( $locale ) ? $original_locale : get_user_locale() ),
 					),
 					'home_url'               => array(
 						'label'   => __( 'Home URL' ),
@@ -156,11 +146,11 @@ class WP_Debug_Data {
 			),
 			'wp-constants'        => array(
 				'label'       => __( 'WordPress Constants' ),
-				'description' => __( 'These settings are defined in your wp-config.php file, and alter where and how parts of WordPress are loaded.' ),
+				'description' => __( 'These settings alter where and how parts of WordPress are loaded.' ),
 				'fields'      => array(
 					'ABSPATH'             => array(
 						'label'   => 'ABSPATH',
-						'value'   => ( ! defined( 'ABSPATH' ) ? __( 'Undefined' ) : ABSPATH ),
+						'value'   => ABSPATH,
 						'private' => true,
 					),
 					'WP_HOME'             => array(
@@ -173,35 +163,35 @@ class WP_Debug_Data {
 					),
 					'WP_CONTENT_DIR'      => array(
 						'label' => 'WP_CONTENT_DIR',
-						'value' => ( ! defined( 'WP_CONTENT_DIR' ) ? __( 'Undefined' ) : WP_CONTENT_DIR ),
+						'value' => WP_CONTENT_DIR,
 					),
 					'WP_PLUGIN_DIR'       => array(
 						'label' => 'WP_PLUGIN_DIR',
-						'value' => ( ! defined( 'WP_PLUGIN_DIR' ) ? __( 'Undefined' ) : WP_PLUGIN_DIR ),
+						'value' => WP_PLUGIN_DIR,
 					),
 					'WP_DEBUG'            => array(
 						'label' => 'WP_DEBUG',
-						'value' => ( ! defined( 'WP_DEBUG' ) ? __( 'Undefined' ) : ( WP_DEBUG ? __( 'Enabled' ) : __( 'Disabled' ) ) ),
+						'value' => WP_DEBUG ? __( 'Enabled' ) : __( 'Disabled' ),
 					),
 					'WP_MAX_MEMORY_LIMIT' => array(
 						'label' => 'WP_MAX_MEMORY_LIMIT',
-						'value' => ( ! defined( 'WP_MAX_MEMORY_LIMIT' ) ? __( 'Undefined' ) : WP_MAX_MEMORY_LIMIT ),
+						'value' => WP_MAX_MEMORY_LIMIT,
 					),
 					'WP_DEBUG_DISPLAY'    => array(
 						'label' => 'WP_DEBUG_DISPLAY',
-						'value' => ( ! defined( 'WP_DEBUG_DISPLAY' ) ? __( 'Undefined' ) : ( WP_DEBUG_DISPLAY ? __( 'Enabled' ) : __( 'Disabled' ) ) ),
+						'value' => WP_DEBUG_DISPLAY ? __( 'Enabled' ) : __( 'Disabled' ),
 					),
 					'WP_DEBUG_LOG'        => array(
 						'label' => 'WP_DEBUG_LOG',
-						'value' => ( ! defined( 'WP_DEBUG_LOG' ) ? __( 'Undefined' ) : ( WP_DEBUG_LOG ? __( 'Enabled' ) : __( 'Disabled' ) ) ),
+						'value' => ( is_string( WP_DEBUG_LOG ) ? WP_DEBUG_LOG : ( WP_DEBUG_LOG ? __( 'Enabled' ) : __( 'Disabled' ) ) ),
 					),
 					'SCRIPT_DEBUG'        => array(
 						'label' => 'SCRIPT_DEBUG',
-						'value' => ( ! defined( 'SCRIPT_DEBUG' ) ? __( 'Undefined' ) : ( SCRIPT_DEBUG ? __( 'Enabled' ) : __( 'Disabled' ) ) ),
+						'value' => SCRIPT_DEBUG ? __( 'Enabled' ) : __( 'Disabled' ),
 					),
 					'WP_CACHE'            => array(
 						'label' => 'WP_CACHE',
-						'value' => ( ! defined( 'WP_CACHE' ) ? __( 'Undefined' ) : ( WP_CACHE ? __( 'Enabled' ) : __( 'Disabled' ) ) ),
+						'value' => WP_CACHE ? __( 'Enabled' ) : __( 'Disabled' ),
 					),
 					'CONCATENATE_SCRIPTS' => array(
 						'label' => 'CONCATENATE_SCRIPTS',
@@ -304,7 +294,7 @@ class WP_Debug_Data {
 			$info['wp-core']['fields']['dotorg_communication'] = array(
 				'label' => __( 'Communication with WordPress.org' ),
 				'value' => sprintf(
-					// translators: %1$s: The IP address WordPress.org resolves to. %2$s: The error returned by the lookup.
+					// translators: 1: The IP address WordPress.org resolves to. 2: The error returned by the lookup.
 					__( 'Unable to reach WordPress.org at %1$s: %2$s' ),
 					gethostbyname( 'wordpress.org' ),
 					$wp_dotorg->get_error_message()
@@ -312,21 +302,35 @@ class WP_Debug_Data {
 			);
 		}
 
-		// Go through the various installation directories and calculate their sizes.
-		$uploads_dir = wp_upload_dir();
-		$inaccurate  = false;
+		$size_db = WP_Debug_Data::get_database_size();
 
 		/*
 		 * We will be using the PHP max execution time to prevent the size calculations
-		 * from causing a timeout. We provide a default value of 30 seconds, as some
+		 * from causing a timeout. The default value is 30 seconds, and some
 		 * hosts do not allow you to read configuration values.
 		 */
-		$max_execution_time   = 30;
-		$start_execution_time = microtime( true );
 		if ( function_exists( 'ini_get' ) ) {
 			$max_execution_time = ini_get( 'max_execution_time' );
 		}
 
+		// The max_execution_time defaults to 0 when PHP runs from cli.
+		// We still want to limit it below.
+		if ( empty( $max_execution_time ) ) {
+			$max_execution_time = 30;
+		}
+
+		// Here 20 seconds is a "sensible default" for how long to make the user wait for the directory size calculation.
+		// When testing 20 seconds seem enough in nearly all cases. The remaining edge cases are likely testing or development sites
+		// that have very large number of files, for example `node_modules` in plugins or themes, etc.
+		if ( $max_execution_time > 20 ) {
+			$max_execution_time = 20;
+		} elseif ( $max_execution_time > 10 ) {
+			// If the max_execution_time is set to lower than 20 seconds, reduce it a bit to prevent
+			// edge-case timeouts that may happen after the size loop has finished running.
+			$max_execution_time -= 1;
+		}
+
+		// Go through the various installation directories and calculate their sizes.
 		$size_directories = array(
 			'wordpress' => array(
 				'path' => ABSPATH,
@@ -341,40 +345,52 @@ class WP_Debug_Data {
 				'size' => 0,
 			),
 			'uploads'   => array(
-				'path' => $uploads_dir['basedir'],
+				'path' => $upload_dir['basedir'],
 				'size' => 0,
 			),
 		);
 
+		$timeout      = __( 'The directory size calculation has timed out. Usually caused by a very large number of sub-directories and files.' );
+		$inaccessible = __( 'The size cannot be calculated. The directory is not accessible. Usually caused by invalid permissions.' );
+		$size_total   = 0;
+
 		// Loop over all the directories we want to gather the sizes for.
 		foreach ( $size_directories as $size => $attributes ) {
-			/*
-			 * We run a helper function with a RecursiveIterator, which
-			 * may throw an exception if it can't access directories.
-			 *
-			 * If a failure is detected we mark the result as inaccurate.
-			 */
-			try {
-				$calculated_size = WP_Debug_data::get_directory_size( $attributes['path'], $max_execution_time, $start_execution_time );
+			$dir_size = null; // Default to timeout.
 
-				$size_directories[ $size ]['size'] = $calculated_size;
-
-				/*
-				 * If the size returned is -1, this means execution has
-				 * exceeded the maximum execution time, also denoting an
-				 * inaccurate value in the end.
-				 */
-				if ( -1 === $calculated_size ) {
-					$inaccurate = true;
-				}
-			} catch ( Exception $e ) {
-				$inaccurate = true;
+			if ( microtime( true ) - WP_START_TIMESTAMP < $max_execution_time ) {
+				$dir_size = get_dirsize( $attributes['path'], $max_execution_time );
 			}
+
+			if ( $dir_size === false ) {
+				// Error reading.
+				$dir_size = $inaccessible;
+				// Stop total size calculation.
+				$size_total = null;
+			} elseif ( $dir_size === null ) {
+				// Timeout.
+				$dir_size = $timeout;
+				// Stop total size calculation.
+				$size_total = null;
+			} else {
+				$is_subdir = ( strpos( $size_directories[ $size ]['path'], ABSPATH ) === 0 );
+
+				// phpcs:ignore WordPress.WP.CapitalPDangit.Misspelled
+				if ( $size_total !== null && ( $size === 'wordpress' || ! $is_subdir ) ) {
+					$size_total += $dir_size;
+				}
+
+				$dir_size = size_format( $dir_size, 2 );
+			}
+
+			$size_directories[ $size ]['size'] = $dir_size;
 		}
 
-		$size_db = WP_Debug_Data::get_database_size();
-
-		$size_total = $size_directories['wordpress']['size'] + $size_db;
+		if ( $size_total !== null && $size_db > 0 ) {
+			$size_total = size_format( $size_total + $size_db, 2 );
+		} else {
+			$size_total = __( 'Total size is not available. Some errors were encountered when determining the size of your installation.' );
+		}
 
 		$info['wp-paths-sizes']['fields'] = array(
 			array(
@@ -383,7 +399,7 @@ class WP_Debug_Data {
 			),
 			array(
 				'label' => __( 'Uploads Directory Size' ),
-				'value' => ( -1 === $size_directories['uploads']['size'] ? __( 'Unable to determine the size of this directory' ) : size_format( $size_directories['uploads']['size'], 2 ) ),
+				'value' => $size_directories['uploads']['size'],
 			),
 			array(
 				'label' => __( 'Themes Directory Location' ),
@@ -395,7 +411,7 @@ class WP_Debug_Data {
 			),
 			array(
 				'label' => __( 'Themes Directory Size' ),
-				'value' => ( -1 === $size_directories['themes']['size'] ? __( 'Unable to determine the size of this directory' ) : size_format( $size_directories['themes']['size'], 2 ) ),
+				'value' => $size_directories['themes']['size'],
 			),
 			array(
 				'label' => __( 'Plugins Directory Location' ),
@@ -403,7 +419,7 @@ class WP_Debug_Data {
 			),
 			array(
 				'label' => __( 'Plugins Directory Size' ),
-				'value' => ( -1 === $size_directories['plugins']['size'] ? __( 'Unable to determine the size of this directory' ) : size_format( $size_directories['plugins']['size'], 2 ) ),
+				'value' => $size_directories['plugins']['size'],
 			),
 			array(
 				'label' => __( 'WordPress Directory Location' ),
@@ -411,7 +427,7 @@ class WP_Debug_Data {
 			),
 			array(
 				'label' => __( 'WordPress Directory Size' ),
-				'value' => size_format( $size_directories['wordpress']['size'], 2 ),
+				'value' => $size_directories['wordpress']['size'],
 			),
 			array(
 				'label' => __( 'Database size' ),
@@ -419,11 +435,7 @@ class WP_Debug_Data {
 			),
 			array(
 				'label' => __( 'Total installation size' ),
-				'value' => sprintf(
-					'%s%s',
-					size_format( $size_total, 2 ),
-					( false === $inaccurate ? '' : __( '- Some errors, likely caused by invalid permissions, were encountered when determining the size of your installation. This means the values represented may be inaccurate.' ) )
-				),
+				'value' => $size_total,
 			),
 		);
 
@@ -677,7 +689,7 @@ class WP_Debug_Data {
 			$plugin_version_string = __( 'No version or author information is available.' );
 
 			if ( ! empty( $plugin_version ) && ! empty( $plugin_author ) ) {
-				// translators: %1$s: Plugin version number. %2$s: Plugin author name.
+				// translators: 1: Plugin version number. 2: Plugin author name.
 				$plugin_version_string = sprintf( __( 'Version %1$s by %2$s' ), $plugin_version, $plugin_author );
 			}
 			if ( empty( $plugin_version ) && ! empty( $plugin_author ) ) {
@@ -708,7 +720,7 @@ class WP_Debug_Data {
 			$plugin_version_string = __( 'No version or author information is available.' );
 
 			if ( ! empty( $plugin_version ) && ! empty( $plugin_author ) ) {
-				// translators: %1$s: Plugin version number. %2$s: Plugin author name.
+				// translators: 1: Plugin version number. 2: Plugin author name.
 				$plugin_version_string = sprintf( __( 'Version %1$s by %2$s' ), $plugin_version, $plugin_author );
 			}
 			if ( empty( $plugin_version ) && ! empty( $plugin_author ) ) {
@@ -798,7 +810,7 @@ class WP_Debug_Data {
 			$theme_version_string = __( 'No version or author information is available.' );
 
 			if ( ! empty( $theme_version ) && ! empty( $theme_author ) ) {
-				// translators: %1$s: Theme version number. %2$s: Theme author name.
+				// translators: 1: Theme version number. 2: Theme author name.
 				$theme_version_string = sprintf( __( 'Version %1$s by %2$s' ), $theme_version, wp_kses( $theme_author, array() ) );
 			}
 			if ( empty( $theme_version ) && ! empty( $theme_author ) ) {
@@ -819,7 +831,7 @@ class WP_Debug_Data {
 
 			$info['wp-themes']['fields'][ sanitize_key( $theme->Name ) ] = array(
 				'label' => sprintf(
-					// translators: %1$s: Theme name. %2$s: Theme slug.
+					// translators: 1: Theme name. 2: Theme slug.
 					__( '%1$s (%2$s)' ),
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					$theme->Name,
@@ -872,7 +884,7 @@ class WP_Debug_Data {
 
 		if ( ! empty( $locale ) ) {
 			// Change the language used for translations
-			if ( function_exists( 'restore_previous_locale' ) && $switched_locale ) {
+			if ( $switched_locale ) {
 				restore_previous_locale();
 			}
 		}
@@ -890,7 +902,7 @@ class WP_Debug_Data {
 	 * @return string The formatted data.
 	 */
 	public static function format( $info_array, $type = 'text' ) {
-		$return = '';
+		$return = "`\n";
 
 		foreach ( $info_array as $section => $details ) {
 			// Skip this section if there are no fields, or the section has been declared as private.
@@ -931,37 +943,9 @@ class WP_Debug_Data {
 			$return .= "\n";
 		}
 
+		$return .= '`';
+
 		return $return;
-	}
-
-	/**
-	 * Return the size of a directory, including all subdirectories.
-	 *
-	 * @since 5.2.0
-	 *
-	 * @param string     $path                 The directory to check.
-	 * @param string|int $max_execution_time   How long a PHP script can run on this host.
-	 * @param float      $start_execution_time When we started executing this section of the script.
-	 *
-	 * @return int The directory size, in bytes.
-	 */
-	public static function get_directory_size( $path, $max_execution_time, $start_execution_time ) {
-		$size = 0;
-
-		foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $path ) ) as $file ) {
-			// Check if the maximum execution time is a value considered "infinite".
-			if ( 0 !== $max_execution_time && -1 !== $max_execution_time ) {
-				$runtime = ( microtime( true ) - $start_execution_time );
-
-				// If the script has been running as long, or longer, as it is allowed, return a failure message.
-				if ( $runtime >= $max_execution_time ) {
-					return -1;
-				}
-			}
-			$size += $file->getSize();
-		}
-
-		return $size;
 	}
 
 	/**
@@ -982,6 +966,6 @@ class WP_Debug_Data {
 			}
 		}
 
-		return $size;
+		return (int) $size;
 	}
 }
