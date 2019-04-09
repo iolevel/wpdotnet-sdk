@@ -111,9 +111,6 @@ namespace PeachPied.WordPress.AspNetCore
             // disable wp_cron() during the request, we have our own scheduler to fire the job
             ctx.DefineConstant("DISABLE_WP_CRON", PhpValue.True);   // define('DISABLE_WP_CRON', true);
 
-            // disable WordPress' fatal error handler
-            ctx.DefineConstant("WP_DISABLE_FATAL_ERROR_HANDLER", PhpValue.True);   // define('WP_DISABLE_FATAL_ERROR_HANDLER', true);
-
             // $peachpie-wp-loader : WpLoader
             ctx.Globals["peachpie_wp_loader"] = PhpValue.FromClass(loader);
         }
