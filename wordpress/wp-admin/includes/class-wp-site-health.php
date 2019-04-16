@@ -46,17 +46,6 @@ class WP_Site_Health {
 
 		$health_check_js_variables = array(
 			'screen'      => $screen->id,
-			'string'      => array(
-				'please_wait'                        => __( 'Please wait...' ),
-				'copied'                             => __( 'Copied' ),
-				'running_tests'                      => __( 'Currently being tested...' ),
-				'site_health_complete'               => __( 'All site health tests have finished running.' ),
-				'site_info_show_copy'                => __( 'Show options for copying this information' ),
-				'site_info_hide_copy'                => __( 'Hide options for copying this information' ),
-				// translators: %s: The percentage score for the tests.
-				'site_health_complete_screen_reader' => __( 'All site health tests have finished running. Your site scored %s, and the results are now available on the page.' ),
-				'site_info_copied'                   => __( 'Site information has been added to your clipboard.' ),
-			),
 			'nonce'       => array(
 				'site_status'        => wp_create_nonce( 'health-check-site-status' ),
 				'site_status_result' => wp_create_nonce( 'health-check-site-status-result' ),
@@ -183,7 +172,7 @@ class WP_Site_Health {
 			'status'      => '',
 			'badge'       => array(
 				'label' => __( 'Performance' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => '',
 			'actions'     => '',
@@ -283,13 +272,17 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Security' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
 				__( 'Plugins extend your site&#8217;s functionality with things like contact forms, ecommerce and much more. That means they have deep access to your site, so it&#8217;s vital to keep them up to date.' )
 			),
-			'actions'     => '',
+			'actions'     => sprintf(
+				'<p><a href="%s">%s</a></p>',
+				esc_url( admin_url( 'plugins.php' ) ),
+				__( 'Manage your plugins' )
+			),
 			'test'        => 'plugin_version',
 		);
 
@@ -335,6 +328,12 @@ class WP_Site_Health {
 					$plugins_need_update
 				)
 			);
+
+			$result['actions'] .= sprintf(
+				'<p><a href="%s">%s</a></p>',
+				esc_url( admin_url( 'plugins.php?plugin_status=upgrade' ) ),
+				__( 'Update your plugins' )
+			);
 		} else {
 			if ( 1 === $plugins_active ) {
 				$result['description'] .= sprintf(
@@ -378,6 +377,12 @@ class WP_Site_Health {
 				),
 				__( 'Inactive plugins are tempting targets for attackers. If you&#8217;re not going to use a plugin, we recommend you remove it.' )
 			);
+
+			$result['actions'] .= sprintf(
+				'<p><a href="%s">%s</a></p>',
+				esc_url( admin_url( 'plugins.php?plugin_status=inactive' ) ),
+				__( 'Manage inactive plugins' )
+			);
 		}
 
 		return $result;
@@ -399,13 +404,17 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Security' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
 				__( 'Themes add your site&#8217;s look and feel. It&#8217;s important to keep them up to date, to stay consistent with your brand and keep your site secure.' )
 			),
-			'actions'     => '',
+			'actions'     => sprintf(
+				'<p><a href="%s">%s</a></p>',
+				esc_url( admin_url( 'themes.php' ) ),
+				__( 'Manage your themes' )
+			),
 			'test'        => 'theme_version',
 		);
 
@@ -623,14 +632,14 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Performance' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
-				__( 'PHP is the programming language we use to build and maintain WordPress. Newer versions of PHP are both faster and more secure, so updating will have a positive effect on your site’s performance.' )
+				__( 'PHP is the programming language we use to build and maintain WordPress. Newer versions of PHP are both faster and more secure, so updating will have a positive effect on your site&#8217;s performance.' )
 			),
 			'actions'     => sprintf(
-				'<a class="button button-primary" href="%1$s" target="_blank" rel="noopener noreferrer">%2$s <span class="screen-reader-text">%3$s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>',
+				'<p><a href="%s" target="_blank" rel="noopener noreferrer">%s <span class="screen-reader-text">%s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a></p>',
 				esc_url( wp_get_update_php_url() ),
 				__( 'Learn more about updating PHP' ),
 				/* translators: accessibility text */
@@ -712,16 +721,22 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Performance' ),
-				'color' => 'orange',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p><p>%s</p>',
-				__( 'PHP modules perform most of the tasks on the server that make your site run.' ),
+				__( 'PHP modules perform most of the tasks on the server that make your site run. Any changes to these must be made by your server administrator.' ),
 				sprintf(
 					/* translators: %s: Link to the hosting group page about recommended PHP modules. */
-					__( 'The Hosting team maintains a list of those modules, both recommended and required, in <a href="%s">the team handbook</a>.' ),
-					/* translators: The address to describe PHP modules and their use. */
-					esc_url( __( 'https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions' ) )
+					__( 'The WordPress Hosting Team maintains a list of those modules, both recommended and required, in %s.' ),
+					sprintf(
+						'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s <span class="screen-reader-text">%3$s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>',
+						/* translators: Localized team handbook, if one exists. */
+						esc_url( __( 'https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions' ) ),
+						__( 'the team handbook' ),
+						/* translators: accessibility text */
+						__( '(opens in a new tab)' )
+					)
 				)
 			),
 			'actions'     => '',
@@ -908,13 +923,20 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Performance' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
-				__( 'The SQL server is the database where WordPress stores all your site’s content and settings' )
+				__( 'The SQL server is a required piece of software for the database WordPress uses to store all your site&#8217;s content and settings.' )
 			),
-			'actions'     => '',
+			'actions'     => sprintf(
+				'<p><a href="%s" target="_blank" rel="noopener noreferrer">%s <span class="screen-reader-text">%s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a></p>',
+				/* translators: Localized version of WordPress requirements if one exists. */
+				esc_url( __( 'https://wordpress.org/about/requirements/' ) ),
+				__( 'Read more about what WordPress requires to run.' ),
+				/* translators: accessibility text */
+				__( '(opens in a new tab)' )
+			),
 			'test'        => 'sql_server',
 		);
 
@@ -988,7 +1010,7 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Performance' ),
-				'color' => 'orange',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
@@ -1008,7 +1030,7 @@ class WP_Site_Health {
 					'<p>%s</p>',
 					sprintf(
 						/* translators: %s: Version number. */
-						__( 'WordPress&#8217; utf8mb4 support requires MySQL version %s or greater.' ),
+						__( 'WordPress&#8217; utf8mb4 support requires MySQL version %s or greater. Please contact your server administrator.' ),
 						'5.5.3'
 					)
 				);
@@ -1028,7 +1050,7 @@ class WP_Site_Health {
 					'<p>%s</p>',
 					sprintf(
 						/* translators: %s: Version number. */
-						__( 'WordPress&#8217; utf8mb4 support requires MariaDB version %s or greater.' ),
+						__( 'WordPress&#8217; utf8mb4 support requires MariaDB version %s or greater. Please contact your server administrator.' ),
 						'5.5.0'
 					)
 				);
@@ -1063,7 +1085,7 @@ class WP_Site_Health {
 					'<p>%s</p>',
 					sprintf(
 						/* translators: 1: Name of the library, 2: Number of version. */
-						__( 'WordPress&#8217; utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.' ),
+						__( 'WordPress&#8217; utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer. Please contact your server administrator.' ),
 						'mysqlnd',
 						'5.0.9'
 					)
@@ -1079,7 +1101,7 @@ class WP_Site_Health {
 					'<p>%s</p>',
 					sprintf(
 						/* translators: 1: Name of the library, 2: Number of version. */
-						__( 'WordPress&#8217; utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.' ),
+						__( 'WordPress&#8217; utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer. Please contact your server administrator.' ),
 						'libmysql',
 						'5.5.3'
 					)
@@ -1103,7 +1125,7 @@ class WP_Site_Health {
 			'status'      => '',
 			'badge'       => array(
 				'label' => __( 'Security' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
@@ -1134,10 +1156,19 @@ class WP_Site_Health {
 					sprintf(
 						/* translators: 1: The IP address WordPress.org resolves to. 2: The error returned by the lookup. */
 						__( 'Your site is unable to reach WordPress.org at %1$s, and returned the error: %2$s' ),
-						gethostbyname( 'wordpress.org' ),
+						gethostbyname( 'api.wordpress.org' ),
 						$wp_dotorg->get_error_message()
 					)
 				)
+			);
+
+			$result['actions'] = sprintf(
+				'<p><a href="%s" target="_blank" rel="noopener noreferrer">%s <span class="screen-reader-text">%s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a></p>',
+				/* translators: Localized Support reference. */
+				esc_url( __( 'https://wordpress.org/support' ) ),
+				__( 'Get help resolving this issue.' ),
+				/* translators: accessibility text */
+				__( '(opens in a new tab)' )
 			);
 		}
 
@@ -1163,13 +1194,20 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Security' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
 				__( 'Debug mode is often enabled to gather more details about an error or site failure, but may contain sensitive information which should not be available on a publicly available website.' )
 			),
-			'actions'     => '',
+			'actions'     => sprintf(
+				'<p><a href="%s" target="_blank" rel="noopener noreferrer">%s <span class="screen-reader-text">%s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a></p>',
+				/* translators: Documentation explaining debugging in WordPress. */
+				esc_url( __( 'https://wordpress.org/support/article/debugging-in-wordpress/' ) ),
+				__( 'Read about debugging in WordPress.' ),
+				/* translators: accessibility text */
+				__( '(opens in a new tab)' )
+			),
 			'test'        => 'is_in_debug_mode',
 		);
 
@@ -1182,7 +1220,7 @@ class WP_Site_Health {
 				$result['description'] .= sprintf(
 					'<p>%s</p>',
 					sprintf(
-						/* translators: %s: Name of the constant used. */
+						/* translators: %s: WP_DEBUG_LOG */
 						__( 'The value, %s, has been added to this website&#8217;s configuration file. This means any errors on the site will be written to a file which is potentially available to normal users.' ),
 						'<code>WP_DEBUG_LOG</code>'
 					)
@@ -1197,9 +1235,10 @@ class WP_Site_Health {
 				$result['description'] .= sprintf(
 					'<p>%s</p>',
 					sprintf(
-						/* translators: %s: Name of the constant used. */
-						__( 'The value, %s, has either been added to your configuration file, or left with its default value. This will make errors display on the front end of your site.' ),
-						'<code>WP_DEBUG_DISPLAY</code>'
+						/* translators: 1: WP_DEBUG_DISPLAY, 2: WP_DEBUG */
+						__( 'The value, %1$s, has either been enabled by %2$s or added to your configuration file. This will make errors display on the front end of your site.' ),
+						'<code>WP_DEBUG_DISPLAY</code>',
+						'<code>WP_DEBUG</code>'
 					)
 				);
 			}
@@ -1224,19 +1263,19 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Security' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
 				__( 'An HTTPS connection is needed for many features on the web today, it also gains the trust of your visitors by helping to protecting their online privacy.' )
 			),
 			'actions'     => sprintf(
-				'<p><a href="%s">%s</a></p>',
-				esc_url(
-					/* translators: Documentation explaining HTTPS and why it should be used. */
-					__( 'https://wordpress.org/support/article/why-should-i-use-https/' )
-				),
-				__( 'Read more about why you should use HTTPS' )
+				'<p><a href="%s" target="_blank" rel="noopener noreferrer">%s <span class="screen-reader-text">%s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a></p>',
+				/* translators: Documentation explaining HTTPS and why it should be used. */
+				esc_url( __( 'https://wordpress.org/support/article/why-should-i-use-https/' ) ),
+				__( 'Read more about why you should use HTTPS' ),
+				/* translators: accessibility text */
+				__( '(opens in a new tab)' )
 			),
 			'test'        => 'https_status',
 		);
@@ -1287,7 +1326,7 @@ class WP_Site_Health {
 			'status'      => '',
 			'badge'       => array(
 				'label' => __( 'Security' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
@@ -1333,7 +1372,7 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Performance' ),
-				'color' => 'orange',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
@@ -1394,7 +1433,7 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Security' ),
-				'color' => 'red',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
@@ -1470,7 +1509,7 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Performance' ),
-				'color' => 'orange',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
@@ -1512,7 +1551,7 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Performance' ),
-				'color' => 'orange',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
@@ -1583,7 +1622,7 @@ class WP_Site_Health {
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Performance' ),
-				'color' => 'orange',
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
