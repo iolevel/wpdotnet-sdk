@@ -23,7 +23,7 @@ public class Startup
 
 ## Configuration
 
-WordPress on .NET is configured using the standard [`appsettings.json`](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.2), you are no longer editing the `wp-config.php` source file.
+WordPress on .NET is configured using the standard [`appsettings.json`](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/), you are no longer editing the `wp-config.php` source file.
 
 ```json
 {
