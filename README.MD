@@ -31,12 +31,25 @@ WordPress on .NET is configured using the standard [`appsettings.json`](https://
     "dbhost": "localhost",
     "dbpassword": "password",
     "dbuser": "root",
-    "dbname": "wordpress"
+    "dbname": "wordpress",
+    "dbTablePrefix": "wp_",
+    "SALT": {
+        "AUTH_KEY":         "r(EoMbKEvlg){+!T42fh-e+~IGj-4q}g8HHB9hjbiC0J*ySU1Y*3z[3c}F;6=TA5",
+        "AUTH_SALT":        "q0#AzvJ*[4~Bexa9*M(sC_#pDuGQBdjL1}j*RilSe0ku]P~KuTir[7PxjE:4)_zR",
+        "LOGGED_IN_KEY":    "!AAienFSridCUzF(v}m#}_;+t%Rclg;mOPKwe;w7dN0M{d,]?8V+TRW_UG)tSswa",
+        "LOGGED_IN_SALT":   "C=(4(8WPMeRu_h?g7!ddI*P:+SYU=3C%g)92oV}-y5tE0r?DHWl!fjPOp=bjx2YJ",
+        "NONCE_KEY":        "Z[e37@=y)m.CHa:OSldh#RT@nIZxKYGwu!/hd:vK#^{_Ec7e{KNb(G.8ch/MkH(d",
+        "NONCE_SALT":       ";v7Wv/BV)Pz{W,FaAKC0buH*5U4:g]qn~;b94x]f8=lm6!yyYSbW5*2y*kRXXEF5",
+        "SECURE_AUTH_KEY":  "pc}_Pv52,m=j9l#llSkLVQib.Zm!;9FRzg:{(G]tM8}[}]pPDwB4k{xV+!e)9lmR",
+        "SECURE_AUTH_SALT": "#n]+o^w/%-~MVzf{AUuxUAwF[n03r{kr^r1V?wqQ?Vjt}!0HSkCB-):u-ra1%tB="
+    }
   }
 }
 ```
 
-Note: WordPress expects the MySql database to be running, with the database `dbname` already created. Otherwise you'll get an error.
+To generate your unique set of `SALT`, feel free to use Daniel Llewellyn's tool on https://wpdotnet-salts.azurewebsites.net/.
+
+Note: WordPress expects the MySql database to be running, with the database `dbname` already created. Otherwise you'll get an error. Any of the configuration values can be omitted to use the default value.
 
 ## Running this repo from the sources:
 
