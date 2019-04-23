@@ -2,6 +2,9 @@
 
 **All of WordPress as a .NET Standard assembly, without PHP.**
 
+Chat with the community on Gitter if you need help:  
+  <a href="https://gitter.im/iolevel/peachpie"><img src="https://badges.gitter.im/iolevel/peachpie.svg"></a>
+
 ## How to add WordPress into your ASP.NET Core app
 
 Use WordPress as [ASP.NET Core Middleware](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2).
