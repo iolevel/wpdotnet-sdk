@@ -194,10 +194,10 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
 
     sealed class PluginsOverride : IWpPlugin
     {
-        static string NuGetFeed => "http://wordpress.peachpied.com/v3/index.json";
+        static string NuGetFeed => "https://peachpie-feed.azurewebsites.net/v3/index.json";
         readonly PackagesHelper _packages = new PackagesHelper();
-        static string[] WpPluginPackageType => new[] { "WpPlugin" };
-        static string[] WpThemePackageType => new[] { "WpTheme" };
+        static string[] WpPluginPackageType => new[] { "WpPlugin,1.0.0.4" };
+        static string[] WpThemePackageType => new[] { "WpTheme,1.0.0.4" };
 
         SourceRepository SourceRepository
         {
@@ -269,7 +269,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                 }
             }
 
-            var searchFilter = new SearchFilter(includePrerelease: browse == "beta")
+            var searchFilter = new SearchFilter(includePrerelease: browse == "beta" || true/*always beta*/)
             {
                 PackageTypes = packageTypes,
             };
@@ -277,8 +277,6 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             //var results = PackageSearchResource.SearchAsync(
             //    "", new SearchFilter(true), 
             //    skip: page * per_page, take: per_page, log: null, cancellationToken: CancellationToken.None).Result.ToList();
-
-            // TODO: list versions that are compatible with current wpdotnet ?
 
             var raw = RawSearchResourceV3.SearchPage(searchTerm, searchFilter, page * per_page, per_page, log, CancellationToken.None).Result;
             var items = Enumerable.Empty<RawPackageSearchMetadata>();
