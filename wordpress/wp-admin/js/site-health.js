@@ -15,6 +15,7 @@ jQuery( document ).ready( function( $ ) {
 	var data;
 	var clipboard = new ClipboardJS( '.site-health-copy-buttons .copy-button' );
 	var isDebugTab = $( '.health-check-body.health-check-debug-tab' ).length;
+	var pathsSizesSection = $( '#health-check-accordion-block-wp-paths-sizes' );
 
 	// Debug information copy section.
 	clipboard.on( 'success', function( e ) {
@@ -56,11 +57,12 @@ jQuery( document ).ready( function( $ ) {
 	function AppendIssue( issue ) {
 		var template = wp.template( 'health-check-issue' ),
 			issueWrapper = $( '#health-check-issues-' + issue.status ),
-			heading;
+			heading,
+			count;
 
 		SiteHealth.site_status.issues[ issue.status ]++;
 
-		var count = SiteHealth.site_status.issues[ issue.status ];
+		count = SiteHealth.site_status.issues[ issue.status ];
 
 		if ( 'critical' === issue.status ) {
 			heading = sprintf( _n( '%s Critical issue', '%s Critical issues', count ), '<span class="issue-count">' + count + '</span>' );
@@ -71,7 +73,7 @@ jQuery( document ).ready( function( $ ) {
 		}
 
 		if ( heading ) {
-			$( '> h3', issueWrapper ).html( heading );
+			$( '.site-health-issue-count-title', issueWrapper ).html( heading );
 		}
 
 		$( '.issues', '#health-check-issues-' + issue.status ).append( template( issue ) );
@@ -145,9 +147,11 @@ jQuery( document ).ready( function( $ ) {
 				}
 			);
 
-			// translators: %s: The percentage score for the tests.
-			var text = __( 'All site health tests have finished running. Your site scored %s, and the results are now available on the page.' );
-			wp.a11y.speak( sprintf( text, val + '%' ) );
+			wp.a11y.speak( sprintf(
+				// translators: %s: The percentage score for the tests.
+				__( 'All site health tests have finished running. Your site scored %s, and the results are now available on the page.' ),
+				val + '%'
+			) );
 		}
 	}
 
@@ -273,6 +277,8 @@ jQuery( document ).ready( function( $ ) {
 				// Cancel the announcement.
 				window.clearTimeout( timeout );
 			}
+
+			$( document ).trigger( 'site-health-info-dirsizes-done' );
 		} );
 	}
 
@@ -284,13 +290,13 @@ jQuery( document ).ready( function( $ ) {
 			var text = value.debug || value.size;
 
 			if ( typeof text !== 'undefined' ) {
-				clipdoardText = clipdoardText.replace( name + ': not calculated', name + ': ' + text );
+				clipdoardText = clipdoardText.replace( name + ': loading...', name + ': ' + text );
 			}
 		} );
 
 		copyButton.attr( 'data-clipboard-text', clipdoardText );
 
-		$( '#health-check-accordion-block-wp-paths-sizes' ).find( 'td[class]' ).each( function( i, element ) {
+		pathsSizesSection.find( 'td[class]' ).each( function( i, element ) {
 			var td = $( element );
 			var name = td.attr( 'class' );
 
@@ -301,6 +307,10 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	if ( isDebugTab ) {
-		getDirectorySizes();
+		if ( pathsSizesSection.length ) {
+			getDirectorySizes();
+		} else {
+			RecalculateProgression();
+		}
 	}
 } );

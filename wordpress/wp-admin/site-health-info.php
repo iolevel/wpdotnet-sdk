@@ -47,11 +47,17 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 	<nav class="health-check-tabs-wrapper hide-if-no-js" aria-label="<?php esc_attr_e( 'Secondary menu' ); ?>">
 		<a href="<?php echo esc_url( admin_url( 'site-health.php' ) ); ?>" class="health-check-tab">
-			<?php _e( 'Status' ); ?>
+			<?php
+			/* translators: tab heading for Site Health Status page */
+			_ex( 'Status', 'Site Health' );
+			?>
 		</a>
 
 		<a href="<?php echo esc_url( admin_url( 'site-health.php?tab=debug' ) ); ?>" class="health-check-tab active" aria-current="true">
-			<?php _e( 'Info' ); ?>
+			<?php
+			/* translators: tab heading for Site Health Info page */
+			_ex( 'Info', 'Site Health' );
+			?>
 		</a>
 	</nav>
 </div>
@@ -119,7 +125,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
 					if ( 'wp-paths-sizes' === $section ) {
 						?>
-						<span class="health-check-wp-paths-sizes spinner" title="<?php esc_attr_e( 'Calculating directory sizes. This may take a while&hellip;' ); ?>"></span>
+						<span class="health-check-wp-paths-sizes spinner"></span>
 						<?php
 					}
 
@@ -131,16 +137,8 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 			<div id="health-check-accordion-block-<?php echo esc_attr( $section ); ?>" class="health-check-accordion-panel" hidden="hidden">
 				<?php
 
-				$kses_settings = array(
-					'a'      => array(
-						'href' => true,
-					),
-					'strong' => true,
-					'em'     => true,
-				);
-
 				if ( isset( $details['description'] ) && ! empty( $details['description'] ) ) {
-					printf( '<p>%s</p>', wp_kses( $details['description'], $kses_settings ) );
+					printf( '<p>%s</p>', $details['description'] );
 				}
 
 				?>
