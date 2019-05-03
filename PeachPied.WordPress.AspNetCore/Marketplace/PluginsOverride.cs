@@ -315,10 +315,10 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
 
                 case "plugin_information":
 
-                    var p = RegistrationResourceV3.GetPackageMetadata(PluginResult.SlugToId(arr["slug"].ToString()), true, true, log, CancellationToken.None)
+                    var versions = RegistrationResourceV3.GetPackageMetadata(PluginResult.SlugToId(arr["slug"].ToString()), true, true, log, CancellationToken.None)
                         .Result
-                        .Select(PackageSearchMetadataFromJObject)
-                        .FirstOrDefault();
+                        .Select(PackageSearchMetadataFromJObject);
+                    var p = versions.LastOrDefault();
 
                     //var p = PackageMetadataResource.GetMetadataAsync(new PackageIdentity(arr["slug"].ToString(), new NuGet.Versioning.NuGetVersion("")), log, CancellationToken.None).Result;
                     if (p != null)
@@ -407,7 +407,8 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
 
         PhpValue InstallSourceSelection(string source)
         {
-            if (_packages.InstallPackage(source, out var nuspec))
+            var package = _packages.InstallPackage(source, out var nuspec);
+            if (package != null)
             {
                 // TODO: check the plugin has dependency on the current wpdotnet+runtime (is compatible)
 
@@ -429,6 +430,16 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             return source; // PhpValue.FromClass( new WP_Error(...) );
         }
 
+        PhpValue PostInstall(bool response, PhpArray hook_extra, PhpArray result)
+        {
+            if (hook_extra != null && result != null && hook_extra["type"] == "plugin" && hook_extra["action"] == "install")
+            {
+                _packages.LoadPackage(result["destination_name"].AsString());
+            }
+
+            return result;
+        }
+
         void DeletePlugin(string plugin_file)
         {
             _packages.UninstallPackage(PackagesHelper.PluginFileToPluginId(plugin_file));
@@ -436,7 +447,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
 
         void SwitchTheme(string new_name, WP_Theme new_theme, WP_Theme old_theme = null)
         {
-            Debug.WriteLine($"Switching theme from {old_theme.get_stylesheet()} to {new_theme.get_stylesheet()} ...");
+            Trace.WriteLine($"Switching theme from {old_theme.get_stylesheet()} to {new_theme.get_stylesheet()} ...");
 
             _packages.DeactivatePackage(old_theme.get_stylesheet().ToString());
             _packages.ActivatePackage(new_theme.get_stylesheet().ToString());
@@ -452,6 +463,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                 app.AddFilter("themes_api", new Func<PhpValue, string, object, PhpValue>(ThemesApi), accepted_args: 3);
                 app.AddFilter("delete_plugin", new Action<string>(DeletePlugin));
                 app.AddFilter("upgrader_source_selection", new Func<string, PhpValue>(InstallSourceSelection), priority: 0);
+                app.AddFilter("upgrader_post_install", new Func<bool, PhpArray, PhpArray, PhpValue>(PostInstall), priority: 0, accepted_args: 3);
                 app.AddFilter("activate_plugin", new Action<string>(plugin_file => _packages.ActivatePackage(PackagesHelper.PluginFileToPluginId(plugin_file))));
                 app.AddFilter("deactivate_plugin", new Action<string>(plugin_file => _packages.DeactivatePackage(PackagesHelper.PluginFileToPluginId(plugin_file))));
                 app.AddFilter("switch_theme", new Action<string, WP_Theme, WP_Theme>(SwitchTheme), accepted_args: 3);

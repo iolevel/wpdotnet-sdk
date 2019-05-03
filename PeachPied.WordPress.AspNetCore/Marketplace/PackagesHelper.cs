@@ -104,7 +104,14 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             }
         }
 
-        bool LoadPackage(Marketplace.Scheme.InstalledPackage package)
+        internal bool LoadPackage(string packageId)
+        {
+            var package = GetPackagesJson().installed.FirstOrDefault(p => p.pluginId == packageId);
+
+            return LoadPackage(package);
+        }
+
+        internal bool LoadPackage(Marketplace.Scheme.InstalledPackage package)
         {
             bool loaded = false;
 
@@ -169,7 +176,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
         /// <param name="nugetContentPath">Content of the unzipped nuget.</param>
         /// <param name="nuspecreader">Outputs nuspec file.</param>
         /// <returns>Whether the installation was successful.</returns>
-        public bool InstallPackage(string nugetContentPath, out INuspecCoreReader nuspecreader)
+        public Marketplace.Scheme.InstalledPackage InstallPackage(string nugetContentPath, out INuspecCoreReader nuspecreader)
         {
             var nuspecs = Directory.GetFiles(nugetContentPath, "*.nuspec");
             if (nuspecs.Length == 1)
@@ -195,25 +202,28 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
 
                 // TODO: try to delete old versions of the package
 
+                //
+                var package = new Marketplace.Scheme.InstalledPackage
+                {
+                    pluginId = nuspec.GetId(),
+                    version = nuspec.GetVersion().ToNormalizedString(),
+                    active = false
+                };
+
                 // add packageId to packages.json
                 UpdatePackagesJson(json =>
                 {
-                    json.Add(new Marketplace.Scheme.InstalledPackage
-                    {
-                        pluginId = nuspec.GetId(),
-                        version = nuspec.GetVersion().ToNormalizedString(),
-                        active = false
-                    });
+                    json.Add(package);
                 });
 
                 //
                 nuspecreader = nuspec;
-                return true;
+                return package;
             }
             else
             {
                 nuspecreader = null;
-                return false;
+                return null;
             }
         }
 
