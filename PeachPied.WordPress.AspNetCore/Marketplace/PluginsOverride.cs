@@ -410,18 +410,16 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             var package = _packages.InstallPackage(source, out var nuspec);
             if (package != null)
             {
-                // TODO: check the plugin has dependency on the current wpdotnet+runtime (is compatible)
-
                 // get content of the plugin to be copied to wp-content/[plugins|themes]/
                 var contentsource = Path.Combine(source, "contentFiles/any/netcoreapp2.0/wordpress/wp-content");
                 Debug.Assert(Directory.Exists(contentsource));
 
                 foreach (var type in new[] { "plugins", "themes" })
                 {
-                    var fullcontentsource = Path.Combine(contentsource, type, nuspec.GetId()) + "/";    // ends with / because wp expects so
+                    var fullcontentsource = Path.Combine(contentsource, type, nuspec.GetId());
                     if (Directory.Exists(fullcontentsource))
                     {
-                        return fullcontentsource;
+                        return fullcontentsource + "/";    // ends with / because wp expects so
                     }
                 }
             }
