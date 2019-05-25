@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Pchp.Core;
@@ -161,15 +162,18 @@ namespace PeachPied.WordPress.AspNetCore
 
             config.LoadFromEnvironment(app.ApplicationServices);
 
-            // response caching:
-            if (config.EnableResponseCaching)
-            {
-                var cachepolicy = new WpResponseCachingPolicyProvider();
-                var cachekey = new WpResponseCachingKeyProvider();
-                plugins.Add(cachepolicy);
+            // // response caching:
+            // if (config.EnableResponseCaching)
+            // {
+            //     // var cachepolicy = new WpResponseCachingPolicyProvider();
+            //     // var cachekey = app.ApplicationServices.GetService(typeof(WpResponseCachingKeyProvider));
+                
+            //     var cachepolicy = new WpResponseCachePolicy();
+            //     plugins.Add(cachepolicy);
 
-                app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
-            }
+            //     // app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
+            //     app.UseMiddleware<WpResponseCacheMiddleware>(new MemoryCache(new MemoryCacheOptions{}), cachepolicy);
+            // }
 
             // update globals
             WpStandard.DB_HOST = config.DbHost;
