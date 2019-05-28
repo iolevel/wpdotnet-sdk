@@ -150,6 +150,9 @@ namespace PeachPied.WordPress.AspNetCore
             var root = System.IO.Path.GetFullPath(path);
             var fprovider = new PhysicalFileProvider(root);
 
+            // log exceptions:
+            app.UseDiagnostic();
+
             // plugins & configuration
             plugins = new WpPluginContainer(plugins);
 
@@ -162,18 +165,18 @@ namespace PeachPied.WordPress.AspNetCore
 
             config.LoadFromEnvironment(app.ApplicationServices);
 
-            // // response caching:
-            // if (config.EnableResponseCaching)
-            // {
-            //     // var cachepolicy = new WpResponseCachingPolicyProvider();
-            //     // var cachekey = app.ApplicationServices.GetService(typeof(WpResponseCachingKeyProvider));
+            // response caching:
+            if (config.EnableResponseCaching)
+            {
+                // var cachepolicy = new WpResponseCachingPolicyProvider();
+                // var cachekey = app.ApplicationServices.GetService(typeof(WpResponseCachingKeyProvider));
                 
-            //     var cachepolicy = new WpResponseCachePolicy();
-            //     plugins.Add(cachepolicy);
+                var cachepolicy = new WpResponseCachePolicy();
+                plugins.Add(cachepolicy);
 
-            //     // app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
-            //     app.UseMiddleware<WpResponseCacheMiddleware>(new MemoryCache(new MemoryCacheOptions{}), cachepolicy);
-            // }
+                // app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
+                app.UseMiddleware<WpResponseCacheMiddleware>(new MemoryCache(new MemoryCacheOptions{}), cachepolicy);
+            }
 
             // update globals
             WpStandard.DB_HOST = config.DbHost;
@@ -189,10 +192,7 @@ namespace PeachPied.WordPress.AspNetCore
 
             // url rewriting:
             app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider)));
-
-            // log exceptions:
-            app.UseDiagnostic();
-
+            
             // handling php files:
             app.UsePhp(new PhpRequestOptions()
             {
