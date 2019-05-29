@@ -113,8 +113,6 @@ namespace PeachPied.WordPress.AspNetCore.Internal
                 }
             }
 
-            context.Response.ContentLength = page.Content.Length;
-
             await context.Response.Body.WriteAsync(page.Content, 0, page.Content.Length);
         }
 
