@@ -88,18 +88,14 @@ namespace PeachPied.WordPress.AspNetCore.Internal
 
                 if (buffer.Length == 0) return null;
 
-                var bytes = buffer.ToArray(); // you could gzip here
+                // TODO: gzip response
 
+                var bytes = buffer.ToArray();
+                var cached = IsResponseCacheable(context) ? new CachedPage(context, bytes) : null;
+
+                //
                 await responseStream.WriteAsync(bytes, 0, bytes.Length);
-
-                if (IsResponseCacheable(context))
-                {
-                    return new CachedPage(context, bytes);
-                }
-                else
-                {
-                    return null;
-                }
+                return cached;
             }
         }
 
@@ -107,10 +103,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
         {
             foreach (var header in page.Headers)
             {
-                if (header.Key != HeaderNames.TransferEncoding)
-                {
-                    context.Response.Headers.Add(header);
-                }
+                context.Response.Headers.Add(header);
             }
 
             await context.Response.Body.WriteAsync(page.Content, 0, page.Content.Length);
