@@ -474,6 +474,13 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                     tabs["recommended"] = "Premium";
                     return tabs;
                 }));
+                app.AddFilter("user_has_cap", new Func<PhpArray, PhpArray, PhpArray, PhpArray>((allcaps, cap, args) =>
+                {
+                    // remove 'update_core'
+                    allcaps["update_core"] = false;
+                    //
+                    return allcaps;
+                }), accepted_args: 3);
                 // defined in PeachPied.WordPress.Sdk: // app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
             }));
         }
