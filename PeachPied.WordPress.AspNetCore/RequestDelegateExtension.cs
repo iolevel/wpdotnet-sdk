@@ -14,10 +14,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Pchp.Core;
 using Peachpie.AspNetCore.Web;
+using PeachPied.WordPress.AspNetCore;
 using PeachPied.WordPress.AspNetCore.Internal;
 using PeachPied.WordPress.Sdk;
 
-namespace PeachPied.WordPress.AspNetCore
+namespace Microsoft.AspNetCore.Builder
 {
     /// <summary>
     /// <see cref="IApplicationBuilder"/> extension for enabling WordPress.
