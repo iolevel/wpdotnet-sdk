@@ -61,25 +61,6 @@ namespace PeachPied.WordPress.AspNetCore
             context.Result = RuleResult.SkipRemainingRules;
         }
 
-        /// <summary>Resolves address of `wp-cron.php` script to be fired on background.</summary>
-        static bool TryGetWpCronUri(IServerAddressesFeature addresses, out Uri uri)
-        {
-            // http://localhost:5004/wp-cron.php?doing_wp_cron
-
-            foreach (var addr in addresses.Addresses)
-            {
-                if (Uri.TryCreate(addr.Replace("*", "localhost"), UriKind.Absolute, out var addrUri))
-                {
-                    uri = new Uri(addrUri, "wp-cron.php?doing_wp_cron");
-                    return true;
-                }
-            }
-
-            //
-            uri = null;
-            return false;
-        }
-
         /// <summary>
         /// Defines WordPress configuration constants and initializes runtime before proceeding to <c>index.php</c>.
         /// </summary>
@@ -108,9 +89,6 @@ namespace PeachPied.WordPress.AspNetCore
                     ctx.DefineConstant(pair.Key, pair.Value);
                 }
             }
-
-            // disable wp_cron() during the request, we have our own scheduler to fire the job
-            ctx.DefineConstant("DISABLE_WP_CRON", PhpValue.True);   // define('DISABLE_WP_CRON', true);
 
             // $peachpie-wp-loader : WpLoader
             ctx.Globals["peachpie_wp_loader"] = PhpValue.FromClass(loader);
@@ -194,10 +172,12 @@ namespace PeachPied.WordPress.AspNetCore
             app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider)));
             
             // handling php files:
+            var startup = new Action<Context>(ctx => Apply(ctx, config, wploader));
+
             app.UsePhp(new PhpRequestOptions()
             {
                 ScriptAssembliesName = WordPressAssemblyName.ArrayConcat(config.LegacyPluginAssemblies),
-                BeforeRequest = ctx => Apply(ctx, config, wploader),
+                BeforeRequest = startup,
                 RootPath = root,
             });
 
@@ -205,10 +185,7 @@ namespace PeachPied.WordPress.AspNetCore
             app.UseStaticFiles(new StaticFileOptions() { FileProvider = fprovider });
 
             // fire wp-cron.php asynchronously
-            if (TryGetWpCronUri(app.ServerFeatures.Get<IServerAddressesFeature>(), out var wpcronUri))
-            {
-                WpCronScheduler.StartScheduler(HttpMethods.Post, wpcronUri, TimeSpan.FromSeconds(60));
-            }
+            WpCronScheduler.StartScheduler(startup, TimeSpan.FromSeconds(60));
 
             //
             return app;

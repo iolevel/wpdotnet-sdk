@@ -6,36 +6,36 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Pchp.Core;
 
 namespace PeachPied.WordPress.AspNetCore.Internal
 {
-    // simple background scheduler that fires requests in specified interval.
+    // simple background scheduler that invokes wp-cron.php in specified interval.
     sealed class WpCronScheduler
     {
-        TimeSpan Interval { get; set; }
+        public TimeSpan Interval { get; private set; }
 
-        // TODO: if there are lots of requests, postpone execution of the task
+        public Action<Context> Startup { get; private set; }
+
+        static string ScriptPath = "wp-cron.php";
 
         readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
-        readonly string _method;
-        readonly Uri _uri;
-
-        public WpCronScheduler(string method, Uri uri, TimeSpan interval)
+        public WpCronScheduler(Action<Context> startup, TimeSpan interval)
         {
-            _method = method ?? HttpMethods.Get;
-            _uri = uri ?? throw new ArgumentNullException(nameof(uri));
-
             this.Interval = interval;
+            this.Startup = startup;
         }
 
         void ExecuteAsync()
         {
-            var request = HttpWebRequest.CreateHttp(_uri);
-            request.Method = _method;
             try
             {
-                request.GetResponseAsync();
+                using (var ctx = Context.CreateEmpty())
+                {
+                    Startup(ctx);                   // sets the settings constants
+                    ctx.Include(null, ScriptPath);  // include 'wp-cron.php'
+                }
             }
             catch
             {
@@ -48,9 +48,9 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             _cancel.Cancel();
         }
 
-        public static void StartScheduler(string method, Uri uri, TimeSpan interval)
+        public static void StartScheduler(Action<Context> startup, TimeSpan interval)
         {
-            var scheduler = new WpCronScheduler(method, uri, interval);
+            var scheduler = new WpCronScheduler(startup, interval);
             scheduler.Start();
         }
 

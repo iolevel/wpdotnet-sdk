@@ -44,6 +44,11 @@ namespace PeachPied.WordPress.Sdk
         /// </summary>
         public const string FS_METHOD = "direct";
 
+        /// <summary>
+        /// Disables automatic cron, we schedule it asynchronously.
+        /// </summary>
+        public const bool DISABLE_WP_CRON = true;
+
         // TODO: ABSPATH, WPINC, ... // frequently used constants that can be resolved statically
     }
 }
