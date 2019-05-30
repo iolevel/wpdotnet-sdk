@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -88,15 +89,73 @@ namespace PeachPied.WordPress.AspNetCore.Internal
 
                 if (buffer.Length == 0) return null;
 
-                // TODO: gzip response
+                byte[] bytes;
 
-                var bytes = buffer.ToArray();
+                // gzip response
+                if (ShouldCompressResponse(context))
+                {
+                    context.Response.Headers.Append(HeaderNames.ContentEncoding, "gzip");
+                    context.Response.Headers.Remove(HeaderNames.ContentMD5); // Reset the MD5 because the content changed.
+                    context.Response.Headers.Remove(HeaderNames.ContentLength);
+
+                    using (var gzipStream = new MemoryStream((int)(buffer.Length / 2)))
+                    {
+                        using (var stream = new GZipStream(gzipStream, CompressionLevel.Optimal, leaveOpen: true))
+                        {
+                            buffer.Position = 0;
+                            await buffer.CopyToAsync(stream);
+                        }
+
+                        bytes = gzipStream.ToArray();
+                    }
+                }
+                else
+                {
+                    bytes = buffer.ToArray();
+                }
+
                 var cached = IsResponseCacheable(context) ? new CachedPage(context, bytes) : null;
 
                 //
                 await responseStream.WriteAsync(bytes, 0, bytes.Length);
                 return cached;
             }
+        }
+
+        static bool ShouldCompressResponse(HttpContext context)
+        {
+            if (context.Response.Headers.ContainsKey(HeaderNames.ContentRange))
+            {
+                return false;
+            }
+
+            if (context.Response.Headers.ContainsKey(HeaderNames.ContentEncoding))
+            {
+                return false;
+            }
+
+            var mimeType = context.Response.ContentType;
+
+            if (string.IsNullOrEmpty(mimeType))
+            {
+                return false;
+            }
+
+            var separator = mimeType.IndexOf(';');
+            if (separator >= 0)
+            {
+                // Remove the content-type optional parameters
+                mimeType = mimeType.Substring(0, separator).Trim();
+            }
+
+            var shouldCompress = mimeType.StartsWith("text/");
+
+            if (shouldCompress)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         async Task WriteResponse(HttpContext context, CachedPage page)
