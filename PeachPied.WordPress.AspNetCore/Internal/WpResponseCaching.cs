@@ -303,7 +303,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
                     if (page != null) // response is cacheable
                     {
                         _logger.LogInformation("Response cached.");
-                        _cache.Set(key, page);
+                        _cache.Set(key, page, TimeSpan.FromMinutes(60.0));
                         // var serverCacheDuration = GetCacheDuration(context, Constants.ServerDuration);
 
                         // if (serverCacheDuration.HasValue)

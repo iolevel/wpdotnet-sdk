@@ -1,0 +1,7 @@
+{
+    "php.problems.exclude": {
+        "/bin": true,
+        "/obj": true,
+        "/app": true,
+    },
+}
