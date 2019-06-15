@@ -336,8 +336,11 @@ namespace PeachPied.WordPress.AspNetCore.Internal
                 LastPostUpdate = DateTime.UtcNow;
             };
 
-            app.AddFilter("save_post", updated);
-            app.AddFilter("wp_insert_comment", updated);
+            app.AddFilter("save_post", updated); // post updated
+            app.AddFilter("wp_insert_comment", updated);    // comment added
+            app.AddFilter("activate_plugin", updated); // plugin activated
+            app.AddFilter("deactivate_plugin", updated); // plugin deactivated
+            app.AddFilter("switch_theme", updated); // theme changed
 
             // TODO: edit_comment
             // TODO : trashed_comment(comment id, comment)
