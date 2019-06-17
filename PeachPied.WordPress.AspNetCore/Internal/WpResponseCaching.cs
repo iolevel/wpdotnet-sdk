@@ -181,7 +181,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
         static bool CookieDisallowsCaching(KeyValuePair<string, string> cookie)
         {
             return
-                cookie.Key.StartsWith("wordpress_logged_in", StringComparison.Ordinal) ||   // user is logged in
+                cookie.Key.StartsWith("wordpress_logged_in", StringComparison.Ordinal) ||   // user is logged in // TODO: sometimes it is an incorrect login
                 cookie.Key.StartsWith("comment_author_", StringComparison.Ordinal);         // user commented something and his comment might be visible only to him
         }
 
@@ -343,7 +343,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             app.AddFilter("switch_theme", updated); // theme changed
 
             // TODO: edit_comment
-            // TODO : trashed_comment(comment id, comment)
+            // TODO: trashed_comment(comment id, comment)
             // TODO: spammed_comment
         }
     }
