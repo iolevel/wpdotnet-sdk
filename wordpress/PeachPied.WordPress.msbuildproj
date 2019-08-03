@@ -7,7 +7,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <VersionPrefix>$(WordPressVersion)</VersionPrefix>
     <!--PackageVersion>$(WordPressVersion)</PackageVersion-->
-    <NoWarn>PHP0125,PHP5011</NoWarn>
+    <NoWarn>PHP0125,PHP5011,PHP6002</NoWarn>
     <Copyright>WordPress</Copyright>
     <Description>WordPress project transformed to managed .NET Standard library.</Description>
   </PropertyGroup>
