@@ -913,6 +913,7 @@ class Services_JSON
 
 }
 
+// WPDOTNET // CHANGED: commented-out usage of PEAR_Error. Builds fail without this fix.
 // if (class_exists('PEAR_Error')) {
 
 //     class Services_JSON_Error extends PEAR_Error
@@ -955,6 +956,7 @@ class Services_JSON
 		}
     }
     
+// WPDOTNET // CHANGED: commented-out as part of PEAR_Error usage fix
 // }
 
 endif;
