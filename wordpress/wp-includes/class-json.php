@@ -956,7 +956,6 @@ class Services_JSON
 		}
     }
     
-// WPDOTNET // CHANGED: commented-out as part of PEAR_Error usage fix
 // }
 
 endif;
