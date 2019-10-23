@@ -2,7 +2,7 @@
 
   <Import Project="..\build\Settings.props" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Description>Full WordPress CMS as an ASP.NET Core application.
     
     The WordPress has been compiled from PHP to .NET Standard and served as a fully managed solution.

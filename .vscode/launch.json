@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/app/bin/Debug/netcoreapp2.1/app.dll",
+            "program": "${workspaceFolder}/app/bin/Debug/netcoreapp3.0/app.dll",
             "args": [],
             "cwd": "${workspaceFolder}/app",
             "console": "internalConsole",
