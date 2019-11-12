@@ -3,6 +3,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace peachserver
 {
@@ -21,7 +22,7 @@ namespace peachserver
 
     class Startup
     {
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration configuration)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env, IConfiguration configuration)
         {
             if (env.IsDevelopment())
             {
