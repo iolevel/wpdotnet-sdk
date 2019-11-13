@@ -12,7 +12,7 @@
     <Description>WordPress project transformed to managed .NET Standard library.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="**/*.php" Exclude="wp-config-sample.php;wp-content/uploads/**;wp-content/plugins/hello.php;wp-content/plugins/akismet/**" />
+    <Compile Include="**/*.php" Exclude="wp-includes/class-json.php;wp-config-sample.php;wp-content/uploads/**;wp-content/plugins/hello.php;wp-content/plugins/akismet/**" />
     <Content Include="**" Exclude="obj/**;bin/**;wp-content/uploads/**;**/*.php;wp-content/plugins/akismet/**;*.msbuildproj" CopyToOutputDirectory="PreserveNewest">
       <PackagePath>contentFiles/any/netcoreapp2.0/wordpress/</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
