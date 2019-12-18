@@ -13,7 +13,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.php" Exclude="wp-includes/class-json.php;wp-config-sample.php;wp-content/uploads/**;wp-content/plugins/hello.php;wp-content/plugins/akismet/**" />
-    <Content Include="**" Exclude="obj/**;bin/**;wp-content/uploads/**;**/*.php;wp-content/plugins/akismet/**;*.msbuildproj" CopyToOutputDirectory="PreserveNewest">
+    <Content Include="**" Exclude="
+      obj/**;
+      bin/**;
+      wp-admin/**/*.php;
+      wp-includes/**/*.php;
+      wp-content/uploads/**;
+      wp-content/mu-plugins/*.php;
+      wp-content/plugins/*.php;
+      wp-content/plugins/akismet/**;
+      wp-content/themes/**/*.php;
+      *.msbuildproj
+      " CopyToOutputDirectory="PreserveNewest">
       <PackagePath>contentFiles/any/netcoreapp3.0/wordpress/</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
       <Link>wordpress\%(RecursiveDir)%(Filename)%(Extension)</Link>
