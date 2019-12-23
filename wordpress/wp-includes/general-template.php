@@ -2642,7 +2642,7 @@ function get_post_datetime( $post = null, $field = 'date', $source = 'local' ) {
 		return false;
 	}
 
-	$datetime = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $time, $timezone );
+	$datetime = date_create_immutable_from_format( 'Y-m-d H:i:s', $time, $timezone );
 
 	if ( false === $datetime ) {
 		return false;
