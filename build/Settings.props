@@ -1,7 +1,7 @@
 ﻿<Project>
 
-  <!-- PeachpieVersion -->
-  <Import Project="..\build\Peachpie.Version.props" Sdk="Peachpie.NET.Sdk" />
+  <!-- $(PeachpieVersion) property from the current Peachpie.NET.Sdk -->
+  <Import Project="Version.props" Sdk="Peachpie.NET.Sdk" Condition=" '$(PeachpieVersion)'=='' " />
 
   <PropertyGroup>
 
