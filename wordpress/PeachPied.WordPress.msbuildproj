@@ -31,6 +31,9 @@
       <PackageCopyToOutput>true</PackageCopyToOutput>
       <Link>wordpress\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
+    <Compile Remove="
+    **\jetpack-autoloader\src\*.php;
+    **\Composer\Installers\*.php" />
   </ItemGroup>
   <ItemGroup>
     <!--PackageReference Include="Peachpie.RequestHandler" Version="$(PeachpieVersion)" /-->
