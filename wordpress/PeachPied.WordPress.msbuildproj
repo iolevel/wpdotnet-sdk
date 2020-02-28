@@ -21,8 +21,7 @@
       wp-content/cache/**;
       wp-content/uploads/**;
       wp-content/mu-plugins/*.php;
-      wp-content/plugins/*.php;
-      wp-content/plugins/*/*/**/*.php;
+      ##wp-content/plugins/**/*.php;
       wp-content/plugins/akismet/**;
       wp-content/themes/**/*.php;
       *.msbuildproj
