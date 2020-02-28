@@ -7,7 +7,8 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/app/app.csproj"
+                "${workspaceFolder}/app/app.csproj",
+                "/p:GenerateFullPaths=true"
             ],
             "group": "build",
             "problemMatcher": "$msCompile"
