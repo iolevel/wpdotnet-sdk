@@ -196,8 +196,8 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
     {
         static string NuGetFeed => "https://peachpie-feed.azurewebsites.net/v3/index.json";
         readonly PackagesHelper _packages = new PackagesHelper();
-        static string[] WpPluginPackageType => new[] { "WpPlugin,1.0.0.11" };
-        static string[] WpThemePackageType => new[] { "WpTheme,1.0.0.11" };
+        static string[] WpPluginPackageType => new[] { "WpPlugin,1.0.0.900" };
+        static string[] WpThemePackageType => new[] { "WpTheme,1.0.0.900" };
 
         SourceRepository SourceRepository
         {
