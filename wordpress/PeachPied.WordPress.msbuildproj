@@ -12,7 +12,18 @@
     <Description>WordPress project transformed to managed .NET Standard library.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="**/*.php" Exclude="obj/**;bin/**;wp-includes/class-json.php;wp-config-sample.php;wp-content/uploads/**;wp-content/plugins/hello.php;wp-content/plugins/akismet/**" />
+    <Compile Include="**/*.php" Exclude="
+      obj/**;
+      bin/**;
+      wp-includes/class-json.php;
+      wp-config-sample.php;
+      wp-content/uploads/**;
+      wp-content/plugins/hello.php;
+      wp-content/plugins/akismet/**;
+      wp-dontent/plugins/**/tests/**;
+      **/jetpack-autoloader/src/*.php;
+      **/Composer/Installers/*.php
+      " />
     <Content Include="**" Exclude="
       obj/**;
       bin/**;
@@ -32,9 +43,6 @@
       <PackageCopyToOutput>true</PackageCopyToOutput>
       <Link>wordpress\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
-    <Compile Remove="
-    **\jetpack-autoloader\src\*.php;
-    **\Composer\Installers\*.php" />
   </ItemGroup>
   <ItemGroup>
     <!--PackageReference Include="Peachpie.RequestHandler" Version="$(PeachpieVersion)" /-->
