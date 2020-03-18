@@ -20,7 +20,7 @@
       wp-content/uploads/**;
       wp-content/plugins/hello.php;
       wp-content/plugins/akismet/**;
-      wp-dontent/plugins/**/tests/**;
+      wp-content/plugins/**/Tests/**;
       **/jetpack-autoloader/src/*.php;
       **/Composer/Installers/*.php
       " />
