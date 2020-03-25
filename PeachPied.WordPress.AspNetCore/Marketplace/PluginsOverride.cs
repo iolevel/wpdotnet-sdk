@@ -196,8 +196,13 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
     {
         static string NuGetFeed => "https://peachpie-feed.azurewebsites.net/v3/index.json";
         readonly PackagesHelper _packages = new PackagesHelper();
-        static string[] WpPluginPackageType => new[] { "WpPlugin,1.0.0.920" };
-        static string[] WpThemePackageType => new[] { "WpTheme,1.0.0.920" };
+
+        // package type version must match with the runtime!
+        // Since PeachPie runtime changes a lot until <= 1.0.0, we need the exact version
+        // so even plugins have to be compiled using the same runtime version as wpdotnet
+
+        static string[] WpPluginPackageType => new[] { "WpPlugin,1.0.0.930" };
+        static string[] WpThemePackageType => new[] { "WpTheme,1.0.0.930" };
 
         SourceRepository SourceRepository
         {
