@@ -31,7 +31,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/iolevel/wpdotnet-sdk</RepositoryUrl>
     <PackageProjectUrl>https://github.com/iolevel/wpdotnet-sdk</PackageProjectUrl>
-    <PackageOutputPath>$(MSBuildThisFileDirectory)../output</PackageOutputPath>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)output</PackageOutputPath>
     <PackageIconUrl>https://s.w.org/style/images/about/WordPress-logotype-wmark-white.png</PackageIconUrl>
     <PackageLicenseExpression>GPL-2.0-or-later</PackageLicenseExpression >
     <GeneratePackageOnBuild>$(IsPackable)</GeneratePackageOnBuild>
