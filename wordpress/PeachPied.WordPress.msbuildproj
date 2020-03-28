@@ -35,7 +35,7 @@
       wp-content/plugins/akismet/**;
       wp-content/plugins/*.php;
       wp-content/themes/**/*.php;
-      /*.php;
+      *.php;
       *.msbuildproj
       " CopyToOutputDirectory="PreserveNewest">
       <PackagePath>contentFiles/any/netcoreapp3.0/wordpress/</PackagePath>
