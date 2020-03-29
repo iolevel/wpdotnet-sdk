@@ -1,8 +1,13 @@
-﻿using System.IO;
+﻿/*
+ * Demo application with WordPress.
+ */
+
+using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace peachserver
@@ -22,6 +27,16 @@ namespace peachserver
 
     class Startup
     {
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddResponseCompression();
+
+            services.AddWordPress(options =>
+            {
+                //
+            });
+        }
+
         public void Configure(IApplicationBuilder app, IHostEnvironment env, IConfiguration configuration)
         {
             if (env.IsDevelopment())

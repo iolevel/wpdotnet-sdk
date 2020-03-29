@@ -9,9 +9,8 @@ using Newtonsoft.Json;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using Pchp.Core;
-using PeachPied.WordPress.AspNetCore.Internal;
 
-namespace Peachpied.WordPress.AspNetCore.Marketplace
+namespace Peachpied.WordPress.NuGetPlugins
 {
     sealed class PackagesHelper
     {
@@ -21,19 +20,21 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
          * !! folder with plugins changes with every update !!
          */
 
+        public static string InformationalVersion = typeof(WP).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
         static string PackagesPath
         {
             get
             {
                 var appass = Assembly.GetEntryAssembly();
-                var wpversion = DiagnosticExtensions.InformationalVersion;
+                var wpversion = InformationalVersion;
 
                 // TODO: configurable "packages"
 
                 return Path.Combine(Path.GetDirectoryName(appass.Location), "packages", wpversion);
             }
         }
-        
+
         static string PackagesJsonPath => Path.Combine(PackagesPath, "packages.json");
 
         public static string PluginFileToPluginId(string plugin_file)
@@ -48,28 +49,28 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             return slug;
         }
 
-        static Marketplace.Scheme.Packages GetPackagesJson()
+        static Scheme.Packages GetPackagesJson()
         {
             var path = PackagesJsonPath;
             var json = File.Exists(path)
-                ? JsonConvert.DeserializeObject<Marketplace.Scheme.Packages>(File.ReadAllText(PackagesJsonPath))
-                : new Marketplace.Scheme.Packages();
+                ? JsonConvert.DeserializeObject<Scheme.Packages>(File.ReadAllText(PackagesJsonPath))
+                : new Scheme.Packages();
 
             if (json.installed == null)
             {
-                json.installed = Array.Empty<Marketplace.Scheme.InstalledPackage>();
+                json.installed = Array.Empty<Scheme.InstalledPackage>();
             }
 
             return json;
         }
 
-        static void SavePackagesJson(Marketplace.Scheme.Packages json)
+        static void SavePackagesJson(Scheme.Packages json)
         {
             Directory.CreateDirectory(PackagesPath);
             File.WriteAllText(PackagesJsonPath, JsonConvert.SerializeObject(json));
         }
 
-        static Marketplace.Scheme.Packages UpdatePackagesJson(Action<Marketplace.Scheme.Packages> action)
+        static Scheme.Packages UpdatePackagesJson(Action<Scheme.Packages> action)
         {
             var json = GetPackagesJson();
             action(json);
@@ -111,7 +112,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
             return LoadPackage(package);
         }
 
-        internal bool LoadPackage(Marketplace.Scheme.InstalledPackage package)
+        internal bool LoadPackage(Scheme.InstalledPackage package)
         {
             bool loaded = false;
 
@@ -126,9 +127,9 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                         try
                         {
                             var ass = Assembly.LoadFrom(fname);
-                            foreach(var refass in ass.GetReferencedAssemblies())
+                            foreach (var refass in ass.GetReferencedAssemblies())
                             {
-                                if (refass.Name == "PeachPied.WordPress.Sdk" && refass.Version != typeof(PeachPied.WordPress.Sdk.WpApp).Assembly.GetName().Version)
+                                if (refass.Name == "PeachPied.WordPress.Standard" && refass.Version != typeof(PeachPied.WordPress.Standard.WpApp).Assembly.GetName().Version)
                                 {
                                     throw new FileLoadException($"The plugin '{package.pluginId}' is built for a different WpDotNet SDK version and won't be loaded.");
                                 }
@@ -176,13 +177,13 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
         /// <param name="nugetContentPath">Content of the unzipped nuget.</param>
         /// <param name="nuspecreader">Outputs nuspec file.</param>
         /// <returns>Whether the installation was successful.</returns>
-        public Marketplace.Scheme.InstalledPackage InstallPackage(string nugetContentPath, out INuspecCoreReader nuspecreader)
+        public Scheme.InstalledPackage InstallPackage(string nugetContentPath, out INuspecCoreReader nuspecreader)
         {
             var nuspecs = Directory.GetFiles(nugetContentPath, "*.nuspec");
             if (nuspecs.Length == 1)
             {
                 var nuspec = new NuspecCoreReader(XDocument.Load(nuspecs[0]));
-                
+
                 // TODO: restore dependencies
 
                 // copy lib to packages
@@ -203,7 +204,7 @@ namespace Peachpied.WordPress.AspNetCore.Marketplace
                 // TODO: try to delete old versions of the package
 
                 //
-                var package = new Marketplace.Scheme.InstalledPackage
+                var package = new Scheme.InstalledPackage
                 {
                     pluginId = nuspec.GetId(),
                     version = nuspec.GetVersion().ToNormalizedString(),

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PeachPied.WordPress.Sdk
+namespace PeachPied.WordPress.Standard
 {
     /// <summary>
     /// Interface representing a WordPress plugin.

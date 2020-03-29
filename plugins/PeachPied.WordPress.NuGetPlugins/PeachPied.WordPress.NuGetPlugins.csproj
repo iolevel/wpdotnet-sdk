@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
+    <PackageReference Include="Peachpie.AspNetCore.Web" Version="$(PeachpieVersion)" />
+    <PackageReference Include="Peachpie.Compiler.Diagnostics" Version="1.0.10" />
+    <ProjectReference Include="../../PeachPied.WordPress.Standard/PeachPied.WordPress.Standard.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="**" />
+  </ItemGroup>
+
+</Project>

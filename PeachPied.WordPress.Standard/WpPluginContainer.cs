@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace PeachPied.WordPress.Sdk
+namespace PeachPied.WordPress.Standard
 {
     /// <summary>
     /// Container of <see cref="IWpPlugin"/> descriptors and singleton instances provider.
@@ -19,7 +19,7 @@ namespace PeachPied.WordPress.Sdk
 
             public object GetOrCreateInstance(IServiceProvider provider)
             {
-                return Instance ?? (Instance = ActivatorUtilities.CreateInstance(provider, Type, Parameters));
+                return Instance ??= ActivatorUtilities.CreateInstance(provider, Type, Parameters);
             }
         }
 
@@ -50,7 +50,7 @@ namespace PeachPied.WordPress.Sdk
         {
             return _descriptors
                 .Select(x => x.GetOrCreateInstance(provider))
-                .Cast<IWpPlugin>();
+                .OfType<IWpPlugin>();
         }
 
         /// <summary>

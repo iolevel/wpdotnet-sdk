@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition.Hosting;
 using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
-using PeachPied.WordPress.Sdk;
+using PeachPied.WordPress.Standard;
 
 namespace PeachPied.WordPress.AspNetCore
 {
@@ -92,6 +93,17 @@ namespace PeachPied.WordPress.AspNetCore
         /// Enumeration of assembly names with compiled PHP plugins, themes or other additions.
         /// These assemblies will be loaded, treated as PHP assemblies containing script files and will be loaded into the entire application context.
         /// </summary>
-        public IEnumerable<string> LegacyPluginAssemblies { get; set; }
+        public List<string> LegacyPluginAssemblies { get; set; }
+
+        /// <summary>
+        /// Collection of .NET plugins implemented as <see cref="IWpPlugin"/>.
+        /// </summary>
+        public WpPluginContainer PluginContainer { get; } = new WpPluginContainer();
+
+        /// <summary>
+        /// MEF composition container.
+        /// Will be used to import <see cref="IWpPluginProvider"/> parts.
+        /// </summary>
+        public ContainerConfiguration CompositionContainers { get; } = new ContainerConfiguration();
     }
 }

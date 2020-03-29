@@ -7,6 +7,7 @@
     <!--VersionPrefix>$(WordPressVersion)</VersionPrefix-->
     <!--PackageVersion>$(WordPressVersion)</PackageVersion-->
     <NoWarn>PHP0125,PHP5011,PHP6002,PHP5018,PHP5026</NoWarn>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>WordPress</Copyright>
     <Description>WordPress project transformed to managed .NET Standard library.</Description>
   </PropertyGroup>
@@ -45,9 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <!--PackageReference Include="Peachpie.RequestHandler" Version="$(PeachpieVersion)" /-->
-    <ProjectReference Include="..\PeachPied.WordPress.Sdk\PeachPied.WordPress.Sdk.csproj" />
+    <ProjectReference Include="..\PeachPied.WordPress.Standard\PeachPied.WordPress.Standard.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 </Project>

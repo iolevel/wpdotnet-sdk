@@ -10,7 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
-using PeachPied.WordPress.Sdk;
+using PeachPied.WordPress.Standard;
 
 namespace PeachPied.WordPress.AspNetCore.Internal
 {

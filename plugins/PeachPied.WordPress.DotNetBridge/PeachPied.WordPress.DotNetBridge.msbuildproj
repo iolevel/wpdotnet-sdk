@@ -1,0 +1,7 @@
+<Project Sdk="Peachpie.NET.Sdk">
+
+  <PropertyGroup>
+    <PhpRelativePath>wp-content/mu-plugins/</PhpRelativePath>
+  </PropertyGroup> 
+  
+</Project>

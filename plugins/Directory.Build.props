@@ -1,0 +1,43 @@
+<Project>
+
+  <!-- standard project file for wp plugin or theme -->
+
+  <Import Project="../Directory.Build.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+  
+  <ItemGroup>
+
+    <!-- compile all .php files except files representing tests or CLI tools -->
+    <Compile Include="**/*.php" Exclude="
+      obj/**;
+      bin/**;
+      **/tests/**;
+      **/test/**;
+      **/cli/**;
+      **/composer-php52/**;
+      **/jetpack-autoloader/src/*.php;
+      **/Composer/Installers/*.php;
+      " />
+
+    <!-- include plugin files as contentFiles -->
+    <Content Include="**" Exclude="
+      obj/**;
+      bin/**;
+      *.msbuildproj;
+      " CopyToOutputDirectory="PreserveNewest">
+      <PackagePath>contentFiles/any/netcoreapp3.0/wordpress/$(PhpRelativePath)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <Link>wordpress\$(PhpRelativePath)%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--PackageReference Include="PeachPied.WordPress" Version="1.0.0-*" /-->
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../wordpress/PeachPied.WordPress.msbuildproj" Private="false" />
+  </ItemGroup>
+
+</Project>

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace PeachPied.WordPress.Sdk
+namespace PeachPied.WordPress.Standard
 {
     /// <summary>
     /// Helper class providing composition host and exported components.
@@ -15,57 +15,48 @@ namespace PeachPied.WordPress.Sdk
     [PhpHidden]
     public static class CompositionHelpers
     {
-        /// <summary>
-        /// Gets the composition host constructed from the assemblies in current executable folder.
-        /// </summary>
-        static CompositionHost CompositionHost
-        {
-            get
-            {
-                if (ReferenceEquals(_lazyhost, null))
-                {
-                    System.Threading.Interlocked.CompareExchange(ref _lazyhost, CreateCompositionHost(), null);
-                }
-
-                return _lazyhost;
-            }
-        }
-        static CompositionHost _lazyhost;
-
-        static CompositionHost CreateCompositionHost()
-        {
-            return new ContainerConfiguration()
-                .WithAssemblies(CollectCompositionAssemblies())
-                .CreateContainer();
-        }
-
         /// <summary>Enumerates plugin providers exported from assemblies in the current executable folder.</summary>
-        public static IEnumerable<IWpPluginProvider> GetProviders() => CompositionHost.GetExports<IWpPluginProvider>();
+        public static IEnumerable<IWpPluginProvider> GetProviders(CompositionHost host) => host.GetExports<IWpPluginProvider>();
 
         /// <summary>
         /// Gets enumeration of plugins to be loaded into the WordPress.
         /// </summary>
+        /// <param name="host">Instance of <see cref="CompositionHost"/> providing exported parts.</param>
         /// <param name="provider">Service provider for dependency injection.</param>
         /// <returns>Enumeration of plugin instances.</returns>
-        public static IEnumerable<IWpPlugin>/*!!*/GetPlugins(IServiceProvider provider)
-            => GetProviders().SelectMany(p => p.GetPlugins(provider));
-
-        static IEnumerable<Assembly> CollectCompositionAssemblies()
+        public static IEnumerable<IWpPlugin>/*!!*/GetPlugins(CompositionHost host, IServiceProvider provider)
         {
-            // {app} itself
-            yield return Assembly.GetEntryAssembly();
+            // import providers from composition host:
+            IEnumerable<IWpPluginProvider> providers = host != null
+                ? GetProviders(host)
+                : Enumerable.Empty<IWpPluginProvider>();
 
-            // built-in plugins (this assembly)
-            yield return typeof(Internal.PluginsProvider).Assembly;
+            // hardcode our internal plugin:
+            providers = new[] { new Internal.PluginsProvider() }.Concat(providers);
 
-            // PeachPied.WordPress.AspNetCore
-            if (TryLoadAssembly("PeachPied.WordPress.AspNetCore", out var ass))
-            {
-                yield return ass;
-            }
-
-            // TODO: config with assembly names?
+            // create plugins:
+            return providers.SelectMany(p => p.GetPlugins(provider));
         }
+
+        //static IEnumerable<Assembly> CollectCompositionAssemblies()
+        //{
+        //    // {app} itself
+        //    yield return Assembly.GetEntryAssembly();
+
+        //    // PeachPied.WordPress.AspNetCore
+        //    if (TryLoadAssembly("PeachPied.WordPress.AspNetCore", out var ass))
+        //    {
+        //        yield return ass;
+        //    }
+
+        //    // PeachPied.WordPress.AspNetCore
+        //    if (TryLoadAssembly("PeachPied.WordPress.DotNetBridge", out ass))
+        //    {
+        //        yield return ass;
+        //    }
+
+        //    // TODO: config with assembly names?
+        //}
 
         static bool TryLoadAssembly(string name, out Assembly ass)
         {

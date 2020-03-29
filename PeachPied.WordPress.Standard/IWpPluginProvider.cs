@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PeachPied.WordPress.Sdk
+namespace PeachPied.WordPress.Standard
 {
     /// <summary>
     /// Provider of <see cref="IWpPlugin"/> instances to be loaded into the WordPress.

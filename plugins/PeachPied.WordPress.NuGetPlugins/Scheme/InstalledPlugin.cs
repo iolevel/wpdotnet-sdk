@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Peachpied.WordPress.AspNetCore.Marketplace.Scheme
+namespace Peachpied.WordPress.NuGetPlugins.Scheme
 {
     [JsonObject]
     sealed class InstalledPackage

@@ -1,22 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6E1CEF7D-93BD-45D8-92AE-CDA550BAB928}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
 		NuGet.Config = NuGet.Config
 		README.MD = README.MD
-		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "app", "app\app.csproj", "{371840CB-3D6C-43EE-8E73-B74710F4CDE7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeachPied.WordPress.Sdk", "PeachPied.WordPress.Sdk\PeachPied.WordPress.Sdk.csproj", "{297E2B76-AB54-4DE5-AFAA-17BDD9D6F1DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeachPied.WordPress.Standard", "PeachPied.WordPress.Standard\PeachPied.WordPress.Standard.csproj", "{297E2B76-AB54-4DE5-AFAA-17BDD9D6F1DB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeachPied.WordPress.AspNetCore", "PeachPied.WordPress.AspNetCore\PeachPied.WordPress.AspNetCore.csproj", "{FB21DF28-85EF-4E21-9116-9C75C8AE31DD}"
 EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "PeachPied.WordPress", "wordpress\PeachPied.WordPress.msbuildproj", "{0E51D101-0992-4AA6-A134-26EA3F2E3934}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{9804AA94-2F4D-41B9-8C70-0A2337F91C0C}"
+EndProject
+Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "PeachPied.WordPress.DotNetBridge", "plugins\PeachPied.WordPress.DotNetBridge\PeachPied.WordPress.DotNetBridge.msbuildproj", "{B4D65744-3AC3-46B3-8756-E4E0F5ECEAE5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeachPied.WordPress.NuGetPlugins", "plugins\PeachPied.WordPress.NuGetPlugins\PeachPied.WordPress.NuGetPlugins.csproj", "{628789D3-AECC-4D22-9B7B-6BA36454F3AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,9 +46,21 @@ Global
 		{0E51D101-0992-4AA6-A134-26EA3F2E3934}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E51D101-0992-4AA6-A134-26EA3F2E3934}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E51D101-0992-4AA6-A134-26EA3F2E3934}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4D65744-3AC3-46B3-8756-E4E0F5ECEAE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4D65744-3AC3-46B3-8756-E4E0F5ECEAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4D65744-3AC3-46B3-8756-E4E0F5ECEAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4D65744-3AC3-46B3-8756-E4E0F5ECEAE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{628789D3-AECC-4D22-9B7B-6BA36454F3AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{628789D3-AECC-4D22-9B7B-6BA36454F3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{628789D3-AECC-4D22-9B7B-6BA36454F3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{628789D3-AECC-4D22-9B7B-6BA36454F3AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B4D65744-3AC3-46B3-8756-E4E0F5ECEAE5} = {9804AA94-2F4D-41B9-8C70-0A2337F91C0C}
+		{628789D3-AECC-4D22-9B7B-6BA36454F3AF} = {9804AA94-2F4D-41B9-8C70-0A2337F91C0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {439122F2-5021-44BB-A50B-A3627AD58C09}

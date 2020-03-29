@@ -6,7 +6,7 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 
-namespace Peachpied.WordPress.AspNetCore.Marketplace.Protocol
+namespace Peachpied.WordPress.NuGetPlugins.Protocol
 {
     class RawVersionInfo : VersionInfo
     {

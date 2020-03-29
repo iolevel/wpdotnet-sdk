@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace PeachPied.WordPress.AspNetCore.Internal
 {
@@ -10,12 +12,25 @@ namespace PeachPied.WordPress.AspNetCore.Internal
     /// </summary>
     static class WpConfigurationLoader
     {
+        static string[] DefaultPhpAssemblies => new[]
+        {
+            typeof(WP).Assembly.FullName, // wordpress assembly
+            typeof(Standard.DotNetBridge).Assembly.FullName // our mu-plugin assembly
+        };
+
         /// <summary>
         /// Crates default configuration with default values.
         /// </summary>
-        public static WordPressConfig CreateDefault()
+        public static WordPressConfig LoadDefaults(this WordPressConfig config)
         {
-            return new WordPressConfig();
+            var containers = config.CompositionContainers
+                //.WithAssembly(Assembly.GetEntryAssembly()) // {app} itself
+                //.WithAssembly(typeof(Provider).Assembly)
+                ;
+
+            (config.LegacyPluginAssemblies ??= new List<string>()).AddRange(DefaultPhpAssemblies);
+
+            return config;
         }
 
         /// <summary>
@@ -25,11 +40,10 @@ namespace PeachPied.WordPress.AspNetCore.Internal
         {
             if (config == null)
             {
-                config = CreateDefault();
+                throw new ArgumentNullException(nameof(config));
             }
 
-            var appconfig = (IConfiguration)services.GetService(typeof(IConfiguration));
-            if (appconfig != null)
+            if (services.TryGetService<IConfiguration>(out var appconfig))
             {
                 appconfig.GetSection("WordPress").Bind(config);
             }
@@ -38,6 +52,18 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             return config;
         }
 
+        /// <summary>
+        /// Loads configuration from <see cref="IConfigureOptions{WordPressConfig}"/> service.
+        /// </summary>
+        public static WordPressConfig LoadFromOptions(this WordPressConfig config, IServiceProvider services)
+        {
+            if (services.TryGetService<IConfigureOptions<WordPressConfig>>(out var configservice))
+            {
+                configservice.Configure(config);
+            }
+
+            return config;
+        }
         /// <summary>
         /// Loads settings from a well-known environment variables.
         /// This overrides values set previously.

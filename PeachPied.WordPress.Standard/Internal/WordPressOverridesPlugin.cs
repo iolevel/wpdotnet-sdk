@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace PeachPied.WordPress.Sdk.Internal
+namespace PeachPied.WordPress.Standard.Internal
 {
     [Export(typeof(IWpPluginProvider))]
     sealed class PluginsProvider : IWpPluginProvider

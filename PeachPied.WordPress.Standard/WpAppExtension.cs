@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Pchp.Core;
 
-namespace PeachPied.WordPress.Sdk
+namespace PeachPied.WordPress.Standard
 {
     /// <summary>Delegate for "the_content" filter.</summary>
     public delegate string the_content_filter(string content);

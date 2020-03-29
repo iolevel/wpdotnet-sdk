@@ -1,30 +1,39 @@
 <?php
 /**
- * @package Peachpied.WordPress
+ * @package PeachPied.WordPress.DotNetBridge
  * @version 1.0.0
  */
 /*
-Plugin Name: Peachpie API
-Plugin URI: https://wordpress.peachpied.com/
+Plugin Name: PeachPied.WordPress.DotNetBridge
+Plugin URI: https://github.com/iolevel/wpdotnet-sdk
 Description: Plugin that provides bridge between WordPress API and .NET.
-Author: Peachpie
+Author: iolevel s.r.o.
 Version: 1.0.0
 */
 
-namespace PeachPied\WordPress\Sdk;
+namespace PeachPied\WordPress\Standard;
+
+/** a public class */
+class DotNetBridge
+{
+
+}
 
 /** @var \PeachPied\WordPress\Sdk\WpLoader $peachpie_wp_loader  */
 $peachpie_wp_loader->AppStarted(new class extends WpApp
 {
+	// just an obbject-oriented shortcuts to call wordpress methods,
+	// could be done through `Context` API in C#  as well:
+
 	/** Calls `add_filter`. */
 	function AddFilter(string $tag, \System\Delegate $delegate, int $priority, int $accepted_args) : void
 	{
-		add_filter($tag, $delegate, $priority, $accepted_args);
+		\add_filter($tag, $delegate, $priority, $accepted_args);
 	}
 
 	/** Calls `add_shortcode`. */
 	function AddShortcode(string $tag, \System\Delegate $delegate) : void
 	{
-		add_shortcode($tag, $delegate);
+		\add_shortcode($tag, $delegate);
 	}
 });

@@ -1,7 +1,7 @@
 ﻿using System;
 using Pchp.Core;
 
-namespace PeachPied.WordPress.Sdk
+namespace PeachPied.WordPress.Standard
 {
     /// <summary>
     /// Represents a WordPress website.
