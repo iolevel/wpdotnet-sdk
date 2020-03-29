@@ -21,8 +21,9 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build -c Release --no-restore -p:Version=1.0.0-gh${{github.run_number}}
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: packages
-        path: output
+      
+#    - name: Upload artifacts
+#      uses: actions/upload-artifact@v1.0.0
+#      with:
+#        name: packages
+#        path: output
