@@ -6,8 +6,9 @@
   </PropertyGroup>
 
   <!-- load task processing wp plugins/themes -->
+  <!-- use netstandard2.0 for full .NET just in case -->
   <UsingTask Condition="'$(MSBuildRuntimeType)' != 'Core'"
-             AssemblyFile="$(MSBuildThisFileDirectory)net46\Peachpied.WordPress.Build.Plugin.dll"
+             AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Peachpied.WordPress.Build.Plugin.dll"
              TaskName="PluginTask"
              />
   <UsingTask Condition="'$(MSBuildRuntimeType)' == 'Core'"
