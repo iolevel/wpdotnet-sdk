@@ -11,16 +11,20 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      version: 1.0.0-gh${{github.run_number}}
+      configuration: release
+    
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1.4.0
       with:
         dotnet-version: 3.1.200
-    - name: Install dependencies
-      run: dotnet restore
+    - name: Peachpied.WordPress.Build.Plugin
+      run: dotnet build ./Peachpied.WordPress.Build.Plugin -c ${{env.configuration}} -p:Version=${{env.version}}
     - name: Build
-      run: dotnet build -c Release --no-restore -p:Version=1.0.0-gh${{github.run_number}}
+      run: dotnet build -c ${{env.configuration}} -p:Version=${{env.version}}
       
 #    - name: Upload artifacts
 #      uses: actions/upload-artifact@v1.0.0
