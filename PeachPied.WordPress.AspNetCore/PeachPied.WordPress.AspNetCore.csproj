@@ -7,7 +7,6 @@
     The WordPress has been compiled from PHP to .NET Standard and served as a fully managed solution.
     
     See wpdotnet.com for more details.</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

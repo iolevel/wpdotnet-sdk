@@ -1,0 +1,7 @@
+<Project>
+
+  <PropertyGroup>
+    <GeneratePackageOnBuild Condition="'$(IsPackable)' != 'false'">true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+</Project>
