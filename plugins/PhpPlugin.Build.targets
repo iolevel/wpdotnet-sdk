@@ -8,6 +8,7 @@
   <PropertyGroup>
     <!-- tells the Sdk to reference WordPress from source as well -->
     <WpDotNetVersion>Current</WpDotNetVersion>
+    <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/bin/$(Configuration)/netstandard2.0/Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Sdk/Sdk.props" />

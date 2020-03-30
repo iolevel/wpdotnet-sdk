@@ -13,7 +13,7 @@
     
     <!-- target directory under the /wp-content/ -->
     <WpContentTarget Condition=" '$(WpContentTarget)'=='' ">plugins</WpContentTarget>
-    
+
     <!-- compile and content exclusions -->
     <WpExclude>
       $(WpExclude);

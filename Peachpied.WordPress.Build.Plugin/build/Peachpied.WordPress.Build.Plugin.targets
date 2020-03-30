@@ -1,24 +1,74 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+
   <PropertyGroup>
     <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <WpSlug Condition=" '$(WpSlug)'=='' ">$(AssemblyName)</WpSlug>
+  </PropertyGroup>
+
   <!-- load task processing wp plugins/themes -->
   <!-- use netstandard2.0 for full .NET just in case -->
-  <UsingTask Condition="'$(MSBuildRuntimeType)' != 'Core'"
-             AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Peachpied.WordPress.Build.Plugin.dll"
-             TaskName="PluginTask"
-             />
-  <UsingTask Condition="'$(MSBuildRuntimeType)' == 'Core'"
-             AssemblyFile="$(MSBuildThisFileDirectory)netcoreapp2.1\Peachpied.WordPress.Build.Plugin.dll"
-             TaskName="PluginTask"
-             />
 
-  <!-- -->
+  <PropertyGroup Condition=" '$(BuildPluginTaskAssembly)'=='' ">
+    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)netstandard2.0\Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
+    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)netcoreapp2.1\Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
+  </PropertyGroup>
+  
+  <UsingTask AssemblyFile="$(BuildPluginTaskAssembly)" TaskName="WpPluginTask" />
+
+  <Target Name="WpPropertiesCore">
+    <WpPluginTask
+      ProjectPath="$(MSBuildProjectDirectory)"
+      WpContentTarget="$(WpContentTarget)"
+      WpSlug="$(WpSlug)"
+      >
+      <Output TaskParameter="Version" PropertyName="wpVersion" />
+      <Output TaskParameter="PackageProjectUrl" PropertyName="PackageProjectUrl" />
+      <Output TaskParameter="PackageTags" PropertyName="PackageTags" />
+      <Output TaskParameter="Authors" PropertyName="Authors" />
+      <Output TaskParameter="Title" PropertyName="Title" />
+      <Output TaskParameter="Description" PropertyName="PackageDescription" />
+      <Output TaskParameter="PackageIconUrl" PropertyName="PackageIconUrl" />
+    </WpPluginTask>
+  </Target>
+
+  <Target Name="WpPropertiesResolve"
+          Condition=" '$(WpContentTarget)'!='' "
+          DependsOnTargets="WpPropertiesCore;ComposerResolve"
+          BeforeTargets="CollectPackageReferences">
+    <PropertyGroup>
+      <_version Condition=" '$(wpVersion)' != '' ">$(wpVersion)</_version>
+
+      <!-- package id, restore values changed by composer.json -->
+      <Version Condition=" '$(VersionSuffix)'!='' ">$(_version)-$(VersionSuffix)</Version>
+      <Version Condition=" '$(VersionSuffix)'=='' ">$(_version)</Version>
+      <Copyright>$(Authors)</Copyright>
+      <PackageVersion>$(Version)</PackageVersion>
+      <PackageType>wpdotnet-$(WpContentTarget),0.9.930.0</PackageType>
+      <PackageLicenseExpression Condition=" '$(PackageLicenseExpression)'=='' ">GPL-2.0-or-later</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <!-- report properties to the hub -->
+    <Message Text="[wpdotnet] PackageId = $(PackageId)" Importance="high" />
+    <Message Text="[wpdotnet] PackageIconUrl = $(PackageIconUrl)" Importance="high" />
+    <Message Text="[wpdotnet] PackageVersion = $(PackageVersion)" Importance="high" />
+    <Message Text="[wpdotnet] PackageProjectUrl = $(PackageProjectUrl)" Importance="high" />
+    <Message Text="[wpdotnet] PackageTags = $(PackageTags)" Importance="high" />
+    <Message Text="[wpdotnet] Title = $(Title)" Importance="high" />
+    <Message Text="[wpdotnet] Authors = $(Authors)" Importance="high" />
+
+    <!-- error checks -->
+    <Error Text="Not a valid plugin. Missing 'version' header." Condition=" '$(WpContentTarget)'=='plugins' AND '$(wpVersion)'=='' " />
+    <!--Error Text="Not a valid theme. Missing a screenshot file." Condition=" '$(WpContentTarget)'=='themes' AND '$(PackageIconUrl)'=='' " /-->
+    <Error Text="Not a valid theme. Missing 'Title' metadata." Condition=" '$(WpContentTarget)'=='themes' AND '$(Title)'=='' " />
+  </Target>
+
   <PropertyGroup Condition=" '$(WpContentTarget)'!='' and '$(PhpRelativePath)'=='' ">
-    <PhpRelativePath>wp-content/$(WpContentTarget)/$(AssemblyName)/</PhpRelativePath>
+    <!-- where are the file physically placed within the wordpress installation -->
+    <PhpRelativePath>wp-content/$(WpContentTarget)/$(WpSlug)/</PhpRelativePath>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(WpContentTarget)'!='' ">
@@ -37,5 +87,5 @@
     </Content>
 
   </ItemGroup>
-  
+
 </Project>

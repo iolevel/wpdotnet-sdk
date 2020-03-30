@@ -6,7 +6,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!--PackageIcon>images\wordpress.png</PackageIcon-->
     <DevelopmentDependency>true</DevelopmentDependency>
-    <NoWarn>NU5128;CS1591</NoWarn>
+    <NoWarn>NU5128;</NoWarn>
   </PropertyGroup>
 
   <!-- generate "Sdk.Common.props" file with current Sdk version -->
