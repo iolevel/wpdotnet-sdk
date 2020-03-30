@@ -19,13 +19,14 @@ namespace PeachPied.WordPress.AspNetCore.Internal
         };
 
         /// <summary>
-        /// Crates default configuration with default values.
+        /// Adds implicit configuration values.
         /// </summary>
         public static WordPressConfig LoadDefaults(this WordPressConfig config)
         {
             var containers = config.CompositionContainers
                 //.WithAssembly(Assembly.GetEntryAssembly()) // {app} itself
                 //.WithAssembly(typeof(Provider).Assembly)
+                .WithAssembly(Assembly.Load("PeachPied.WordPress.NuGetPlugins"))
                 ;
 
             (config.LegacyPluginAssemblies ??= new List<string>()).AddRange(DefaultPhpAssemblies);
