@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>    
+    <OutputType>library</OutputType>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>    
+    <GeneratePackageOnBuild Condition=" '$(GeneratePackageOnBuild)'=='' ">true</GeneratePackageOnBuild>    
+    
+    <!-- target directory under the /wp-content/ -->
+    <WpContentTarget Condition=" '$(WpContentTarget)'=='' ">plugins</WpContentTarget>
+    
+    <!-- compile and content exclusions -->
+    <WpExclude>
+      $(WpExclude);
+      obj/**;
+      bin/**;
+      .svn/**;
+      .git/**;
+      .vs/**;
+      .vscode/**;
+      **/tests/**;
+      **/test/**;
+      **/cli/**;
+      **/composer-php52/**;
+      **/jetpack-autoloader/src/*.php;
+      **/Composer/Installers/*.php;
+    </WpExclude>
+    <WpCompileExclude>$(WpCompileExclude);</WpCompileExclude>
+    <WpContentExclude>$(WpContentExclude);</WpContentExclude>
+  </PropertyGroup>
+
+  <!-- signing -->
+  <!--PropertyGroup>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)../tools/key.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup-->
+  
+</Project>

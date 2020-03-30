@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <!-- load task processing wp plugins/themes -->
+  <UsingTask Condition="'$(MSBuildRuntimeType)' != 'Core'"
+             AssemblyFile="$(MSBuildThisFileDirectory)net46\Peachpied.WordPress.Build.Plugin.dll"
+             TaskName="PluginTask"
+             />
+  <UsingTask Condition="'$(MSBuildRuntimeType)' == 'Core'"
+             AssemblyFile="$(MSBuildThisFileDirectory)netcoreapp2.1\Peachpied.WordPress.Build.Plugin.dll"
+             TaskName="PluginTask"
+             />
+
+  <!-- -->
+  <PropertyGroup Condition=" '$(WpContentTarget)'!='' and '$(PhpRelativePath)'=='' ">
+    <PhpRelativePath>wp-content/$(WpContentTarget)/$(AssemblyName)/</PhpRelativePath>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(WpContentTarget)'!='' ">
+
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../../wordpress/PeachPied.WordPress.msbuildproj" Private="false" Condition=" '$(WpDotNetVersion)'=='Current' " />
+    <PackageReference Include="PeachPied.WordPress" Version="$(WpDotNetVersion)" Condition=" '$(WpDotNetVersion)'!='Current' " PrivateAssets="all" />
+
+    <!-- compile all .php files except files representing tests or CLI tools -->
+    <Compile Include="**/*.php" Exclude="$(WpExclude);$(WpCompileExclude);" />
+
+    <!-- include plugin files as contentFiles -->
+    <Content Include="**" Exclude="$(WpExclude);$(WpContentExclude);*.msbuildproj;" CopyToOutputDirectory="PreserveNewest">
+      <PackagePath>contentFiles/any/netcoreapp3.0/wordpress/$(PhpRelativePath)</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <Link>wordpress\$(PhpRelativePath)%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+
+  </ItemGroup>
+  
+</Project>

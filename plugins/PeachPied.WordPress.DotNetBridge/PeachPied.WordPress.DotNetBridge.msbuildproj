@@ -1,7 +1,10 @@
-<Project Sdk="Peachpie.NET.Sdk">
+﻿<!--Project Sdk="Peachpied.WordPress.Build.Plugin/1.0.0"-->
+<Project>
 
   <PropertyGroup>
-    <PhpRelativePath>wp-content/mu-plugins/</PhpRelativePath>
-  </PropertyGroup> 
+    <WpContentTarget>mu-plugins</WpContentTarget>
+  </PropertyGroup>
+  
+  <Import Project="$(MSBuildThisFileDirectory)../PhpPlugin.Build.targets" />
   
 </Project>

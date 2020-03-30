@@ -19,10 +19,15 @@ EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "PeachPied.WordPress", "wordpress\PeachPied.WordPress.msbuildproj", "{0E51D101-0992-4AA6-A134-26EA3F2E3934}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{9804AA94-2F4D-41B9-8C70-0A2337F91C0C}"
+	ProjectSection(SolutionItems) = preProject
+		plugins\PhpPlugin.Build.targets = plugins\PhpPlugin.Build.targets
+	EndProjectSection
 EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "PeachPied.WordPress.DotNetBridge", "plugins\PeachPied.WordPress.DotNetBridge\PeachPied.WordPress.DotNetBridge.msbuildproj", "{B4D65744-3AC3-46B3-8756-E4E0F5ECEAE5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeachPied.WordPress.NuGetPlugins", "plugins\PeachPied.WordPress.NuGetPlugins\PeachPied.WordPress.NuGetPlugins.csproj", "{628789D3-AECC-4D22-9B7B-6BA36454F3AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peachpied.WordPress.Build.Plugin", "Peachpied.WordPress.Build.Plugin\Peachpied.WordPress.Build.Plugin.csproj", "{0A7D5CE3-4F85-48D7-BFC2-5669ED42A54D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +59,10 @@ Global
 		{628789D3-AECC-4D22-9B7B-6BA36454F3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{628789D3-AECC-4D22-9B7B-6BA36454F3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{628789D3-AECC-4D22-9B7B-6BA36454F3AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A7D5CE3-4F85-48D7-BFC2-5669ED42A54D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A7D5CE3-4F85-48D7-BFC2-5669ED42A54D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A7D5CE3-4F85-48D7-BFC2-5669ED42A54D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A7D5CE3-4F85-48D7-BFC2-5669ED42A54D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

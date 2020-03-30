@@ -1,0 +1,21 @@
+<Project>
+
+  <!--
+    This project file is used to build a PHP plugin for WordPress using
+    Sdk="Peachpied.WordPress.Build.Plugin" from sources.
+  -->
+  
+  <PropertyGroup>
+    <!-- tells the Sdk to reference WordPress from source as well -->
+    <WpDotNetVersion>Current</WpDotNetVersion>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Sdk/Sdk.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Peachpied.WordPress.Build.Plugin.csproj" Private="true" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Sdk/Sdk.targets" />
+
+</Project>
