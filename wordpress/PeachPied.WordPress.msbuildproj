@@ -27,11 +27,13 @@
     <Content Include="**" Exclude="
       obj/**;
       bin/**;
+      .vs/**;
+      .vscode/**;
       wp-admin/**/*.php;
       wp-includes/**/*.php;
       wp-content/cache/**;
       wp-content/uploads/**;
-      wp-content/mu-plugins/*.php;
+      wp-content/mu-plugins/**/*.php;
       ##wp-content/plugins/**/*.php;
       wp-content/plugins/akismet/**;
       wp-content/plugins/*.php;
