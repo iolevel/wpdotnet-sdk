@@ -36,7 +36,7 @@
   </Target>
 
   <Target Name="WpPropertiesResolve"
-          Condition=" '$(WpContentTarget)'!='' "
+          Condition=" '$(WpContentTarget)'!='' AND Exists('$(BuildPluginTaskAssembly)') "
           DependsOnTargets="WpPropertiesCore;ComposerResolve"
           BeforeTargets="CollectPackageReferences">
     <PropertyGroup>

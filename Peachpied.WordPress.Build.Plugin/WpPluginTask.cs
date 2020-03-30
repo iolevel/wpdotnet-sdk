@@ -10,35 +10,68 @@ using System.Threading;
 
 namespace Peachpied.WordPress.Build.Plugin
 {
+    /// <summary>
+    /// Task parses wp plugin/theme metadata and sets corresponsing properties.
+    /// </summary>
     public class WpPluginTask : Task
     {
+        /// <summary>
+        /// Directory with the project, expecting to contain the plugin metadat files.
+        /// </summary>
         [Required]
         public string ProjectPath { get; set; }
 
+        /// <summary>
+        /// WP slug id. Used to resolve eventual icon URL.
+        /// </summary>
         [Required]
         public string WpSlug { get; set; }
 
+        /// <summary>
+        /// The wp-content sub-dir.
+        /// </summary>
         [Required]
         public string WpContentTarget { get; set; }
 
+        /// <summary>
+        /// Version from metadata.
+        /// </summary>
         [Output]
         public string Version { get; set; }
 
+        /// <summary>
+        /// Project URL from metadata.
+        /// </summary>
         [Output]
         public string PackageProjectUrl { get; set; }
 
+        /// <summary>
+        /// Tags from metadata.
+        /// </summary>
         [Output]
         public string PackageTags { get; set; }
 
+        /// <summary>
+        /// Authors from metadata.
+        /// </summary>
         [Output]
         public string Authors { get; set; }
 
+        /// <summary>
+        /// Title from metadata.
+        /// </summary>
         [Output]
         public string Title { get; set; }
 
+        /// <summary>
+        /// Description from metadata.
+        /// </summary>
         [Output]
         public string Description { get; set; }
 
+        /// <summary>
+        /// Optional icon URL from metadata.
+        /// </summary>
         [Output]
         public string PackageIconUrl { get; set; }
 
@@ -46,11 +79,15 @@ namespace Peachpied.WordPress.Build.Plugin
         //public List<ITaskItem> MarketplaceAssets { get; } = new List<ITaskItem>();
 
         bool IsPlugin => WpContentTarget.EndsWith("plugins", StringComparison.Ordinal); // plugins, mu-plugins
+
         bool IsTheme => WpContentTarget == "themes";
 
         /// <summary>Matches wp metadata in a .php file; Tag:Value</summary>
         static readonly Regex s_regex_meta = new Regex(@"^[ \t\/*#@]*(?<Tag>[a-zA-Z ]+):[ \t]*(?<Value>.+)$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// Collects metadata.
+        /// </summary>
         public override bool Execute()
         {
 
