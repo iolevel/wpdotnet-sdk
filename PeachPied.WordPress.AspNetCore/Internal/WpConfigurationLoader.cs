@@ -15,7 +15,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
         static string[] DefaultPhpAssemblies => new[]
         {
             typeof(WP).Assembly.FullName, // wordpress assembly
-            typeof(Standard.DotNetBridge).Assembly.FullName // our mu-plugin assembly
+            "PeachPied.WordPress.DotNetBridge" // our mu-plugin assembly
         };
 
         /// <summary>

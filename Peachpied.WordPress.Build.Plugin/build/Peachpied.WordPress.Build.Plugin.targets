@@ -16,7 +16,7 @@
     <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)netstandard2.0\Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
     <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)netcoreapp2.1\Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
   </PropertyGroup>
-  
+
   <UsingTask AssemblyFile="$(BuildPluginTaskAssembly)" TaskName="WpPluginTask" />
 
   <Target Name="WpPropertiesCore">
@@ -66,9 +66,10 @@
     <Error Text="Not a valid theme. Missing 'Title' metadata." Condition=" '$(WpContentTarget)'=='themes' AND '$(Title)'=='' " />
   </Target>
 
-  <PropertyGroup Condition=" '$(WpContentTarget)'!='' and '$(PhpRelativePath)'=='' ">
-    <!-- where are the file physically placed within the wordpress installation -->
-    <PhpRelativePath>wp-content/$(WpContentTarget)/$(WpSlug)/</PhpRelativePath>
+  <!-- where are the file physically placed within the wordpress installation -->
+  <PropertyGroup Condition=" '$(WpContentTarget)'!='' ">
+    <PhpRelativePath Condition=" '$(PhpRelativePath)'=='' and '$(WpContentTarget)'=='mu-plugins' ">wp-content/$(WpContentTarget)/</PhpRelativePath>
+    <PhpRelativePath Condition=" '$(PhpRelativePath)'=='' ">wp-content/$(WpContentTarget)/$(WpSlug)/</PhpRelativePath>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(WpContentTarget)'!='' ">

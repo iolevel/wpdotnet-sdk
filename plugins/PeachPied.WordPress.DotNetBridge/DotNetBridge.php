@@ -14,12 +14,6 @@ Version: 1.0.0
 
 namespace PeachPied\WordPress\Standard;
 
-/** a public class */
-class DotNetBridge
-{
-
-}
-
 /** @var \PeachPied\WordPress\Sdk\WpLoader $peachpie_wp_loader  */
 $peachpie_wp_loader->AppStarted(new class extends WpApp
 {
