@@ -14,7 +14,7 @@
     <!-- target directory under the /wp-content/ -->
     <WpContentTarget Condition=" '$(WpContentTarget)'=='' ">plugins</WpContentTarget>
 
-    <!-- compile and content exclusions -->
+    <!-- default compile and content exclusions -->
     <WpExclude>
       $(WpExclude);
       obj/**;
@@ -30,9 +30,16 @@
       **/jetpack-autoloader/src/*.php;
       **/Composer/Installers/*.php;
     </WpExclude>
-    <WpCompileExclude>$(WpCompileExclude);</WpCompileExclude>
-    <WpContentExclude>$(WpContentExclude);</WpContentExclude>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      default compile and content items,
+      compile all .php files except files representing tests or CLI tools
+    -->
+    <Compile Include="**/*.php" Exclude="$(WpExclude);" />
+    <Content Include="**" Exclude="$(WpExclude);*.msbuildproj;*.msbuildproj.user" />
+  </ItemGroup>
 
   <!-- signing -->
   <!--PropertyGroup>
