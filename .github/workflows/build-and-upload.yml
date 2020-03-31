@@ -13,7 +13,7 @@ jobs:
 
     env:
       version: 1.0.0-gh${{github.run_number}}
-      configuration: release
+      configuration: Release
     
     steps:
     - uses: actions/checkout@v2
