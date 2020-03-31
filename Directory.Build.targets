@@ -4,9 +4,10 @@
     <GeneratePackageOnBuild Condition="'$(IsPackable)' != 'false'">true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <!-- Pack PackageIconPath into NuGet -->
+  <!-- Pack assets into NuGet -->
   <ItemGroup>
     <None Include="$(PackageIconPath)" Pack="true" PackagePath="$(PackageIcon)" Condition=" Exists('$(PackageIconPath)') "/>
+    <None Include="$(PackageReadmePath)" Pack="true" PackagePath="$(PackageReadme)" Condition=" Exists('$(PackageReadmePath)') "/>
   </ItemGroup>
 
 </Project>

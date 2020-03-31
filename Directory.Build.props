@@ -35,7 +35,9 @@
     <PackageProjectUrl>https://github.com/iolevel/wpdotnet-sdk</PackageProjectUrl>
     <PackageOutputPath>$(MSBuildThisFileDirectory)output</PackageOutputPath>
     <PackageIconPath>$(MSBuildThisFileDirectory)wpdotnet.png</PackageIconPath>
-    <PackageIcon>images\$([System.IO.Path]::GetFileName(&quot;$(PackageIconPath)&quot;))</PackageIcon>
+    <PackageIcon>assets/$([System.IO.Path]::GetFileName(&quot;$(PackageIconPath)&quot;))</PackageIcon>
+    <PackageReadmePath>$(MSBuildProjectDirectory)/readme.md</PackageReadmePath>
+    <PackageReadme>assets/readme.md</PackageReadme>
     <PackageLicenseExpression>GPL-2.0-or-later</PackageLicenseExpression >
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
