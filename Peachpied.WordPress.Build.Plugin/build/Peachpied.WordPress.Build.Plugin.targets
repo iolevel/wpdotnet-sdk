@@ -5,6 +5,12 @@
     <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
 
+  <!-- ProjectCapability -->
+  <ItemGroup>
+    <ProjectCapability Include="WpDotNetPlugin;" />
+  </ItemGroup>
+
+  <!-- WpSlug is a WordPress slug id - the identifier for plugins and themes, same as plugin folder, must be consistent -->
   <PropertyGroup>
     <WpSlug Condition=" '$(WpSlug)'=='' ">$(AssemblyName)</WpSlug>
   </PropertyGroup>
