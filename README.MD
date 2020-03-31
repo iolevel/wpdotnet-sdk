@@ -2,6 +2,10 @@
 
 **All of WordPress as a .NET Standard assembly, without PHP.**
 
+  [![NuGet](https://img.shields.io/nuget/v/PeachPied.WordPress.AspNetCore.svg)](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/)
+  [![Downloads](https://img.shields.io/nuget/dt/PeachPied.WordPress.AspNetCore.svg)](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/)
+  ![Stars](https://img.shields.io/github/stars/iolevel/wpdotnet-sdk?color=brightgreen)
+
 Chat with the community on Gitter if you need help:  
   <a href="https://gitter.im/iolevel/peachpie"><img src="https://badges.gitter.im/iolevel/peachpie.svg"></a>
 
