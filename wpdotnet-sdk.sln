@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.targets = Directory.Build.targets
 		NuGet.Config = NuGet.Config
 		README.MD = README.MD
+		wpdotnet.png = wpdotnet.png
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "app", "app\app.csproj", "{371840CB-3D6C-43EE-8E73-B74710F4CDE7}"

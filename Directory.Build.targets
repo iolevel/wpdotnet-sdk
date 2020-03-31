@@ -4,4 +4,9 @@
     <GeneratePackageOnBuild Condition="'$(IsPackable)' != 'false'">true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <!-- Pack PackageIconPath into NuGet -->
+  <ItemGroup>
+    <None Include="$(PackageIconPath)" Pack="true" PackagePath="$(PackageIcon)" Condition=" Exists('$(PackageIconPath)') "/>
+  </ItemGroup>
+
 </Project>
