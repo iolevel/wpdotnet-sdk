@@ -12,11 +12,6 @@
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Sdk/Sdk.props" />
-
-  <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Peachpied.WordPress.Build.Plugin.csproj" Private="true" PrivateAssets="all" />
-  </ItemGroup>
-
   <Import Project="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Sdk/Sdk.targets" />
 
 </Project>
