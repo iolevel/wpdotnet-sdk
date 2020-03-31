@@ -6,7 +6,7 @@
   <PropertyGroup>
 
     <LangVersion>latest</LangVersion>
-    
+
     <!-- common version -->
     <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">1.0.0</VersionPrefix>
     <WordPressVersion>5.3.2</WordPressVersion>
@@ -37,6 +37,11 @@
     <PackageIconUrl>https://s.w.org/style/images/about/WordPress-logotype-wmark-white.png</PackageIconUrl>
     <PackageLicenseExpression>GPL-2.0-or-later</PackageLicenseExpression >
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- https://github.com/Microsoft/msbuild/issues/4303 -->
+    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
   </PropertyGroup>
 
 </Project>
