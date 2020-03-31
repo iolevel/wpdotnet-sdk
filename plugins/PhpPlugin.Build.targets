@@ -21,7 +21,7 @@
   <Target Name="CopyBuildPluginTaskAssembly" BeforeTargets="WpPropertiesCore" >
     <ItemGroup>
       <_FilesToDelete Include="$(_BuildPluginTmp)../**/*"/>
-      <_DirsToDelete Include="$([System.IO.Directory]::GetDirectories(&quot;$(_BuildPluginTmp)..&quot;))"/>
+      <_DirsToDelete Include="$([System.IO.Directory]::GetDirectories(&quot;$(_BuildPluginTmp)..&quot;))" Condition=" Exists('$(_BuildPluginTmp)..') "/>
     </ItemGroup>
     <Delete Files="@(_FilesToDelete)" ContinueOnError="true" />
     <RemoveDir Directories="@(_DirsToDelete)" ContinueOnError="true" />
