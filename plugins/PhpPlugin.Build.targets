@@ -4,13 +4,31 @@
     This project file is used to build a PHP plugin for WordPress using
     Sdk="Peachpied.WordPress.Build.Plugin" from sources.
   -->
-  
+
   <PropertyGroup>
     <!-- tells the Sdk to reference WordPress from source as well -->
     <WpDotNetVersion>Current</WpDotNetVersion>
     <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/bin/$(Configuration)/netstandard2.0/Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
   </PropertyGroup>
+  
+  <!-- copy the task dll into temp dir (TODO: AppDomain and shadow copy) -->
+  <PropertyGroup>
+    <BuildPluginTaskAssemblyOriginal>$(BuildPluginTaskAssembly)</BuildPluginTaskAssemblyOriginal>
+    <_BuildPluginTmp>$([System.IO.Path]::GetTempPath())PhpPlugin.Build/$([System.Guid]::NewGuid())/</_BuildPluginTmp>
+    <BuildPluginTaskAssembly>$(_BuildPluginTmp)Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
+  </PropertyGroup>
 
+  <Target Name="CopyBuildPluginTaskAssembly" BeforeTargets="WpPropertiesCore" >
+    <ItemGroup>
+      <_FilesToDelete Include="$(_BuildPluginTmp)../**/*"/>
+      <_DirsToDelete Include="$([System.IO.Directory]::GetDirectories(&quot;$(_BuildPluginTmp)..&quot;))"/>
+    </ItemGroup>
+    <Delete Files="@(_FilesToDelete)" ContinueOnError="true" />
+    <RemoveDir Directories="@(_DirsToDelete)" ContinueOnError="true" />
+    <Copy SourceFiles="$(BuildPluginTaskAssemblyOriginal)" DestinationFolder="$(_BuildPluginTmp)" />
+  </Target>
+
+  <!-- import Sdk Peachpied.WordPress.Build.Plugin  -->
   <Import Project="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Sdk/Sdk.props" />
   <Import Project="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Sdk/Sdk.targets" />
 
