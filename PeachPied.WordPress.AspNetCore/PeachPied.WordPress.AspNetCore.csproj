@@ -2,11 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Description>Full WordPress CMS as an ASP.NET Core application.
-    
-    The WordPress has been compiled from PHP to .NET Standard and served as a fully managed solution.
-    
-    See wpdotnet.com for more details.</Description>
+    <Description>
+      The whole of WordPress, compiled, packed and provided as an ASP.NET Core package. Does not require PHP, becomes a part of ASP.NET Core application.
+
+      Usage:
+      1. Add a package reference to "Peachpied.WordPress.AspNetCore" (Pre-Release)
+      2. Add WordPress as middleware within "Configure" method:
+
+      app.UseWordPress();
+
+      3. Optionally configure WordPress settings in "ConfigureServices" method.
+
+      See https://github.com/iolevel/wpdotnet-sdk for more details.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

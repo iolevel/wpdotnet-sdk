@@ -8,7 +8,11 @@
     <!--PackageVersion>$(WordPressVersion)</PackageVersion-->
     <NoWarn>PHP0125,PHP5011,PHP6002,PHP5018,PHP5026</NoWarn>
     <Copyright>WordPress</Copyright>
-    <Description>WordPress project transformed to managed .NET Standard library.</Description>
+    <Description>
+      Use "Peachpied.WordPress.AspNetCore" package to use the WordPress wihtin ASP.NET Core application.
+      
+      This package is a dependency and does not work standalone.
+    </Description>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.php" Exclude="
