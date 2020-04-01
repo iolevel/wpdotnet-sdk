@@ -8,6 +8,7 @@
   <PropertyGroup>    
     <OutputType>library</OutputType>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <Configuration Condition=" '$(Configuration)'=='' ">Debug</Configuration>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>    
     <GeneratePackageOnBuild Condition=" '$(GeneratePackageOnBuild)'=='' ">true</GeneratePackageOnBuild>    
     

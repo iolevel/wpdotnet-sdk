@@ -8,28 +8,39 @@
   <PropertyGroup>
     <!-- tells the Sdk to reference WordPress from source as well -->
     <WpDotNetVersion>Current</WpDotNetVersion>
-    <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/bin/$(Configuration)/netstandard2.0/Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
-  </PropertyGroup>
-  
-  <!-- copy the task dll into temp dir (TODO: AppDomain and shadow copy) -->
-  <PropertyGroup>
-    <BuildPluginTaskAssemblyOriginal>$(BuildPluginTaskAssembly)</BuildPluginTaskAssemblyOriginal>
-    <_BuildPluginTmp>$([System.IO.Path]::GetTempPath())PhpPlugin.Build/$([System.Guid]::NewGuid())/</_BuildPluginTmp>
-    <BuildPluginTaskAssembly>$(_BuildPluginTmp)Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
+    <BuildPlugin>Peachpied.WordPress.Build.Plugin</BuildPlugin>
   </PropertyGroup>
 
+  <!-- Sdk Peachpied.WordPress.Build.Plugin  -->
+  <Import Project="$(MSBuildThisFileDirectory)../$(BuildPlugin)/Sdk/Sdk.props" />
+
+  <!-- copy the task dll into temp dir (TODO: AppDomain and shadow copy) -->
+  <PropertyGroup>
+    <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)../$(BuildPlugin)/bin/$(Configuration)/netcoreapp2.1/$(BuildPlugin).dll</BuildPluginTaskAssembly>
+    <BuildPluginTaskAssemblyOriginal>$(BuildPluginTaskAssembly)</BuildPluginTaskAssemblyOriginal>
+    <_BuildPluginTmp>$([System.IO.Path]::GetTempPath())PhpPlugin.Build/$([System.Guid]::NewGuid())/</_BuildPluginTmp>
+    <BuildPluginTaskAssembly>$(_BuildPluginTmp)$(BuildPlugin).dll</BuildPluginTaskAssembly>
+  </PropertyGroup>
+
+  <!-- ensure Peachpied.WordPress.Build.Plugin us built -->
+  <Target Name="BuildPluginTaskAssembly" BeforeTargets="CopyBuildPluginTaskAssembly">
+    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Restore" Properties="TargetFramework=netcoreapp2.1" />
+    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Build" Properties="TargetFramework=netcoreapp2.1;IsPackable=false;" />
+  </Target>
+
+  <!-- try to cleanup previous tmp files and copy new build output -->
   <Target Name="CopyBuildPluginTaskAssembly" BeforeTargets="WpPropertiesCore" >
     <ItemGroup>
       <_FilesToDelete Include="$(_BuildPluginTmp)../**/*"/>
       <_DirsToDelete Include="$([System.IO.Directory]::GetDirectories(&quot;$(_BuildPluginTmp)..&quot;))" Condition=" Exists('$(_BuildPluginTmp)..') "/>
+      <_CopyItems Include="$(BuildPluginTaskAssemblyOriginal)/../*.*" />
     </ItemGroup>
     <Delete Files="@(_FilesToDelete)" ContinueOnError="true" />
     <RemoveDir Directories="@(_DirsToDelete)" ContinueOnError="true" />
-    <Copy SourceFiles="$(BuildPluginTaskAssemblyOriginal)" DestinationFolder="$(_BuildPluginTmp)" />
+    <Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(_BuildPluginTmp)" />
   </Target>
 
-  <!-- import Sdk Peachpied.WordPress.Build.Plugin  -->
-  <Import Project="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Sdk/Sdk.props" />
-  <Import Project="$(MSBuildThisFileDirectory)../Peachpied.WordPress.Build.Plugin/Sdk/Sdk.targets" />
+  <!-- Sdk Peachpied.WordPress.Build.Plugin  -->
+  <Import Project="$(MSBuildThisFileDirectory)../$(BuildPlugin)/Sdk/Sdk.targets" />
 
 </Project>

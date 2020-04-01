@@ -17,8 +17,6 @@ steps:
   inputs:
     packageType: 'sdk'
     version: '3.x'
-- script: dotnet build ./Peachpied.WordPress.Build.Plugin -c $(buildConfiguration) -p:Version=$(version)
-  displayName: Peachpied.WordPress.Build.Plugin
 - script: dotnet build -c $(buildConfiguration) -p:Version=$(version)
   displayName: 'dotnet build $(buildConfiguration)'
 - task: PublishBuildArtifacts@1

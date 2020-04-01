@@ -26,9 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{9804
 	EndProjectSection
 EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "PeachPied.WordPress.DotNetBridge", "plugins\PeachPied.WordPress.DotNetBridge\PeachPied.WordPress.DotNetBridge.msbuildproj", "{B4D65744-3AC3-46B3-8756-E4E0F5ECEAE5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{0A7D5CE3-4F85-48D7-BFC2-5669ED42A54D} = {0A7D5CE3-4F85-48D7-BFC2-5669ED42A54D}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeachPied.WordPress.NuGetPlugins", "plugins\PeachPied.WordPress.NuGetPlugins\PeachPied.WordPress.NuGetPlugins.csproj", "{628789D3-AECC-4D22-9B7B-6BA36454F3AF}"
 EndProject

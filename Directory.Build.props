@@ -42,9 +42,4 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- https://github.com/Microsoft/msbuild/issues/4303 -->
-    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
-  </PropertyGroup>
-
 </Project>
