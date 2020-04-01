@@ -2,6 +2,7 @@
 
 **All of WordPress as a .NET Standard assembly, without PHP.**
 
+  ![.NET Core](https://github.com/iolevel/wpdotnet-sdk/workflows/.NET%20Core/badge.svg)
   [![NuGet](https://img.shields.io/nuget/v/PeachPied.WordPress.AspNetCore.svg)](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/)
   [![Downloads](https://img.shields.io/nuget/dt/PeachPied.WordPress.AspNetCore.svg)](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/)
   ![Stars](https://img.shields.io/github/stars/iolevel/wpdotnet-sdk?color=brightgreen)
