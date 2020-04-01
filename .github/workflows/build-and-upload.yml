@@ -21,8 +21,6 @@ jobs:
       uses: actions/setup-dotnet@v1.4.0
       with:
         dotnet-version: 3.1.200
-    - name: Peachpied.WordPress.Build.Plugin
-      run: dotnet build ./Peachpied.WordPress.Build.Plugin -c ${{env.configuration}} -p:Version=${{env.version}}
     - name: Build
       run: dotnet build -c ${{env.configuration}} -p:Version=${{env.version}}
       
