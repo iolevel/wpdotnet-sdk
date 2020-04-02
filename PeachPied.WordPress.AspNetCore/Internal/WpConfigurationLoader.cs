@@ -66,22 +66,22 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             return config;
         }
         /// <summary>
-        /// Loads settings from a well-known environment variables.
-        /// This overrides values set previously.
+        /// Loads settings from well-known environment variables.
+        /// This might override values set previously.
         /// </summary>
         public static WordPressConfig LoadFromEnvironment(this WordPressConfig config, IServiceProvider services)
         {
             if (string.IsNullOrEmpty(config.DbHost) || config.DbHost == "localhost")
             {
                 // load known environment variables
-                TryLoadAzureEnvVar(config);
+                TryLoadAzureEnvVar(config, Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"));
             }
 
             //
             return config;
         }
 
-        static bool HandleEnvironmentVar(string value, Func<string, string, bool> keyValueFunc)
+        static bool ParseEnvironmentVar(string value, Func<string, string, bool> keyValueFunc)
         {
             // parses the environment variable separated with semicolon
             // Template: NAME=VALUE;NAME=VALUE;...
@@ -94,19 +94,22 @@ namespace PeachPied.WordPress.AspNetCore.Internal
                 foreach (var pair in value.Split(';'))
                 {
                     var eq = pair.IndexOf('=');
-                    if (eq < 0 || eq == pair.Length - 1) continue;
-
-                    gotvalue |= keyValueFunc(pair.Remove(eq).Trim(), pair.Substring(eq + 1).Trim());
+                    if (eq > 0 && eq < pair.Length)
+                    {
+                        gotvalue |= keyValueFunc(
+                            pair.AsSpan(0, eq).Trim().ToString(),
+                            pair.AsSpan(eq + 1).Trim().ToString());
+                    }
                 }
             }
 
             return gotvalue;
         }
 
-        static bool TryLoadAzureEnvVar(this WordPressConfig config)
+        static bool TryLoadAzureEnvVar(this WordPressConfig config, string connectionString)
         {
-            return HandleEnvironmentVar(
-                 Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"),
+            return ParseEnvironmentVar(
+                 connectionString,
                  (name, value) =>
                  {
                      if (name.Equals("Data Source", StringComparison.OrdinalIgnoreCase))
