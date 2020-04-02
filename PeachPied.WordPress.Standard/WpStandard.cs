@@ -22,6 +22,9 @@ namespace PeachPied.WordPress.Standard
         /// <summary>MySQL hostname</summary>
         public static string DB_HOST { get; set; } = "localhost";
 
+        /// <summary>Database Charset to use in creating database tables</summary>
+        public const string DB_CHARSET = "utf8";
+
         /// <summary>
         /// Implicitly defined <c>WP_DEBUG</c> constant that will be used in compile time.
         /// </summary>
