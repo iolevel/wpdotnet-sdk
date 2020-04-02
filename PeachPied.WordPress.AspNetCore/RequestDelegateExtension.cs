@@ -64,15 +64,6 @@ namespace Microsoft.AspNetCore.Builder
             context.Result = RuleResult.SkipRemainingRules;
         }
 
-        /// <summary>Throws exception if condition is false.</summary>
-        static void ConfigAssert(bool condition, string message)
-        {
-            if (!condition)
-            {
-                throw new InvalidOperationException(message);
-            }
-        }
-
         /// <summary>
         /// Defines WordPress configuration constants and initializes runtime before proceeding to <c>index.php</c>.
         /// </summary>
@@ -95,15 +86,11 @@ namespace Microsoft.AspNetCore.Builder
 
             if (!string.IsNullOrEmpty(config.SiteUrl))
             {
-                ConfigAssert(config.SiteUrl.StartsWith("http"), "SiteUrl must start with http:// or https://.");
-                ConfigAssert(config.SiteUrl.EndsWith('/') == false, "SiteUrl must not have trailing slash.");
                 ctx.DefineConstant("WP_SITEURL", config.SiteUrl);
             }
 
             if (!string.IsNullOrEmpty(config.HomeUrl))
             {
-                ConfigAssert(config.HomeUrl.StartsWith("http"), "HomeUrl must start with http:// or https://.");
-                ConfigAssert(config.HomeUrl.EndsWith('/') == false, "HomeUrl must not have trailing slash.");
                 ctx.DefineConstant("WP_HOME", config.HomeUrl);
             }
 

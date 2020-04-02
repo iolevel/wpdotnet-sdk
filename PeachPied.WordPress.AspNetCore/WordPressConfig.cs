@@ -40,7 +40,24 @@ namespace PeachPied.WordPress.AspNetCore
         /// Controls the <c>WP_SITEURL</c> configuration constant.
         /// The value defined is the address where your WordPress core files reside. It should include the http:// part too. Do not put a slash “/” at the end.
         /// </summary>
-        public string SiteUrl { get; set; }
+        public string SiteUrl
+        {
+            get => _siteUrl;
+            set
+            {
+                if (value != null)
+                {
+                    if (!value.StartsWith("http"))
+                        throw new ArgumentException("SiteUrl must start with http:// or https://.");
+                    if (value.EndsWith('/'))
+                        throw new ArgumentException("SiteUrl must not have trailing slash.");
+                }
+
+                _siteUrl = value;
+            }
+        }
+
+        private string _siteUrl;
 
         /// <summary>
         /// Controls the <c>WP_HOME</c> configuration constant.
@@ -48,7 +65,24 @@ namespace PeachPied.WordPress.AspNetCore
         /// It should include the http:// part and should not have a slash “/” at the end.
         /// Adding this in can reduce the number of database calls when loading the site.
         /// </summary>
-        public string HomeUrl { get; set; }
+        public string HomeUrl
+        {
+            get => _homeUrl;
+            set
+            {
+                if (value != null)
+                {
+                    if (!value.StartsWith("http"))
+                        throw new ArgumentException("HomeUrl must start with http:// or https://.");
+                    if (value.EndsWith('/'))
+                        throw new ArgumentException("HomeUrl must not have trailing slash.");
+                }
+
+                _homeUrl = value;
+            }
+        }
+
+        private string _homeUrl;
 
         // SALT:
 
