@@ -195,8 +195,8 @@ namespace Peachpied.WordPress.NuGetPlugins
         // Since PeachPie runtime changes a lot until <= 1.0.0, we need the exact version
         // so even plugins have to be compiled using the same runtime version as wpdotnet
 
-        static string[] WpPluginPackageType => new[] { "wpdotnet-mu-plugins,0.9.930.0" };
-        static string[] WpThemePackageType => new[] { "wpdotnet-mu-themes,0.9.930.0" };
+        static string[] WpPluginPackageType => new[] { "wpdotnet-plugins,0.9.930.0" };
+        static string[] WpThemePackageType => new[] { "wpdotnet-themes,0.9.930.0" };
 
         SourceRepository SourceRepository
         {
