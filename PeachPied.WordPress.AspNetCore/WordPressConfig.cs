@@ -36,6 +36,20 @@ namespace PeachPied.WordPress.AspNetCore
         /// </remarks>
         public string DbTablePrefix { get; set; } = "wp_";
 
+        /// <summary>
+        /// Controls the <c>WP_SITEURL</c> configuration constant.
+        /// The value defined is the address where your WordPress core files reside. It should include the http:// part too. Do not put a slash “/” at the end.
+        /// </summary>
+        public string SiteUrl { get; set; }
+
+        /// <summary>
+        /// Controls the <c>WP_HOME</c> configuration constant.
+        /// Represents the address you want people to type in their browser to reach the WordPress blog.
+        /// It should include the http:// part and should not have a slash “/” at the end.
+        /// Adding this in can reduce the number of database calls when loading the site.
+        /// </summary>
+        public string HomeUrl { get; set; }
+
         // SALT:
 
         /// <summary>

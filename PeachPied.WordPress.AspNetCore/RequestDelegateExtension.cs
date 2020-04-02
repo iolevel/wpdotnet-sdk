@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -63,6 +64,15 @@ namespace Microsoft.AspNetCore.Builder
             context.Result = RuleResult.SkipRemainingRules;
         }
 
+        /// <summary>Throws exception if condition is false.</summary>
+        static void ConfigAssert(bool condition, string message)
+        {
+            if (!condition)
+            {
+                throw new InvalidOperationException(message);
+            }
+        }
+
         /// <summary>
         /// Defines WordPress configuration constants and initializes runtime before proceeding to <c>index.php</c>.
         /// </summary>
@@ -82,6 +92,20 @@ namespace Microsoft.AspNetCore.Builder
             ctx.DefineConstant("SECURE_AUTH_SALT", (PhpValue)config.SALT.SECURE_AUTH_SALT);
             ctx.DefineConstant("LOGGED_IN_SALT", (PhpValue)config.SALT.LOGGED_IN_SALT);
             ctx.DefineConstant("NONCE_SALT", (PhpValue)config.SALT.NONCE_SALT);
+
+            if (!string.IsNullOrEmpty(config.SiteUrl))
+            {
+                ConfigAssert(config.SiteUrl.StartsWith("http"), "SiteUrl must start with http:// or https://.");
+                ConfigAssert(config.SiteUrl.EndsWith('/') == false, "SiteUrl must not have trailing slash.");
+                ctx.DefineConstant("WP_SITEURL", config.SiteUrl);
+            }
+
+            if (!string.IsNullOrEmpty(config.HomeUrl))
+            {
+                ConfigAssert(config.HomeUrl.StartsWith("http"), "HomeUrl must start with http:// or https://.");
+                ConfigAssert(config.HomeUrl.EndsWith('/') == false, "HomeUrl must not have trailing slash.");
+                ctx.DefineConstant("WP_HOME", config.HomeUrl);
+            }
 
             // Additional constants
             if (config.Constants != null)
