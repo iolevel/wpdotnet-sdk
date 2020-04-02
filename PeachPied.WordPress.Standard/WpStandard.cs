@@ -49,6 +49,21 @@ namespace PeachPied.WordPress.Standard
         /// </summary>
         public const bool DISABLE_WP_CRON = true;
 
+        /// <summary>
+        /// Disables automatic updates as it has to be done through NuGet package update in msbuild project.
+        /// </summary>
+        public const bool AUTOMATIC_UPDATER_DISABLED = true;
+
+        /// <summary>
+        /// Disables automatic updates as it has to be done through NuGet package update in msbuild project.
+        /// </summary>
+        public const bool WP_AUTO_UPDATE_CORE = false;
+
+        /// <summary>
+        /// Autosave interval.
+        /// </summary>
+        public const int AUTOSAVE_INTERVAL = 60;
+
         // TODO: ABSPATH, WPINC, ... // frequently used constants that can be resolved statically
     }
 }
