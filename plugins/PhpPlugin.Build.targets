@@ -16,7 +16,9 @@
 
   <!-- copy the task dll into temp dir (TODO: AppDomain and shadow copy) -->
   <PropertyGroup>
-    <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)../$(BuildPlugin)/bin/$(Configuration)/netcoreapp2.1/$(BuildPlugin).dll</BuildPluginTaskAssembly>
+    <BuildPluginFramework Condition=" '$(MSBuildRuntimeType)'!='Core' ">net472</BuildPluginFramework>
+    <BuildPluginFramework Condition=" '$(BuildPluginFramework)'=='' ">netcoreapp2.1</BuildPluginFramework>
+    <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)../$(BuildPlugin)/bin/$(Configuration)/$(BuildPluginFramework)/publish/$(BuildPlugin).dll</BuildPluginTaskAssembly>
     <BuildPluginTaskAssemblyOriginal>$(BuildPluginTaskAssembly)</BuildPluginTaskAssemblyOriginal>
     <_BuildPluginTmp>$([System.IO.Path]::GetTempPath())PhpPlugin.Build/$([System.Guid]::NewGuid())/</_BuildPluginTmp>
     <BuildPluginTaskAssembly>$(_BuildPluginTmp)$(BuildPlugin).dll</BuildPluginTaskAssembly>
@@ -24,8 +26,8 @@
 
   <!-- ensure Peachpied.WordPress.Build.Plugin us built -->
   <Target Name="BuildPluginTaskAssembly" BeforeTargets="CopyBuildPluginTaskAssembly">
-    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Restore" Properties="TargetFramework=netcoreapp2.1" />
-    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Build" Properties="TargetFramework=netcoreapp2.1;IsPackable=false;" />
+    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Restore" Properties="TargetFramework=$(BuildPluginFramework)" />
+    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Publish" Properties="TargetFramework=$(BuildPluginFramework);IsPackable=false;" />
   </Target>
 
   <!-- try to cleanup previous tmp files and copy new build output -->
