@@ -9,10 +9,12 @@ Plugin URI: https://github.com/iolevel/wpdotnet-sdk
 Description: Plugin that provides bridge between WordPress API and .NET.
 Tags: peachpie, wpdotnet
 Author: iolevel s.r.o.
-Version: 1.0.0
+Version: 1.0.1
 */
 
 namespace PeachPied\WordPress\Standard;
+
+// call "AppStarted" event to load additional plugins
 
 /** @var \PeachPied\WordPress\Sdk\WpLoader $peachpie_wp_loader  */
 $peachpie_wp_loader->AppStarted(new class extends WpApp
