@@ -34,7 +34,7 @@ namespace PeachPied.WordPress.Standard.Internal
             output.Write($@"
 <table style=""border:0;width:100%;""><tbody>
 <tr>
-    <td><img src=""https://raw.githubusercontent.com/peachpiecompiler/peachpie/master/docs/logos/round-orange-196x196.png"" style=""width:76px;margin:8px;display:inline;""></td>
+    <td><img src=""https://github.com/iolevel/wpdotnet-sdk/raw/master/wpdotnet.png"" style=""width:76px;margin:8px;display:inline;""></td>
     <td>
         <b>Your WordPress is running on .NET</b>
         <div>
