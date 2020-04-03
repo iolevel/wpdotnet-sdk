@@ -33,7 +33,7 @@ public partial class Startup
 }
 ```
 
-Add WordPress configuration service within `ConfigureServices` startup method and setup your database connection and other options:
+Add WordPress option service within `ConfigureServices` startup method and setup your database connection and other options:
 
 ```C#
 public partial class Startup
@@ -55,7 +55,7 @@ public partial class Startup
 ## Remarks
 
 - permalinks are implicitly enabled through URL rewriting feature.
-- wordpress debugging is implicitlt enabled when running in debug configuration.
+- wordpress debugging is implicitlt enabled when running in *Development* environment.
 - When running on Azure with MySql in App enbaled, database connection is automatically configured.
 - Response caching and response compression is enabled by default.
 - Most of original `.php` files are not present on file system and cannot be edited.

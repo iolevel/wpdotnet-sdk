@@ -73,6 +73,8 @@ To disable the response caching, i.e. for development purposes, set the option `
 
 Azure web application provides free *MySQL in App* service, recommended for development purposes. This has to be enabled in your Web Application resource.
 
+![MySQL in App](../img/mysql-in-app.png)
+
 Once *MySQL In App* is enabled, WpDotNet hosted on the web application service will configure its database connection and database name accordingly.
 
 The connection string is stored in the *MYSQLCONNSTR_localdb* environment variable set by the Azure itself.
@@ -82,7 +84,7 @@ The connection string is stored in the *MYSQLCONNSTR_localdb* environment variab
 By default, WordPress stores the blog's URL in the database upon the first run during the setup process. Requests are automatically redirected to this URL if the application is accessed from a different address. There are usually several issues with this approach:
 
 - During development, or migrating the website, the URL changes but the stored value in database does not. Application redirects requsets to the old URL which might not exist.
-- Each request performs query to the database to obtain the blog URL value, which causes unnecesary overhead.
+- Each request performs query to the database to obtain the blog URL value, which causes an unnecesary overhead.
 
 ```json
 {
@@ -94,7 +96,7 @@ By default, WordPress stores the blog's URL in the database upon the first run d
 
 Setting the option `"HomeUrl"` is a recommended approach when the address is known, or when it has to be overriden. The value must start with the protocol specification, and must not be suffixed with the slash character.
 
-As noted above, the application will redirect user's requests to this address. Once these options are specified, user won't be able to change their values in WordPress's dashboard settings.
+As noted above, the application will redirect user's requests to this address. Once the option is specified, user won't be able to change its value in WordPress's dashboard settings.
 
 ## Multisite
 
