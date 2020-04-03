@@ -4,8 +4,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <!--VersionPrefix>$(WordPressVersion)</VersionPrefix-->
-    <!--PackageVersion>$(WordPressVersion)</PackageVersion-->
     <NoWarn>PHP0125,PHP5011,PHP6002,PHP5018,PHP5026</NoWarn>
     <Copyright>WordPress</Copyright>
     <Description>
