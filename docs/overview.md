@@ -9,7 +9,7 @@ The project does not require PHP to be installed, and is purely built on top of 
 - .NET Core SDK 3.0 or newer. ([dotnet.microsoft.com](https://dotnet.microsoft.com/download) or [visualstudio.microsoft.com](https://visualstudio.microsoft.com/vs/))
 - MySQL Server ([dev.mysql.com](https://dev.mysql.com/downloads/mysql/) or [docker](https://hub.docker.com/_/mysql))
 
-Make sure you know valid credentials to your MySQL server and you have created a database in it. The quick start expects a database named `"wordpress"`. Charset `"UTF-8"` is recommended.
+Make sure you know valid credentials to your MySQL server and you have created a database in it. The following quick start expects a database named `"wordpress"`. Database charset `"UTF-8"` is recommended.
 
 ## Quick Start
 
@@ -51,6 +51,14 @@ public partial class Startup
 ```
 
 > Note: A recommended approach is to place the configuration within `appsettings.json` configuration file. See [configuration](../configuration) for more details.
+
+## Remarks
+
+- permalinks are implicitly enabled through URL rewriting feature.
+- wordpress debugging is implicitlt enabled when running in debug configuration.
+- When running on Azure with MySql in App enbaled, database connection is automatically configured.
+- Response caching and response compression is enabled by default.
+- Most of original `.php` files are not present on file system and cannot be edited.
 
 ## Related links
 
