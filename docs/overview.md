@@ -52,6 +52,14 @@ public partial class Startup
 
 > Note: A recommended approach is to place the configuration within `appsettings.json` configuration file. See [configuration](../configuration) for more details.
 
+## Dashboard
+
+Besides regular WordPress dashboard pages, WpDotNet adds an informational panel at the Dashboard Home page, within the *At a Glance* widget.
+
+![WpDotNet At Glance](../img/wp-dashboard-glance.png)
+
+The panel provides information about current .NET runtime version, consumed memory, or total CPU time spent in the whole application. Note, the values get reset if the process is restarted.
+
 ## Remarks
 
 - permalinks are implicitly enabled through URL rewriting feature.
