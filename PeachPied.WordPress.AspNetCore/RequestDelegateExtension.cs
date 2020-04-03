@@ -180,7 +180,10 @@ namespace Microsoft.AspNetCore.Builder
             WpStandard.WP_DEBUG = options.Debug || env.IsDevelopment();
 
             // handling php files:
-            var startup = new Action<Context>(ctx => Apply(ctx, options, wploader));
+            var startup = new Action<Context>(ctx =>
+            {
+                Apply(ctx, options, wploader);
+            });
 
             app.UsePhp(new PhpRequestOptions()
             {
@@ -193,7 +196,7 @@ namespace Microsoft.AspNetCore.Builder
             app.UseStaticFiles(new StaticFileOptions() { FileProvider = fprovider });
 
             // fire wp-cron.php asynchronously
-            WpCronScheduler.StartScheduler(startup, TimeSpan.FromSeconds(60));
+            WpCronScheduler.StartScheduler(startup, TimeSpan.FromSeconds(60), root);
 
             //
             return app;
