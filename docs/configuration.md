@@ -83,7 +83,7 @@ The connection string is stored in the *MYSQLCONNSTR_localdb* environment variab
 
 By default, WordPress stores the blog's URL in the database upon the first run during the setup process. Requests are automatically redirected to this URL if the application is accessed from a different address. There are usually several issues with this approach:
 
-- During development, or migrating the website, the URL changes but the stored value in database does not. Application redirects requsets to the old URL which might not exist.
+- During development, or migrating the website, the URL changes but the stored value in database does not. Application redirects requests to the old URL which might not exist.
 - Each request performs query to the database to obtain the blog URL value, which causes an unnecesary overhead.
 
 ```json
