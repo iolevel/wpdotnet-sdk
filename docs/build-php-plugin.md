@@ -45,7 +45,7 @@ Project file is an XML file with the following content:
 
 > *MyHelloDollyPlugin.msbuildproj:*
 ```xml
-<Project Sdk="Peachpied.WordPress.Build.Plugin/1.0.0-preview1">
+<Project Sdk="PeachPied.WordPress.Build.Plugin/1.0.0-preview1">
 
 </Project>
 ```
