@@ -79,6 +79,8 @@ Either add project reference to the plugin in Visual Studio IDE, or on command l
 </ItemGroup>
 ```
 
+> Note, the plugin is referenced by the application and it still needs to be activated in WordPress dashboard.
+
 ## Package the plugin
 
 Plugin can be packed into a standard NuGet package. Run `dotnet pack` command to create NuGet package:
