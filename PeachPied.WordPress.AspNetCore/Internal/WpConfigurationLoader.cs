@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyModel;
 
 namespace PeachPied.WordPress.AspNetCore.Internal
 {
@@ -12,25 +13,58 @@ namespace PeachPied.WordPress.AspNetCore.Internal
     /// </summary>
     static class WpConfigurationLoader
     {
-        static string[] DefaultPhpAssemblies => new[]
-        {
-            typeof(WP).Assembly.FullName, // wordpress assembly
-            "PeachPied.WordPress.DotNetBridge" // our mu-plugin assembly
-        };
-
         /// <summary>
         /// Adds implicit configuration values.
+        /// Loads containers from dependency context.
         /// </summary>
         public static WordPressConfig LoadDefaults(this WordPressConfig config)
         {
-            var containers = config.CompositionContainers
-                //.WithAssembly(Assembly.GetEntryAssembly()) // {app} itself
-                //.WithAssembly(typeof(Provider).Assembly)
-                .WithAssembly(Assembly.Load("PeachPied.WordPress.NuGetPlugins"))
-                ;
+            var PeachPiedWordPress = typeof(WP).Assembly.GetName().Name; // "PeachPied.WordPress"
+            var WordPressStandard = typeof(Standard.WpStandard).Assembly.GetName().Name; // "PeachPied.WordPress.Standard"
 
-            (config.LegacyPluginAssemblies ??= new List<string>()).AddRange(DefaultPhpAssemblies);
+            // reads dependencies from app's DependencyContext
+            foreach (var lib in DependencyContext.Default.RuntimeLibraries)
+            {
+                if (lib.Type != "package" && lib.Type != "project")
+                {
+                    continue;
+                }
 
+                bool HasPeachPiedWordPress = false;
+                bool HasWordPressStandard = false;
+
+                for (int dep = 0; dep < lib.Dependencies.Count; dep++)
+                {
+                    var depname = lib.Dependencies[dep].Name;
+                    HasPeachPiedWordPress |= depname == PeachPiedWordPress;
+                    HasWordPressStandard |= depname == WordPressStandard;
+                }
+
+                if (HasWordPressStandard || HasPeachPiedWordPress)
+                {
+                    var ass = Assembly.Load(new AssemblyName(lib.Name));
+                    if (ass.GetType(Pchp.Core.Context.ScriptInfo.ScriptTypeName) != null)
+                    {
+                        // PHP assembly
+                        //(config.LegacyPluginAssemblies ??= new List<string>()).Add(ass.FullName);
+                        Pchp.Core.Context.AddScriptReference(ass);
+                    }
+                    else
+                    {
+                        // not PHP assembly
+                        // add as MEF composition container
+                        config.CompositionContainers.WithAssembly(ass);
+                    }
+                }
+            }
+
+            //config.CompositionContainers
+            //    //.WithAssembly(Assembly.GetEntryAssembly()) // {app} itself
+            //    //.WithAssembly(typeof(Provider).Assembly)
+            //    .WithAssembly(Assembly.Load("PeachPied.WordPress.NuGetPlugins"))
+            //    ;
+
+            //
             return config;
         }
 
