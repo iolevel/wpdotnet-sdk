@@ -3,5 +3,5 @@
   <PropertyGroup>
     <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
-  <Import Project="$(MSBuildThisFileDirectory)..\build\Peachpied.WordPress.Build.Plugin.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)..\build\PeachPied.WordPress.Build.Plugin.targets" />
 </Project>

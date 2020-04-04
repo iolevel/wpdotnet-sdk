@@ -1,4 +1,4 @@
-﻿<!--Project Sdk="Peachpied.WordPress.Build.Plugin/1.0.0"-->
+﻿<!--Project Sdk="PeachPied.WordPress.Build.Plugin/1.0.0"-->
 <Project>
 
   <PropertyGroup>

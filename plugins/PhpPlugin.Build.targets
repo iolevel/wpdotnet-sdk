@@ -2,16 +2,16 @@
 
   <!--
     This project file is used to build a PHP plugin for WordPress using
-    Sdk="Peachpied.WordPress.Build.Plugin" from sources.
+    Sdk="PeachPied.WordPress.Build.Plugin" from sources.
   -->
 
   <PropertyGroup>
     <!-- tells the Sdk to reference WordPress from source as well -->
     <WpDotNetVersion>Current</WpDotNetVersion>
-    <BuildPlugin>Peachpied.WordPress.Build.Plugin</BuildPlugin>
+    <BuildPlugin>PeachPied.WordPress.Build.Plugin</BuildPlugin>
   </PropertyGroup>
 
-  <!-- Sdk Peachpied.WordPress.Build.Plugin  -->
+  <!-- Sdk PeachPied.WordPress.Build.Plugin  -->
   <Import Project="$(MSBuildThisFileDirectory)../$(BuildPlugin)/Sdk/Sdk.props" />
 
   <!-- copy the task dll into temp dir (TODO: AppDomain and shadow copy) -->
@@ -24,7 +24,7 @@
     <BuildPluginTaskAssembly>$(_BuildPluginTmp)$(BuildPlugin).dll</BuildPluginTaskAssembly>
   </PropertyGroup>
 
-  <!-- ensure Peachpied.WordPress.Build.Plugin us built -->
+  <!-- ensure PeachPied.WordPress.Build.Plugin us built -->
   <Target Name="BuildPluginTaskAssembly" BeforeTargets="CopyBuildPluginTaskAssembly">
     <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Restore" Properties="TargetFramework=$(BuildPluginFramework)" />
     <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Publish" Properties="TargetFramework=$(BuildPluginFramework);IsPackable=false;" />
@@ -42,7 +42,7 @@
     <Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(_BuildPluginTmp)" />
   </Target>
 
-  <!-- Sdk Peachpied.WordPress.Build.Plugin  -->
+  <!-- Sdk PeachPied.WordPress.Build.Plugin  -->
   <Import Project="$(MSBuildThisFileDirectory)../$(BuildPlugin)/Sdk/Sdk.targets" />
 
 </Project>

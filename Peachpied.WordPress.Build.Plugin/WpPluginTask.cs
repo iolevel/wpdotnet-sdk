@@ -8,7 +8,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace Peachpied.WordPress.Build.Plugin
+namespace PeachPied.WordPress.Build.Plugin
 {
     /// <summary>
     /// Task parses wp plugin/theme metadata and sets corresponsing properties.

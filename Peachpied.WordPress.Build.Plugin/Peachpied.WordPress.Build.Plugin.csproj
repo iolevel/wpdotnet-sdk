@@ -15,11 +15,11 @@
       1. Create project XML file "{{slug_id}}.msbuildproj" in the plugin/theme folder:
 
       A. For a plugin:
-      <Project Sdk="Peachpied.WordPress.Build.Plugin/$(Version)">
+      <Project Sdk="PeachPied.WordPress.Build.Plugin/$(Version)">
       </Project>
 
       B. For a theme:
-      <Project Sdk="Peachpied.WordPress.Build.Plugin/$(Version)">
+      <Project Sdk="PeachPied.WordPress.Build.Plugin/$(Version)">
         <PropertyGroup>
           <WpContentTarget>themes</WpContentTarget>
         </PropertyGroup>
@@ -28,8 +28,8 @@
       2. Build or pack the project:
       dotnet build
       dotnet pack
-      
-      3. Reference the project/package from web application, see "Peachpied.WordPress.AspNetCore" for running the WordPress on ASP.NET Core.
+
+      3. Reference the project/package from web application, see "PeachPied.WordPress.AspNetCore" for running the WordPress on ASP.NET Core.
     </Description>
   </PropertyGroup>
 

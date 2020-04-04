@@ -19,8 +19,8 @@
   <!-- use netstandard2.0 for full .NET just in case -->
 
   <PropertyGroup Condition=" '$(BuildPluginTaskAssembly)'=='' ">
-    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)netstandard2.0\Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
-    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)netcoreapp2.1\Peachpied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
+    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)netstandard2.0\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
+    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)netcoreapp2.1\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
   </PropertyGroup>
 
   <UsingTask AssemblyFile="$(BuildPluginTaskAssembly)" TaskName="WpPluginTask" />
