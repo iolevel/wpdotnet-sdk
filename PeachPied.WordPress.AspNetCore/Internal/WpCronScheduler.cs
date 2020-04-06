@@ -36,9 +36,9 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             {
                 using (var ctx = Context.CreateEmpty())
                 {
-                    ctx.RootPath = RootPath;        // wordpress content files location
+                    ctx.RootPath = ctx.WorkingDirectory = RootPath;        // wordpress content files location
                     Startup(ctx);                   // sets the settings constants
-                    ctx.Include(null, ScriptPath);  // include 'wp-cron.php'
+                    ctx.Include("", ScriptPath);  // include 'wp-cron.php'
                 }
             }
             catch
