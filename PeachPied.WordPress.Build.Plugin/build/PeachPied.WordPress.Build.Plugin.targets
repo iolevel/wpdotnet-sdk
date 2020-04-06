@@ -53,7 +53,7 @@
       <Version Condition=" '$(VersionSuffix)'=='' ">$(_version)</Version>
       <Copyright>$(Authors)</Copyright>
       <PackageVersion>$(Version)</PackageVersion>
-      <PackageType>wpdotnet-$(WpContentTarget),0.9.930.0</PackageType>
+      <PackageType>wpdotnet-$(WpContentTarget),0.9.950.0</PackageType>
       <PackageLicenseExpression Condition=" '$(PackageLicenseExpression)'=='' ">GPL-2.0-or-later</PackageLicenseExpression>
     </PropertyGroup>
 
