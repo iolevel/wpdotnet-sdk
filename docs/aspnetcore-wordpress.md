@@ -49,7 +49,7 @@ The following tutorial is shown on Visual Studio 2019.
     - A database is created. It can be an empty database or a duplicate of an existing database with WordPress.
     - Ensure you have valid username, password, and server address.
 
-6. Enter MySQL connection credentials to **appsettings.json**. Open *appsettings.json` file and add following section:
+6. Enter MySQL connection credentials to **appsettings.json**. Open *appsettings.json* file and add following section:
 
     ![appsettings.json](../img/appsettings.png)
 
@@ -85,4 +85,4 @@ In case you don't need any customization, and you just want to publish the WordP
 
 - https://azuredeploy.net/?repository=https://github.com/iolevel/azure-wpdotnet
 
-> Please note, the deployment link above requires the target Azure cluster to have .NET Core 3.1 SDk installed.
+> Please note, the deployment link above requires the target Azure cluster to have .NET Core 3.1 SDK installed.
