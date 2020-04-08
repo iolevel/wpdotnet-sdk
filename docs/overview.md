@@ -1,6 +1,6 @@
 # Overview
 
-[WpDotNet](https://wpdotnet.peachpie.io/) is the latest unmodified WordPress, running compiled purely on .NET, available as a NuGet package & ready to be used as a part of an ASP NET Core application. WpDotNet comes with additional components and features, making it easy to be used from C# and a .NET development environment in general.
+[WpDotNet](https://wpdotnet.peachpie.io/) is the latest unmodified WordPress, running compiled purely on .NET, provided as a NuGet package & ready to be used as a part of an ASP NET Core application. WpDotNet comes with additional components and features, making it easy to be used from C# and a .NET development environment in general.
 
 The project does not require PHP to be installed, and is purely built on top of the .NET platform.
 
