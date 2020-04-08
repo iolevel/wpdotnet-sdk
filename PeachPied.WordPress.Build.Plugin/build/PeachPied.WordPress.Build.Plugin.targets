@@ -76,6 +76,11 @@
   <PropertyGroup Condition=" '$(WpContentTarget)'!='' ">
     <PhpRelativePath Condition=" '$(PhpRelativePath)'=='' and '$(WpContentTarget)'=='mu-plugins' ">wp-content/$(WpContentTarget)/</PhpRelativePath>
     <PhpRelativePath Condition=" '$(PhpRelativePath)'=='' ">wp-content/$(WpContentTarget)/$(WpSlug)/</PhpRelativePath>
+
+    <!-- readme asset path -->
+    <PackageReadmePath Condition=" !Exists('$(PackageReadmePath)') " >$(MSBuildProjectDirectory)/readme.txt</PackageReadmePath>
+    <PackageReadmePath Condition=" !Exists('$(PackageReadmePath)') " >$(MSBuildProjectDirectory)/readme.md</PackageReadmePath>
+
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(PhpRelativePath)'!='' ">
@@ -89,6 +94,12 @@
       <PackageCopyToOutput>true</PackageCopyToOutput>
       <Link>wordpress\$(PhpRelativePath)%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
+
+    <!-- icon asset -->
+    <!--None Include="$(PackageIconPath)" Pack="true" PackagePath="$(PackageIcon)" Condition=" Exists('$(PackageIconPath)') "/-->
+
+    <!-- readme asset -->
+    <None Include="$(PackageReadmePath)" Pack="true" PackagePath="assets/$([System.IO.Path]::GetFileName(&quot;$(PackageReadmePath)&quot;))" Condition=" Exists('$(PackageReadmePath)') "/>
 
   </ItemGroup>
 
