@@ -21,6 +21,6 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'output'
-    ArtifactName: 'packages'
+    PathtoPublish: 'artifacts'
+    ArtifactName: 'artifacts'
     publishLocation: 'Container'
