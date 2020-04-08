@@ -65,7 +65,11 @@ The following tutorial is shown on Visual Studio 2019.
 
     ```
 
-7. Run the application. 
+7. Run the application. Hit `F5` or press **Start** button in Visual Studio.
+
+8. Deploy the application using *Publish* wizard. Right click the project, select **Publish**, and follow the instructions.
+
+    ![deploy the application to cloud](../img/publish.png)
 
 ## Grab a sample solution
 
