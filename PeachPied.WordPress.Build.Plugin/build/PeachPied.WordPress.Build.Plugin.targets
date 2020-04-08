@@ -78,8 +78,8 @@
     <PhpRelativePath Condition=" '$(PhpRelativePath)'=='' ">wp-content/$(WpContentTarget)/$(WpSlug)/</PhpRelativePath>
 
     <!-- readme asset path -->
-    <PackageReadmePath Condition=" !Exists('$(PackageReadmePath)') " >$(MSBuildProjectDirectory)/readme.txt</PackageReadmePath>
-    <PackageReadmePath Condition=" !Exists('$(PackageReadmePath)') " >$(MSBuildProjectDirectory)/readme.md</PackageReadmePath>
+    <ReadmePath Condition=" !Exists('$(ReadmePath)') " >$(MSBuildProjectDirectory)/readme.txt</ReadmePath>
+    <ReadmePath Condition=" !Exists('$(ReadmePath)') " >$(MSBuildProjectDirectory)/readme.md</ReadmePath>
 
   </PropertyGroup>
 
@@ -99,7 +99,7 @@
     <!--None Include="$(PackageIconPath)" Pack="true" PackagePath="$(PackageIcon)" Condition=" Exists('$(PackageIconPath)') "/-->
 
     <!-- readme asset -->
-    <None Include="$(PackageReadmePath)" Pack="true" PackagePath="assets/$([System.IO.Path]::GetFileName(&quot;$(PackageReadmePath)&quot;))" Condition=" Exists('$(PackageReadmePath)') "/>
+    <None Include="$(ReadmePath)" Pack="true" PackagePath="assets/$([System.IO.Path]::GetFileName(&quot;$(ReadmePath)&quot;))" Condition=" Exists('$(ReadmePath)') "/>
 
   </ItemGroup>
 
