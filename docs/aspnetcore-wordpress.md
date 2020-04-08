@@ -13,57 +13,57 @@ The following tutorial is shown on Visual Studio 2019.
 
 1. In Visual Studio, create a new *ASP.NET Core Web Application*. Select **File | New | Project** and search for **ASP.NET Core Web Application** template for C#.
 
-![New ASP.NET Core Application](../img/new-aspnetcore-csharp.png)
+    ![New ASP.NET Core Application](../img/new-aspnetcore-csharp.png)
 
-Continue with **Next** and **Create**.
+    Continue with **Next** and **Create**.
 
 2. In the last step, make sure you are targeting **ASP.NET Core**, at least **3.0**. Other options can customized. For an empty web site, choose **Empty** project template as it does not have any unnecessary logic.
 
-![New ASP.NET Core Application](../img/new-aspnetcore-step2.png)
+    ![New ASP.NET Core Application](../img/new-aspnetcore-step2.png)
 
-Continue with **Create**.
+    Continue with **Create**.
 
 3. Add a package reference to **PeachPied.WordPress.AspNetCore**. Right click the project and select **Manage NuGet Packages...**. Switch to **Browse** tab, tick **Include prerelease**, and search for **PeachPied.WordPress.AspNetCore**.
 
-![Browse NuGet](../img/browse-nuget-peachpied-wordpress-aspnetcore.png)
+    ![Browse NuGet](../img/browse-nuget-peachpied-wordpress-aspnetcore.png)
 
-Click **Install** and wait for the process to complete. Accept the license terms if prompted.
+    Click **Install** and wait for the process to complete. Accept the license terms if prompted.
 
 4. Next add WordPress to your request pipeline. Navigate to class **Startup** in file **Startup.cs**.
 
-![WordPress request pipeline](../img/startup-class.png)
+    ![WordPress request pipeline](../img/startup-class.png)
 
-Add `UseWordPress()` into your *IAplicationBuilder*, preferably right before *UseRoutine*.
+    Add `UseWordPress()` into your *IAplicationBuilder*, preferably right before *UseRoutine*.
 
-```c#
+    ```c#
 
-    app.UseWordPress();
+        app.UseWordPress();
 
-```
+    ```
 
-The optional `services.AddWordPress( ... )` can be used to alter WordPress configuration such as Site URL, database connection credentials, and others described in [configuration](../configuration/).
+    The optional `services.AddWordPress( ... )` can be used to alter WordPress configuration such as Site URL, database connection credentials, and others described in [configuration](../configuration/).
 
 5. Prepare MySQL server. Make sure you have MySQL server running:
 
-- MySQL server installed and running. It is up to you whether to install it locally, run it in a virtualized environment such as docker, or elsewhere.
-- A database is created. It can be an empty database or a duplicate of an existing database with WordPress.
-- Ensure you have valid username, password, and server address.
+    - MySQL server installed and running. It is up to you whether to install it locally, run it in a virtualized environment such as docker, or elsewhere.
+    - A database is created. It can be an empty database or a duplicate of an existing database with WordPress.
+    - Ensure you have valid username, password, and server address.
 
 6. Enter MySQL connection credentials to **appsettings.json**. Open *appsettings.json` file and add following section:
 
-![appsettings.json](../img/appsettings.png)
+    ![appsettings.json](../img/appsettings.png)
 
-```json
-{
-  "WordPress": {
-    "dbhost": "localhost",
-    "dbpassword": "password",
-    "dbuser": "root",
-    "dbname": "wordpress"
-  }
-}
+    ```json
+    {
+    "WordPress": {
+        "dbhost": "localhost",
+        "dbpassword": "password",
+        "dbuser": "root",
+        "dbname": "wordpress"
+    }
+    }
 
-```
+    ```
 
 7. Run the application. 
 
