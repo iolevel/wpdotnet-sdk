@@ -9,7 +9,8 @@
     <OutputType>library</OutputType>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Configuration Condition=" '$(Configuration)'=='' ">Debug</Configuration>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>    
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild Condition=" '$(GeneratePackageOnBuild)'=='' ">true</GeneratePackageOnBuild>    
     
     <!-- target directory under the /wp-content/ -->
