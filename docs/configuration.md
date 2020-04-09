@@ -1,6 +1,7 @@
 # Configuration
 
 The WpDotNet application configuration is performed using 
+
 - ASP.NET Core configuration providers and settings files, such as `appsettings.json`
 - Registering options in the `ConfigureServices` startup method.
 
