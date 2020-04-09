@@ -56,7 +56,7 @@ public partial class Startup
 
 Besides regular WordPress dashboard pages, WpDotNet adds an informational panel on the Dashboard Home page, within the *At a Glance* widget.
 
-![WpDotNet At Glance](../img/wp-dashboard-glance.png)
+![WpDotNet At Glance](img/wp-dashboard-glance.png)
 
 The panel provides information about the current .NET runtime version, consumed memory, or total CPU time spent in the whole application. Note that the values are reset if the process is restarted.
 

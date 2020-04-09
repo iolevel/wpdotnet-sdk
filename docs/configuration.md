@@ -73,7 +73,7 @@ To disable the response caching, i.e. for development purposes, set the option `
 
 Azure web applications come with the free *MySQL in App* service, recommended for development purposes. This has to be enabled in your Web Application resource.
 
-![MySQL in App](../img/mysql-in-app.png)
+![MySQL in App](img/mysql-in-app.png)
 
 Once *MySQL In App* is enabled, WpDotNet hosted on the web application service will configure its database connection and database name accordingly.
 
