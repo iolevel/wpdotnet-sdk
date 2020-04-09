@@ -33,7 +33,7 @@ The following tutorial is shown on Visual Studio 2019.
 
     ![WordPress request pipeline](img/startup-class.png)
 
-    Add `UseWordPress()` into your *IAplicationBuilder*, preferably right before *UseRoutine*.
+    Add `UseWordPress()` into your *IAplicationBuilder*, preferably right before *UseRouting()*.
 
     ```c#
 
