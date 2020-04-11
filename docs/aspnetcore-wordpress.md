@@ -2,28 +2,28 @@
 
 *WpDotNet* is a package made primarily to be used as a part of an ASP.NET Core application. Its possible uses are:
 
-- Run WordPress on ASP.NET Core, without PHP, without having source files on server.
-- Add WordPress as frontend to an existing ASP.NET Core application.
-- Combine WordPress and MVC or Razor views.
-- Extend WordPress with plugins in C#.
+- Running WordPress on ASP.NET Core, without PHP, or any source files on the server.
+- Adding WordPress as a frontend to an existing ASP.NET Core application.
+- Combining WordPress and MVC or Razor views.
+- Extending WordPress with plugins in C#.
 
 ## Create and deploy an ASP.NET Core Web application with WordPress
 
-The following tutorial is shown on Visual Studio 2019.
+The following tutorial is shown in Visual Studio 2019.
 
-1. In Visual Studio, create a new *ASP.NET Core Web Application*. Select **File | New | Project** and search for **ASP.NET Core Web Application** template for C#.
+1. In Visual Studio, create a new *ASP.NET Core Web Application*. Select **File | New | Project** and search for the **ASP.NET Core Web Application** template for C#.
 
     ![New ASP.NET Core Application](img/new-aspnetcore-csharp.png)
 
     Continue with **Next** and **Create**.
 
-2. In the last step, make sure you are targeting **ASP.NET Core**, at least **3.0**. Other options can customized. For an empty web site, choose **Empty** project template as it does not have any unnecessary logic.
+2. In the last step, make sure you are targeting **ASP.NET Core**, at least **3.0**. Other options can be customized. For an empty web site, choose the **Empty** project template, as it does not have any unnecessary logic.
 
     ![New ASP.NET Core Application](img/new-aspnetcore-step2.png)
 
     Continue with **Create**.
 
-3. Add a package reference to **PeachPied.WordPress.AspNetCore**. Right click the project and select **Manage NuGet Packages...**. Switch to **Browse** tab, tick **Include prerelease**, and search for **PeachPied.WordPress.AspNetCore**.
+3. Add a package reference to **PeachPied.WordPress.AspNetCore**. Right click the project and select **Manage NuGet Packages...**. Switch to the **Browse** tab, tick **Include prerelease**, and search for **PeachPied.WordPress.AspNetCore**.
 
     ![Browse NuGet](img/browse-nuget-peachpied-wordpress-aspnetcore.png)
 
@@ -41,15 +41,15 @@ The following tutorial is shown on Visual Studio 2019.
 
     ```
 
-    The optional `services.AddWordPress( ... )` can be used to alter WordPress configuration such as Site URL, database connection credentials, and others described in [configuration](../configuration/).
+    The optional `services.AddWordPress( ... )` can be used to alter the WordPress configuration, such as the Site URL, database connection credentials and others, as described in [configuration](../configuration/).
 
-5. Prepare MySQL server. Make sure you have MySQL server running:
+5. Prepare the MySQL server. Make sure you have MySQL server running:
 
-    - MySQL server installed and running. It is up to you whether to install it locally, run it in a virtualized environment such as docker, or elsewhere.
+    - MySQL server is installed and running. It is up to you whether to install it locally, run it in a virtualized environment, such as Docker, or elsewhere.
     - A database is created. It can be an empty database or a duplicate of an existing database with WordPress.
-    - Ensure you have valid username, password, and server address.
+    - Ensure you have a valid username, password, and server address.
 
-6. Enter MySQL connection credentials to **appsettings.json**. Open *appsettings.json* file and add following section:
+6. Enter the MySQL connection credentials in **appsettings.json**. Open the *appsettings.json* file and add the following section:
 
     ![appsettings.json](img/appsettings.png)
 
@@ -65,15 +65,15 @@ The following tutorial is shown on Visual Studio 2019.
 
     ```
 
-7. Run the application. Hit `F5` or press **Start** button in Visual Studio.
+7. Run the application. Hit `F5` or press the **Start** button in Visual Studio.
 
-8. Deploy the application using *Publish* wizard. Right click the project, select **Publish**, and follow the instructions.
+8. Deploy the application using the *Publish* wizard. Right click the project, select **Publish**, and follow the instructions.
 
     ![deploy the application to cloud](img/publish.png)
 
-## Grab a sample solution
+## Grab the sample solution
 
-The complete ASP.NET Core application with WordPress is available on GitHub:
+A complete ASP.NET Core application with WordPress is available on GitHub:
 
 - https://github.com/iolevel/peachpie-wordpress
 
@@ -81,8 +81,8 @@ The content of the repository is ready to be built, debugged, and published. It 
 
 ## Deploy Pre-Compiled to Azure
 
-In case you don't need any customization, and you just want to publish the WordPress running on .NET on your Azure, follow the link below:
+In case you don't need any customizations and you just want to publish WordPress running on .NET to your Azure, follow the link below:
 
 - https://azuredeploy.net/?repository=https://github.com/iolevel/azure-wpdotnet
 
-> Please note, the deployment link above requires the target Azure cluster to have .NET Core 3.1 SDK installed.
+> Please note that the deployment link above requires the target Azure cluster to have the .NET Core 3.1 SDK installed.
