@@ -188,7 +188,7 @@ namespace Peachpied.WordPress.NuGetPlugins
 
     sealed class PluginsOverride : IWpPlugin
     {
-        static string NuGetFeed => "https://peachpie-feed.azurewebsites.net/v3/index.json";
+        static string NuGetFeed => "https://feed.peachpie.io/wpdotnet/v3/index.json";
         readonly PackagesHelper _packages = new PackagesHelper();
 
         // package type version must match with the runtime!
