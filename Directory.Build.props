@@ -36,7 +36,7 @@
     <PackageIconPath>$(MSBuildThisFileDirectory)wpdotnet.png</PackageIconPath>
     <PackageIcon>assets/$([System.IO.Path]::GetFileName(&quot;$(PackageIconPath)&quot;))</PackageIcon>
     <PackageReadmePath>$(MSBuildProjectDirectory)/readme.md</PackageReadmePath>
-    <PackageReadme>assets/readme.md</PackageReadme>
+    <PackageReadme>assets/$([System.IO.Path]::GetFileName(&quot;$(PackageReadmePath)&quot;))</PackageReadme>
     <PackageLicenseExpression>GPL-2.0-or-later</PackageLicenseExpression >
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
