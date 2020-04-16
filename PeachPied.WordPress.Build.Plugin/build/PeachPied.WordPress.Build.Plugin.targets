@@ -96,7 +96,7 @@
       if not excluded by user, we'll pack them into assets/ folder.
       We don't add it to the root of the package, since it would be opened by Visual Studio upon package restore.
       
-      There is a proposal to specify 
+      There is a proposal to specify this information in nuspec https://github.com/NuGet/Home/wiki/Packaging-Documentation-within-the-nupkg
      -->
      
     <!-- assets files -> assets/** -->
