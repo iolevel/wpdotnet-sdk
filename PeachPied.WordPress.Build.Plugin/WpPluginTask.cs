@@ -34,6 +34,11 @@ namespace PeachPied.WordPress.Build.Plugin
         public string WpContentTarget { get; set; }
 
         /// <summary>
+        /// Specified VersionSuffix if any.
+        /// </summary>
+        public string VersionSuffix { get; set; }
+
+        /// <summary>
         /// Version from metadata.
         /// </summary>
         [Output]
@@ -184,7 +189,7 @@ namespace PeachPied.WordPress.Build.Plugin
 
             // properties
             string s;
-            Version = (meta.TryGetValue("version", out s) || meta.TryGetValue("Stable tag", out s)) ? s : null;
+            Version = ConstructVersion((meta.TryGetValue("version", out s) || meta.TryGetValue("Stable tag", out s)) ? s : null, VersionSuffix);
             PackageProjectUrl = (meta.TryGetValue("Plugin URI", out s) || meta.TryGetValue("website", out s) || meta.TryGetValue("theme uri", out s) || meta.TryGetValue("url", out s)) ? s : null;
             PackageTags = (meta.TryGetValue("tags", out s) || sections.TryGetValue("tags", out s)) ? s.Replace(", ", ",") : null;
             Authors = (meta.TryGetValue("Author", out s) || meta.TryGetValue("contributors", out s)) ? s : null;
@@ -193,6 +198,25 @@ namespace PeachPied.WordPress.Build.Plugin
 
             // done
             return true;
+        }
+
+        static string ConstructVersion(string metaversion, string versionsuffix)
+        {
+            if (string.IsNullOrEmpty(metaversion))
+            {
+                return null;
+            }
+
+            // vX.Y.Z-PreRelease
+            if (metaversion[0] == 'v') metaversion = metaversion.Substring(1);
+
+            var dash = metaversion.IndexOf('-');
+            var prefix = dash < 0 ? metaversion : metaversion.Remove(dash);
+            var suffix = string.IsNullOrEmpty(versionsuffix)
+                ? (dash < 0 ? "" : metaversion.Substring(dash + 1))
+                : versionsuffix;
+
+            return string.IsNullOrEmpty(suffix) ? prefix : $"{prefix}-{suffix}";
         }
 
         static bool CheckUrl(string url)

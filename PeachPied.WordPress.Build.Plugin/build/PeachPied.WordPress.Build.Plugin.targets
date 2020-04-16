@@ -29,6 +29,7 @@
     <WpPluginTask
       ProjectPath="$(MSBuildProjectDirectory)"
       WpContentTarget="$(WpContentTarget)"
+      VersionSuffix="$(VersionSuffix)"
       WpSlug="$(WpSlug)"
       >
       <Output TaskParameter="Version" PropertyName="wpVersion" />
@@ -44,15 +45,12 @@
   <Target Name="WpPropertiesResolve"
           Condition=" '$(WpContentTarget)'!='' "
           DependsOnTargets="WpPropertiesCore;ComposerResolve"
-          BeforeTargets="CollectPackageReferences">
+          BeforeTargets="GenerateNuspec;CollectPackageReferences">
     <PropertyGroup>
-      <_version Condition=" '$(wpVersion)' != '' ">$(wpVersion)</_version>
-
       <!-- package id, restore values changed by composer.json -->
-      <Version Condition=" '$(VersionSuffix)'!='' ">$(_version)-$(VersionSuffix)</Version>
-      <Version Condition=" '$(VersionSuffix)'=='' ">$(_version)</Version>
-      <Copyright>$(Authors)</Copyright>
+      <Version Condition=" '$(wpVersion)' != '' ">$(wpVersion)</Version>
       <PackageVersion>$(Version)</PackageVersion>
+      <Copyright>$(Authors)</Copyright>
       <PackageType>wpdotnet-$(WpContentTarget),0.9.950.0</PackageType>
       <PackageLicenseExpression Condition=" '$(PackageLicenseExpression)'=='' ">GPL-2.0-or-later</PackageLicenseExpression>
     </PropertyGroup>
@@ -100,7 +98,6 @@
 
     <!-- readme asset -->
     <None Include="$(ReadmePath)" Pack="true" PackagePath="assets/$([System.IO.Path]::GetFileName(&quot;$(ReadmePath)&quot;))" Condition=" Exists('$(ReadmePath)') "/>
-
   </ItemGroup>
 
 </Project>

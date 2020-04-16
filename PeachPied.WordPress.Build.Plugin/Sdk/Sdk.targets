@@ -5,9 +5,9 @@
     <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
   
-  <Import Project="$(MSBuildThisFileDirectory)..\build\PeachPied.WordPress.Build.Plugin.targets" />
-
   <Import Project="$(CustomBeforeSdkTargets)" Condition="'$(CustomBeforeSdkTargets)' != ''"/>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\build\PeachPied.WordPress.Build.Plugin.targets" />
 
   <Import Project="$(MSBuildThisFileDirectory)..\build\Sdk.Common.targets" />
 

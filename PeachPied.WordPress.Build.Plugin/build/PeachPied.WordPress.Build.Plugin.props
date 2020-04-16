@@ -11,7 +11,7 @@
     <Configuration Condition=" '$(Configuration)'=='' ">Debug</Configuration>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
-    <GeneratePackageOnBuild Condition=" '$(GeneratePackageOnBuild)'=='' ">true</GeneratePackageOnBuild>    
+    <GeneratePackageOnBuild Condition=" '$(GeneratePackageOnBuild)'=='' ">true</GeneratePackageOnBuild>
     
     <!-- target directory under the /wp-content/ -->
     <WpContentTarget Condition=" '$(WpContentTarget)'=='' ">plugins</WpContentTarget>
@@ -23,6 +23,7 @@
       bin/**;
       .svn/**;
       .git/**;
+      .gitattributes;
       .vs/**;
       .vscode/**;
       **/tests/**;
