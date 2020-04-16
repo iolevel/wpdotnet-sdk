@@ -74,11 +74,6 @@
   <PropertyGroup Condition=" '$(WpContentTarget)'!='' ">
     <PhpRelativePath Condition=" '$(PhpRelativePath)'=='' and '$(WpContentTarget)'=='mu-plugins' ">wp-content/$(WpContentTarget)/</PhpRelativePath>
     <PhpRelativePath Condition=" '$(PhpRelativePath)'=='' ">wp-content/$(WpContentTarget)/$(WpSlug)/</PhpRelativePath>
-
-    <!-- readme asset path -->
-    <ReadmePath Condition=" !Exists('$(ReadmePath)') " >$(MSBuildProjectDirectory)/readme.txt</ReadmePath>
-    <ReadmePath Condition=" !Exists('$(ReadmePath)') " >$(MSBuildProjectDirectory)/readme.md</ReadmePath>
-
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(PhpRelativePath)'!='' ">
@@ -96,8 +91,20 @@
     <!-- icon asset -->
     <!--None Include="$(PackageIconPath)" Pack="true" PackagePath="$(PackageIcon)" Condition=" Exists('$(PackageIconPath)') "/-->
 
-    <!-- readme asset -->
-    <None Include="$(ReadmePath)" Pack="true" PackagePath="assets/$([System.IO.Path]::GetFileName(&quot;$(ReadmePath)&quot;))" Condition=" Exists('$(ReadmePath)') "/>
+    <!--
+      Peachpie.NET.Sdk ass all files into <None> items,
+      if not excluded by user, we'll pack them into assets/ folder.
+      We don't add it to the root of the package, since it would be opened by Visual Studio upon package restore.
+      
+      There is a proposal to specify 
+     -->
+     
+    <!-- assets files -> assets/** -->
+    <None Update="readme.md;readme.txt" Pack="true">
+      <PackagePath>assets</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <Link>assets/%(Filename)%(Extension)</Link>
+    </None>
   </ItemGroup>
 
 </Project>
