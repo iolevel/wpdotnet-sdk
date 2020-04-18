@@ -410,7 +410,7 @@ namespace Peachpied.WordPress.NuGetPlugins
             if (package != null)
             {
                 // get content of the plugin to be copied to wp-content/[plugins|themes]/
-                var contentsource = Path.Combine(source, "contentFiles/any/netcoreapp2.0/wordpress/wp-content");
+                var contentsource = Path.Combine(source, "contentFiles/any/netcoreapp3.0/wordpress/wp-content");
                 Debug.Assert(Directory.Exists(contentsource));
 
                 foreach (var type in new[] { "plugins", "themes" })
