@@ -38,7 +38,7 @@
       <Output TaskParameter="Authors" PropertyName="Authors" />
       <Output TaskParameter="Title" PropertyName="Title" />
       <Output TaskParameter="Description" PropertyName="PackageDescription" />
-      <Output TaskParameter="PackageIconUrl" PropertyName="PackageIconUrl" />
+      <Output TaskParameter="PackageIconUrl" PropertyName="wpIconUrl" />
     </WpPluginTask>
   </Target>
 
@@ -53,6 +53,7 @@
       <Copyright>$(Authors)</Copyright>
       <PackageType>wpdotnet-$(WpContentTarget),0.9.950.0</PackageType>
       <PackageLicenseExpression Condition=" '$(PackageLicenseExpression)'=='' ">GPL-2.0-or-later</PackageLicenseExpression>
+      <PackageIconUrl Condition=" '$(wpIconUrl)'!='' ">$(wpIconUrl)</PackageIconUrl>
     </PropertyGroup>
 
     <!-- report properties to the hub -->
@@ -92,7 +93,7 @@
     <!--None Include="$(PackageIconPath)" Pack="true" PackagePath="$(PackageIcon)" Condition=" Exists('$(PackageIconPath)') "/-->
 
     <!--
-      Peachpie.NET.Sdk ass all files into <None> items,
+      Peachpie.NET.Sdk adds all files into <None> items,
       if not excluded by user, we'll pack them into assets/ folder.
       We don't add it to the root of the package, since it would be opened by Visual Studio upon package restore.
       
