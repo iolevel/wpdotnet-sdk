@@ -187,7 +187,7 @@ namespace Peachpied.WordPress.NuGetPlugins
                 // TODO: restore dependencies
 
                 // copy lib to packages
-                var dllsource = Path.Combine(nugetContentPath, "lib/netstandard2.0");
+                var dllsource = Path.Combine(nugetContentPath, "lib/netstandard3.0");
                 var dlltarget = Path.GetFullPath(Path.Combine(PackagesPath, nuspec.GetId(), nuspec.GetVersion().ToNormalizedString()));
 
                 Directory.CreateDirectory(dlltarget);
