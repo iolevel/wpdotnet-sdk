@@ -128,25 +128,29 @@ namespace PeachPied.WordPress.Build.Plugin
                     foreach (var line in File.ReadLines(fname))
                     {
                         Match m;
-                        if ((m = Regex.Match(line, @"^\s*==+\s+(?<Name>[^=]+)==+\s*")).Success)
+                        if ((m = Regex.Match(line, @"^\s*==+\s*(?<Name>[^=]+)==+\s*$")).Success)
                         {
+                            var value = m.Groups["Name"].Value.Trim();
                             if (!meta.ContainsKey("title"))
                             {
-                                meta["title"] = m.Groups["Name"].Value.Trim();
+                                meta["title"] = value;
                             }
                             else
                             {
-                                section = m.Groups["Name"].Value.Trim();
+                                section = value;
                                 sections[section] = "";
                             }
                         }
                         else if (section == null)
                         {
-                            if ((m = Regex.Match(line, @"^(?<Tag>[a-zA-Z ]+):[ \t]*(?<Value>.+)$")).Success)
+                            if ((m = Regex.Match(line, @"^(?<Tag>[a-zA-Z ]+):[ \t]*(?<Value>.*)$")).Success)
                             {
-                                meta[m.Groups["Tag"].Value.Trim()] = m.Groups["Value"].Value.Trim();
-                                Log.LogMessage(m.Value, MessageImportance.High);
-                                continue;
+                                var value = m.Groups["Value"].Value.Trim();
+                                if (value.Length != 0)
+                                {
+                                    meta[m.Groups["Tag"].Value.Trim()] = value;
+                                    Log.LogMessage(m.Value, MessageImportance.High);
+                                }
                             }
                             else if (!string.IsNullOrWhiteSpace(line))
                             {
