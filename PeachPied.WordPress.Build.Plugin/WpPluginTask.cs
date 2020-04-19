@@ -128,7 +128,7 @@ namespace PeachPied.WordPress.Build.Plugin
                     foreach (var line in File.ReadLines(fname))
                     {
                         Match m;
-                        if (section == null && !meta.ContainsKey("title") && (m = Regex.Match(line, @"^==+\s+(?<Name>[a-zA-Z\(\) ]+)==+")).Success)
+                        if (section == null && !meta.ContainsKey("title") && (m = Regex.Match(line, @"^\s*==+\s+(?<Name>[a-zA-Z\(\) ]+)==+\s*")).Success)
                         {
                             meta["title"] = m.Groups["Name"].Value.Trim();
                         }
@@ -137,7 +137,7 @@ namespace PeachPied.WordPress.Build.Plugin
                             meta[m.Groups["Tag"].Value.Trim()] = m.Groups["Value"].Value.Trim();
                             Log.LogMessage(m.Value, MessageImportance.High);
                         }
-                        else if ((m = Regex.Match(line, @"^==\s+(?<Name>[a-zA-Z ]+)==$")).Success)
+                        else if ((m = Regex.Match(line, @"^\s*==\s+(?<Name>[a-zA-Z ]+)==\s*$")).Success)
                         {
                             section = m.Groups["Name"].Value.Trim();
                             sections[section] = "";
