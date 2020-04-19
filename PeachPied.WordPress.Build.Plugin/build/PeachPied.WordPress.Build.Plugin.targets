@@ -30,6 +30,7 @@
       ProjectPath="$(MSBuildProjectDirectory)"
       WpContentTarget="$(WpContentTarget)"
       VersionSuffix="$(VersionSuffix)"
+      Title="$(Title)"
       WpSlug="$(WpSlug)"
       >
       <Output TaskParameter="Version" PropertyName="wpVersion" />

@@ -96,8 +96,8 @@ namespace PeachPied.WordPress.Build.Plugin
         public override bool Execute()
         {
 
-            var meta = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var sections = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var meta = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            var sections = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
             if (IsPlugin)
             {
@@ -128,9 +128,17 @@ namespace PeachPied.WordPress.Build.Plugin
                     foreach (var line in File.ReadLines(fname))
                     {
                         Match m;
-                        if (section == null && !meta.ContainsKey("title") && (m = Regex.Match(line, @"^\s*==+\s+(?<Name>[a-zA-Z\(\) ]+)==+\s*")).Success)
+                        if ((m = Regex.Match(line, @"^\s*==+\s+(?<Name>[^=]+)==+\s*")).Success)
                         {
-                            meta["title"] = m.Groups["Name"].Value.Trim();
+                            if (!meta.ContainsKey("title"))
+                            {
+                                meta["title"] = m.Groups["Name"].Value.Trim();
+                            }
+                            else
+                            {
+                                section = m.Groups["Name"].Value.Trim();
+                                sections[section] = "";
+                            }
                         }
                         else if (section == null)
                         {
@@ -138,17 +146,13 @@ namespace PeachPied.WordPress.Build.Plugin
                             {
                                 meta[m.Groups["Tag"].Value.Trim()] = m.Groups["Value"].Value.Trim();
                                 Log.LogMessage(m.Value, MessageImportance.High);
+                                continue;
                             }
                             else if (!string.IsNullOrWhiteSpace(line))
                             {
                                 // short description follows tags
                                 Description += (Description != null ? Environment.NewLine : null) + line;
                             }
-                        }
-                        else if ((m = Regex.Match(line, @"^\s*==\s+(?<Name>[a-zA-Z ]+)==\s*$")).Success)
-                        {
-                            section = m.Groups["Name"].Value.Trim();
-                            sections[section] = "";
                         }
                         else if (section != null)
                         {
@@ -201,7 +205,7 @@ namespace PeachPied.WordPress.Build.Plugin
             PackageProjectUrl = (meta.TryGetValue("Plugin URI", out s) || meta.TryGetValue("website", out s) || meta.TryGetValue("theme uri", out s) || meta.TryGetValue("url", out s)) ? s : null;
             PackageTags = (meta.TryGetValue("tags", out s) || sections.TryGetValue("tags", out s)) ? s.Replace(", ", ",") : null;
             Authors = (meta.TryGetValue("Author", out s) || meta.TryGetValue("contributors", out s)) ? s : null;
-            Title = (meta.TryGetValue("Plugin Name", out s) || meta.TryGetValue("title", out s)) ? s : null;
+            Title = string.IsNullOrWhiteSpace(Title) ? (meta.TryGetValue("Plugin Name", out s) || meta.TryGetValue("title", out s)) ? s : null : Title;
 
             // short description
             if (meta.TryGetValue("Description", out s))
@@ -209,7 +213,7 @@ namespace PeachPied.WordPress.Build.Plugin
                 // short description in metadata
                 Description = s;
             }
-            else if (Description != null && sections.TryGetValue("Description", out s))
+            else if (string.IsNullOrWhiteSpace(Description) && sections.TryGetValue("Description", out s))
             {
                 // short description not read from header,
                 // get it from full description section
@@ -227,7 +231,7 @@ namespace PeachPied.WordPress.Build.Plugin
                 //
                 Description = s;
             }
-            
+
             // done
             return true;
         }
