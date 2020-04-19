@@ -132,10 +132,18 @@ namespace PeachPied.WordPress.Build.Plugin
                         {
                             meta["title"] = m.Groups["Name"].Value.Trim();
                         }
-                        else if (section == null && (m = Regex.Match(line, @"^(?<Tag>[a-zA-Z ]+):[ \t]*(?<Value>.+)$")).Success)
+                        else if (section == null)
                         {
-                            meta[m.Groups["Tag"].Value.Trim()] = m.Groups["Value"].Value.Trim();
-                            Log.LogMessage(m.Value, MessageImportance.High);
+                            if ((m = Regex.Match(line, @"^(?<Tag>[a-zA-Z ]+):[ \t]*(?<Value>.+)$")).Success)
+                            {
+                                meta[m.Groups["Tag"].Value.Trim()] = m.Groups["Value"].Value.Trim();
+                                Log.LogMessage(m.Value, MessageImportance.High);
+                            }
+                            else if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                // short description follows tags
+                                Description += (Description != null ? Environment.NewLine : null) + line;
+                            }
                         }
                         else if ((m = Regex.Match(line, @"^\s*==\s+(?<Name>[a-zA-Z ]+)==\s*$")).Success)
                         {
@@ -194,8 +202,32 @@ namespace PeachPied.WordPress.Build.Plugin
             PackageTags = (meta.TryGetValue("tags", out s) || sections.TryGetValue("tags", out s)) ? s.Replace(", ", ",") : null;
             Authors = (meta.TryGetValue("Author", out s) || meta.TryGetValue("contributors", out s)) ? s : null;
             Title = (meta.TryGetValue("Plugin Name", out s) || meta.TryGetValue("title", out s)) ? s : null;
-            Description = (meta.TryGetValue("Description", out s) || sections.TryGetValue("Description", out s)) ? s : null;
 
+            // short description
+            if (meta.TryGetValue("Description", out s))
+            {
+                // short description in metadata
+                Description = s;
+            }
+            else if (Description != null && sections.TryGetValue("Description", out s))
+            {
+                // short description not read from header,
+                // get it from full description section
+                var emptyline = new Regex(@"^\s+$", RegexOptions.CultureInvariant | RegexOptions.Multiline);
+
+                // normalize whitespaces,
+                // take first paragraph
+                s = s.Replace("\r\n", "\n");
+                s = emptyline.Replace(s, "");
+
+                var nl = s.IndexOf("\n\n", StringComparison.Ordinal);
+                if (nl > 0)
+                    s = s.Remove(nl);
+
+                //
+                Description = s;
+            }
+            
             // done
             return true;
         }
