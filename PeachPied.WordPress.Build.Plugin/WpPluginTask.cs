@@ -179,7 +179,7 @@ namespace PeachPied.WordPress.Build.Plugin
                     else if (section == null)
                     {
                         // meta information:
-                        if ((m = Regex.Match(line, @"^(?<Tag>[a-zA-Z ]+):[ \t]*(?<Value>.*)$")).Success)
+                        if ((m = Regex.Match(line, @"^\**(?<Tag>[a-zA-Z ]+):[ \t\*]*(?<Value>.*)$")).Success)
                         {
                             var value = m.Groups["Value"].Value.Trim();
                             if (value.Length != 0)
