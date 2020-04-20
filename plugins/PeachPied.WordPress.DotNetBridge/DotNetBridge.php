@@ -14,6 +14,11 @@ Version: 1.0.1
 
 namespace PeachPied\WordPress\Standard;
 
+if (!defined('PEACHPIE_VERSION'))
+{
+	die("This plugin only works on .NET.");
+}
+
 // call "AppStarted" event to load additional plugins
 
 /** @var \PeachPied\WordPress\Sdk\WpLoader $peachpie_wp_loader  */
