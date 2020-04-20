@@ -39,7 +39,6 @@
       <Output TaskParameter="Authors" PropertyName="Authors" />
       <Output TaskParameter="Title" PropertyName="Title" />
       <Output TaskParameter="Description" PropertyName="PackageDescription" />
-      <Output TaskParameter="PackageIconUrl" PropertyName="wpIconUrl" />
     </WpPluginTask>
   </Target>
 
@@ -54,7 +53,6 @@
       <Copyright>$(Authors)</Copyright>
       <PackageType>wpdotnet-$(WpContentTarget),0.9.960.0</PackageType>
       <PackageLicenseExpression Condition=" '$(PackageLicenseExpression)'=='' ">GPL-2.0-or-later</PackageLicenseExpression>
-      <PackageIconUrl Condition=" '$(wpIconUrl)'!='' ">$(wpIconUrl)</PackageIconUrl>
     </PropertyGroup>
 
     <!-- report properties to the hub -->

@@ -74,12 +74,6 @@ namespace PeachPied.WordPress.Build.Plugin
         [Output]
         public string Description { get; set; }
 
-        /// <summary>
-        /// Optional icon URL from metadata.
-        /// </summary>
-        [Output]
-        public string PackageIconUrl { get; set; }
-
         //[Output]
         //public List<ITaskItem> MarketplaceAssets { get; } = new List<ITaskItem>();
 
@@ -122,60 +116,80 @@ namespace PeachPied.WordPress.Build.Plugin
             foreach (var f in new[] { "metadata.txt", "readme.txt" })
             {
                 var fname = Path.Combine(ProjectPath, f);
-                if (File.Exists(fname))
+                if (!File.Exists(fname))
                 {
-                    string section = null;
-                    foreach (var line in File.ReadLines(fname))
+                    continue;
+                }
+
+                // NOTE: the file can have sections in TXT format or Markdown format
+
+                string title = null;   // first section name
+                string section = null; // current section
+                Regex regex_section = null; // regexp to match section name, determined on first line
+
+                foreach (var line in File.ReadLines(fname))
+                {
+                    if (regex_section == null)
                     {
-                        Match m;
-                        if ((m = Regex.Match(line, @"^\s*==+\s*(?<Name>[^=]+)==+\s*$")).Success)
+                        if (string.IsNullOrWhiteSpace(line))
                         {
-                            var value = m.Groups["Name"].Value.Trim();
-                            if (!meta.ContainsKey("title"))
-                            {
-                                meta["title"] = value;
-                            }
-                            else
-                            {
-                                section = value;
-                                sections[section] = "";
-                            }
+                            continue;
                         }
-                        else if (section == null)
+
+                        // first line:
+                        if (line.StartsWith("# "))
                         {
-                            if ((m = Regex.Match(line, @"^(?<Tag>[a-zA-Z ]+):[ \t]*(?<Value>.*)$")).Success)
-                            {
-                                var value = m.Groups["Value"].Value.Trim();
-                                if (value.Length != 0)
-                                {
-                                    meta[m.Groups["Tag"].Value.Trim()] = value;
-                                    Log.LogMessage(m.Value, MessageImportance.High);
-                                }
-                            }
-                            else if (!string.IsNullOrWhiteSpace(line))
-                            {
-                                // short description follows tags
-                                Description += (Description != null ? Environment.NewLine : null) + line;
-                            }
+                            // ## Name
+                            regex_section = new Regex(@"^#+\s+(?<Name>.+)$", RegexOptions.CultureInvariant); // markdown headers
                         }
-                        else if (section != null)
+                        else if (line.StartsWith("=="))
                         {
-                            sections[section] += line + "\n";
+                            // at least "={2,}"
+                            regex_section = new Regex(@"^\s*==+\s*(?<Name>[^=]+)==+\s*$", RegexOptions.CultureInvariant);
+                        }
+                        else
+                        {
+                            // unknown file format
+                            break;
                         }
                     }
-                }
-            }
 
-            if (IsPlugin)
-            {
-                // icon
-                foreach (var urlformat in new[] { "https://ps.w.org/{0}/assets/icon-256x256.png", "https://ps.w.org/{0}/assets/icon-256x256.jpg", "https://ps.w.org/{0}/assets/icon.svg", "https://ps.w.org/{0}/assets/icon-128x128.png" })
-                {
-                    var url = string.Format(urlformat, WpSlug);
-                    if (CheckUrl(url))
+                    //
+
+                    Match m;
+                    if ((m = regex_section.Match(line)).Success)
                     {
-                        PackageIconUrl = url;
-                        break;
+                        var value = m.Groups["Name"].Value.Trim();
+                        if (title == null)
+                        {
+                            meta["title"] = title =value;
+                        }
+                        else
+                        {
+                            section = value;
+                            sections[section] = "";
+                        }
+                    }
+                    else if (section == null)
+                    {
+                        // meta information:
+                        if ((m = Regex.Match(line, @"^(?<Tag>[a-zA-Z ]+):[ \t]*(?<Value>.*)$")).Success)
+                        {
+                            var value = m.Groups["Value"].Value.Trim();
+                            if (value.Length != 0)
+                            {
+                                meta[m.Groups["Tag"].Value.Trim()] = value;
+                            }
+                        }
+                        else if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            // short description follows tags
+                            Description += (Description != null ? Environment.NewLine : null) + line;
+                        }
+                    }
+                    else
+                    {
+                        sections[section] += line + "\n";
                     }
                 }
             }
@@ -186,22 +200,9 @@ namespace PeachPied.WordPress.Build.Plugin
                 var screenshot = Directory.GetFiles(ProjectPath, "screenshot.*").FirstOrDefault();
                 if (screenshot != null)
                 {
-                    //PackageIconUrl = FeedUrl + "assets/wptheme/" + WpSlug + Path.GetExtension(screenshot);
+                    //PackageIconUrl = "assets/icon" + Path.GetExtension(screenshot);
                 }
             }
-
-            //// readme
-            //var dict = Directory.GetFiles(ProjectPath)  // [.extension, readmepath ]
-            //    .Where(x => Path.GetFileNameWithoutExtension(x).Equals("readme", StringComparison.OrdinalIgnoreCase))
-            //    .ToDictionary(Path.GetExtension, StringComparer.OrdinalIgnoreCase);
-
-            //string readme;
-            //if (dict.TryGetValue(".txt", out readme) || dict.TryGetValue(".md", out readme)) // read .txt if possible
-            //{
-            //    //var remotepath = "assets/" + MarketplaceTarget + "/" + Slug + Path.GetExtension(readme).ToLower();
-            //    //Upload(readme, remotepath);
-            //    MarketplaceAssets.Add(new TaskItem(readme));
-            //}
 
             // properties
             string s;
@@ -258,25 +259,5 @@ namespace PeachPied.WordPress.Build.Plugin
 
             return string.IsNullOrEmpty(suffix) ? prefix : $"{prefix}-{suffix}";
         }
-
-        static bool CheckUrl(string url)
-        {
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "HEAD";
-            try
-            {
-                using (var response = (HttpWebResponse)request.GetResponse())
-                {
-                    if (200 == (int)response.StatusCode)
-                    {
-                        return true;
-                    }
-                }
-            }
-            catch { }
-            return false;
-        }
-
-
     }
 }
