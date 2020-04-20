@@ -218,11 +218,18 @@ namespace PeachPied.WordPress.Build.Plugin
                 // short description in metadata
                 Description = s;
             }
-            else if (string.IsNullOrWhiteSpace(Description) && sections.TryGetValue("Description", out s))
+            
+            if (
+                (string.IsNullOrWhiteSpace(Description) ||  // short description is missing 
+                 Description.StartsWith("Copyright"))       // or it's actuially a short copyright :/
+                && sections.TryGetValue("Description", out s))
             {
                 // short description not read from header,
                 // get it from full description section
                 var emptyline = new Regex(@"^\s+$", RegexOptions.CultureInvariant | RegexOptions.Multiline);
+
+                // trim leading and trailing decoration characters
+                s = s.Trim('-', ' ', '\t', '#');
 
                 // normalize whitespaces,
                 // take first paragraph
