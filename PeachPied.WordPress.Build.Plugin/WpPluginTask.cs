@@ -149,8 +149,9 @@ namespace PeachPied.WordPress.Build.Plugin
                         }
                         else
                         {
-                            // unknown file format
-                            break;
+                            // unknown line,
+                            // some themes and plugins prefixes the initial section with some text
+                            continue;
                         }
                     }
 
@@ -159,7 +160,7 @@ namespace PeachPied.WordPress.Build.Plugin
                     Match m;
                     if ((m = regex_section.Match(line)).Success)
                     {
-                        var value = m.Groups["Name"].Value.Trim();
+                        var value = m.Groups["Name"].Value.Trim(' ', '\t', '#');
                         if (title == null)
                         {
                             meta["title"] = title =value;
