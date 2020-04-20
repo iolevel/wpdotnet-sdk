@@ -112,6 +112,9 @@ namespace PeachPied.WordPress.Build.Plugin
                 }
             }
 
+            // alternative section name regex
+            var altsection = new Regex(@"^\s*##+\s*(?<Name>[^=]+)##+\s*$", RegexOptions.CultureInvariant);
+
             // sections
             foreach (var f in new[] { "metadata.txt", "readme.txt" })
             {
@@ -125,7 +128,7 @@ namespace PeachPied.WordPress.Build.Plugin
 
                 string title = null;   // first section name
                 string section = null; // current section
-                Regex regex_section = null; // regexp to match section name, determined on first line
+                Regex regex_section = null; // regexp to match proper section name, determined on first line
 
                 foreach (var line in File.ReadLines(fname))
                 {
@@ -158,7 +161,9 @@ namespace PeachPied.WordPress.Build.Plugin
                     //
 
                     Match m;
-                    if ((m = regex_section.Match(line)).Success)
+                    if ((((m = regex_section.Match(line)).Success ||
+                          (m = altsection.Match(line)).Success))
+                        && !line.StartsWith("###")) // section, but not markdown h3, h4, ...
                     {
                         var value = m.Groups["Name"].Value.Trim(' ', '\t', '#');
                         if (title == null)
