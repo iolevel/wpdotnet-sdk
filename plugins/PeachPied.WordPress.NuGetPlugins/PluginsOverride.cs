@@ -481,6 +481,18 @@ namespace Peachpied.WordPress.NuGetPlugins
                     return allcaps;
                 }), accepted_args: 3);
                 // defined in PeachPied.WordPress.Standard: // app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
+
+                // ensure "plugins" directory exists, otherwise eventual mkdir() in wp fails
+                if (app.Context.TryGetConstant("WP_PLUGIN_DIR", out var plugindir))
+                {
+                    try { Directory.CreateDirectory(plugindir.ToString(app.Context)); }
+                    catch { }
+                }
+
+                //// ensure "themes" directory exists (always exists)
+                //var themedir = app.Context.Call("get_theme_root");
+                //try { Directory.CreateDirectory(themedir.ToString(app.Context)); }
+                //catch { }
             }));
         }
     }
