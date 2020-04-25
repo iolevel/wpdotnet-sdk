@@ -23,7 +23,7 @@ public class Startup
     public void Configure(IApplicationBuilder app)
     {
         // ...
-        app.UseWordPress(path: "wordpress");
+        app.UseWordPress();
         // ...
     }
 }
@@ -63,7 +63,7 @@ To generate your unique set of `SALT`, feel free to use Daniel Llewellyn's tool 
 
 Note: WordPress expects the MySql database to be running, with the database `dbname` already created. Otherwise you'll get an error. Any of the configuration values can be omitted to use the default value.
 
-### Programically
+### Configuration method
 
 The service can be configured using `AddWordPress` configuration method. First argument is a callback providing options object which can be modified.
 

@@ -64,7 +64,7 @@ The panel provides information about the current .NET runtime version, consumed 
 
 - Permalinks are implicitly enabled through the URL rewriting feature.
 - WordPress debugging is implicitly enabled when running in a *Development* environment.
-- When running on Azure with MySql in App enbaled, the database connection is automatically configured.
+- When running on Azure with MySql in App enabled, the database connection is automatically configured.
 - Response caching and response compression is enabled by default.
 - Most of the original `.php` files are not present on the file system and cannot be edited.
 
