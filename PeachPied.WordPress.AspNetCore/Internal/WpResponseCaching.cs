@@ -28,13 +28,18 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             public CacheKey(HttpContext context)
             {
                 Method = context.Request.Method;
-                Host = context.Request.Host.Value;
-                PathBase = context.Request.PathBase.Value;
-                Path = context.Request.Path.Value;
-                QueryString = context.Request.QueryString.Value;
+                Host = context.Request.Host.Value ?? string.Empty;
+                PathBase = context.Request.PathBase.Value ?? string.Empty;
+                Path = context.Request.Path.Value ?? string.Empty;
+                QueryString = context.Request.QueryString.Value ?? string.Empty;
             }
 
-            public override int GetHashCode() => Method.GetHashCode() ^ Host.GetHashCode() ^ PathBase.GetHashCode() ^ Path.GetHashCode() ^ QueryString.GetHashCode();
+            public override int GetHashCode() =>
+                Method.GetHashCode() ^
+                Host.GetHashCode() ^
+                PathBase.GetHashCode() ^
+                Path.GetHashCode() ^
+                QueryString.GetHashCode();
 
             public override bool Equals(object obj) => obj is CacheKey key && Equals(key);
 
