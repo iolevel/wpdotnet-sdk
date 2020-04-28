@@ -25,7 +25,7 @@ Project file is an XML file with the following content:
 
 > *MyWordPressTheme.msbuildproj:*
 ```xml
-<Project Sdk="PeachPied.WordPress.Build.Plugin/1.0.0-preview1">
+<Project Sdk="PeachPied.WordPress.Build.Plugin/1.0.0-beta970">
   <PropertyGroup>
     <WpContentTarget>themes</WpContentTarget>
   </PropertyGroup>

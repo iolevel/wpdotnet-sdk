@@ -17,7 +17,11 @@ Make sure you have valid credentials to your MySQL server and you have created a
 
 Open or create an ASP NET Core application, version 3.0 or newer.
 
-Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/) (note it is a pre-release package).
+Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/) (note it is a pre-release package):
+
+```shell
+dotnet add package PeachPied.WordPress.AspNetCore --version 1.0.0-beta970
+```
 
 Add WordPress middleware within your request pipeline, in the `Configure` startup method:
 
