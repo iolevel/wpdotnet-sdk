@@ -34,7 +34,7 @@
   </PropertyGroup>
 
   <!-- generate "Sdk.Common.props" file with current Sdk version -->
-  <Target Name="WriteVersionsProps" BeforeTargets="GenerateNuspec">
+  <Target Name="WriteVersionsProps" BeforeTargets="GenerateNuspec;CollectPackageReferences">
     <ItemGroup>
       <_PropsLine Include="&lt;!-- This file has been generated. --&gt;" />
       <_PropsLine Include="&lt;Project xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;" />
@@ -50,7 +50,7 @@
   </Target>
 
   <!-- generate "Sdk.Common.targets" file with current Sdk version -->
-  <Target Name="WriteVersionsTargets" BeforeTargets="GenerateNuspec">
+  <Target Name="WriteVersionsTargets" BeforeTargets="GenerateNuspec;CollectPackageReferences">
     <ItemGroup>
       <_TargetsLine Include="&lt;!-- This file has been generated. --&gt;" />
       <_TargetsLine Include="&lt;Project xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;" />
