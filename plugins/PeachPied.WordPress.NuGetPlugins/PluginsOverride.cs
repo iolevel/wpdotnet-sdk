@@ -15,6 +15,7 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using Pchp.Core;
+using Pchp.Core.Utilities;
 using Peachpied.WordPress.NuGetPlugins.Protocol;
 using PeachPied.WordPress.Standard;
 
@@ -339,7 +340,14 @@ namespace Peachpied.WordPress.NuGetPlugins
 
                 case "hot_tags":
                 case "hot_categories":
-                    return PhpValue.Null;
+                    // // stdClass { "name" => array("name", "slug", "count") }
+                    // return PhpValue.FromClass(
+                    //     new PhpArray()
+                    //     {
+
+                    //     }.AsStdClass()
+                    // );
+                    return false; // -> use regular WP API
 
                 default:
                     throw new ArgumentException(nameof(action));
