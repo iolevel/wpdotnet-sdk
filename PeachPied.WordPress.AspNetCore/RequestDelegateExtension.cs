@@ -105,6 +105,13 @@ namespace Microsoft.AspNetCore.Builder
 
             // $peachpie-wp-loader : WpLoader
             ctx.Globals["peachpie_wp_loader"] = PhpValue.FromClass(loader);
+
+            // workaround HTTPS under proxy,
+            // set $_SERVER['HTTPS'] = 'on'
+            if (ctx.GetHttpContext().Request.Headers["X-Forwarded-Proto"] == "https")
+            {
+                ctx.Server["HTTPS"] = "on";
+            }
         }
 
         /// <summary>
