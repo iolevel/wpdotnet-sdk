@@ -51,7 +51,7 @@
       <Version Condition=" '$(wpVersion)' != '' ">$(wpVersion)</Version>
       <PackageVersion>$(Version)</PackageVersion>
       <Copyright>$(Authors)</Copyright>
-      <PackageType>wpdotnet-$(WpContentTarget),0.9.970.0</PackageType>
+      <PackageType>wpdotnet-$(WpContentTarget),0.9.980.0</PackageType>
       <PackageLicenseExpression Condition=" '$(PackageLicenseExpression)'=='' ">GPL-2.0-or-later</PackageLicenseExpression>
     </PropertyGroup>
 
