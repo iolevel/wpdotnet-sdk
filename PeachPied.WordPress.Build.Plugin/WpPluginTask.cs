@@ -247,7 +247,6 @@ namespace PeachPied.WordPress.Build.Plugin
         /// </summary>
         public override bool Execute()
         {
-
             var meta = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
             var sections = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
@@ -266,7 +265,15 @@ namespace PeachPied.WordPress.Build.Plugin
                         }
                     }
 
-                    if (meta.ContainsKey("version") && meta.ContainsKey("plugin name")) break;
+                    if (meta.ContainsKey("version") && meta.ContainsKey("plugin name"))
+                    {
+                        if (meta.TryGetValue("description", out var shortdescription))
+                        {
+                            Description = shortdescription;
+                        }
+
+                        break;
+                    }
                 }
             }
 
@@ -281,7 +288,10 @@ namespace PeachPied.WordPress.Build.Plugin
 
                 if (TryParseReadmeTxt(File.ReadLines(fname), meta, sections, out var shortdesc))
                 {
-                    Description = shortdesc;
+                    if (string.IsNullOrEmpty(Description) && !string.IsNullOrEmpty(shortdesc))
+                    {
+                        Description = shortdesc;
+                    }
                 }
             }
 
@@ -302,7 +312,12 @@ namespace PeachPied.WordPress.Build.Plugin
             PackageTags = (meta.TryGetValue("tags", out s) || sections.TryGetValue("tags", out s)) ? NormalizeTagList(s) : null;
             Authors = (meta.TryGetValue("Author", out s) || meta.TryGetValue("contributors", out s)) ? s : null;
             Title = string.IsNullOrWhiteSpace(Title) ? (meta.TryGetValue("Plugin Name", out s) || meta.TryGetValue("title", out s)) ? s : null : Title;
-            Description ??= string.Empty;
+
+            if (string.IsNullOrWhiteSpace(Description))
+            {
+                // description cannot be empty
+                Description = Title;
+            }
 
             // done
             return true;
