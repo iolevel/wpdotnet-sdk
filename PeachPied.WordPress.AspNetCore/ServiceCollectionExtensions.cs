@@ -22,7 +22,9 @@ namespace Microsoft.AspNetCore.Builder
             }
 
             // 
-            services.AddPeachpie();
+            services.AddPhp(options =>
+            {
+            });
             services.Configure(configure);
 
             //

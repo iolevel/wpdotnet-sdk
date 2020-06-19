@@ -23,6 +23,7 @@
       wp-content/plugins/akismet/**;
       wp-content/plugins/**/Tests/**;
       **/jetpack-autoloader/src/*.php;
+      **/SplFixedArray.php;
       **/Composer/Installers/*.php
       " />
     <Content Include="**" Exclude="
