@@ -81,7 +81,7 @@
   <ItemGroup Condition=" '$(PhpRelativePath)'!='' ">
 
     <ProjectReference Include="$(MSBuildThisFileDirectory)../../wordpress/PeachPied.WordPress.msbuildproj" Private="false" Condition=" '$(WpDotNetVersion)'=='Current' " />
-    <PackageReference Include="PeachPied.WordPress" Version="$(WpDotNetVersion)" Condition=" '$(WpDotNetVersion)'!='Current' " ExcludeAssets="contentFiles" />
+    <PackageReference Include="PeachPied.WordPress" Version="[$(WpDotNetVersion)]" Condition=" '$(WpDotNetVersion)'!='Current' " ExcludeAssets="contentFiles" />
 
     <!-- include plugin files as contentFiles -->
     <Content Update="**" CopyToOutputDirectory="PreserveNewest">
