@@ -196,8 +196,8 @@ namespace Peachpied.WordPress.NuGetPlugins
         // Since PeachPie runtime changes a lot until <= 1.0.0, we need the exact version
         // so even plugins have to be compiled using the same runtime version as wpdotnet
 
-        static string[] WpPluginPackageType => new[] { "wpdotnet-plugins,0.9.990.0" };
-        static string[] WpThemePackageType => new[] { "wpdotnet-themes,0.9.990.0" };
+        static string WpPluginPackageType => $"wpdotnet-plugins-{PackagesHelper.InformationalVersion}"; // matches the value in PachPied.WordPress.Build.Plugin.targets
+        static string WpThemePackageType => $"wpdotnet-themes-{PackagesHelper.InformationalVersion}";   // matches the value in PachPied.WordPress.Build.Plugin.targets
 
         SourceRepository SourceRepository
         {
@@ -243,7 +243,7 @@ namespace Peachpied.WordPress.NuGetPlugins
             return p;
         }
 
-        IEnumerable<RawPackageSearchMetadata> SearchFeed(PhpArray wp_args, string[] packageTypes, out int page, out int per_page, out int total_count)
+        IEnumerable<RawPackageSearchMetadata> SearchFeed(PhpArray wp_args, string packageTypeTag, out int page, out int per_page, out int total_count)
         {
             var log = NuGet.Common.NullLogger.Instance;
 
@@ -252,13 +252,13 @@ namespace Peachpied.WordPress.NuGetPlugins
 
             // arr[browse|search|author|tag]
             var browse = wp_args["browse"].AsString();
-            var searchTerm = wp_args["search"].AsString() ?? string.Empty;
+            var searchTerm = $"{wp_args["search"].AsString()} tags:{packageTypeTag}";
 
             var author = wp_args["author"].AsString();
             if (author != null) searchTerm += " author:" + author;  // todo: quotes
 
             var tag = wp_args["tag"].AsString();
-            if (tag != null) searchTerm += " tag:" + tag; // todo: quotes
+            if (tag != null) searchTerm += " tags:" + tag; // todo: quotes
 
             if (browse != null)
             {
@@ -277,7 +277,7 @@ namespace Peachpied.WordPress.NuGetPlugins
 
             var searchFilter = new SearchFilter(includePrerelease: browse == "beta" || true/*always beta*/)
             {
-                PackageTypes = packageTypes,
+                //PackageTypes = packageTypes,
             };
 
             //var results = PackageSearchResource.SearchAsync(
