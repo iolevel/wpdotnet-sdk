@@ -169,6 +169,11 @@ namespace Microsoft.AspNetCore.Builder
                 app.UseMiddleware<WpResponseCacheMiddleware>(new MemoryCache(new MemoryCacheOptions { }), cachepolicy);
             }
 
+            if (options.LegacyPluginAssemblies != null)
+            {
+                options.LegacyPluginAssemblies.ForEach(name => Context.AddScriptReference(Assembly.Load(new AssemblyName(name))));
+            }
+
             var wploader = new WpLoader(plugins:
                 CompositionHelpers.GetPlugins(options.CompositionContainers.CreateContainer(), app.ApplicationServices)
                 .Concat(plugins.GetPlugins(app.ApplicationServices)));
@@ -192,12 +197,10 @@ namespace Microsoft.AspNetCore.Builder
                 Apply(ctx, options, wploader);
             });
 
-            app.UsePhp(new PhpRequestOptions()
-            {
-                ScriptAssembliesName = options.LegacyPluginAssemblies?.ToArray(),
-                BeforeRequest = startup,
-                RootPath = root,
-            });
+            app.UsePhp(
+                prefix: default, // NOTE: maybe we can handle only index.php and wp-admin/*.php ?
+                configureContext: startup,
+                rootPath: root);
 
             // static files
             app.UseStaticFiles(new StaticFileOptions() { FileProvider = fprovider });
