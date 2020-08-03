@@ -252,7 +252,13 @@ namespace Peachpied.WordPress.NuGetPlugins
 
             // arr[browse|search|author|tag]
             var browse = wp_args["browse"].AsString();
-            var searchTerm = wp_args["search"].AsString() ?? wp_args["author"].AsString() ?? wp_args["tag"].AsString() ?? string.Empty;
+            var searchTerm = wp_args["search"].AsString() ?? string.Empty;
+
+            var author = wp_args["author"].AsString();
+            if (author != null) searchTerm += " author:" + author;  // todo: quotes
+
+            var tag = wp_args["tag"].AsString();
+            if (tag != null) searchTerm += " tag:" + tag; // todo: quotes
 
             if (browse != null)
             {
