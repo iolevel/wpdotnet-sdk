@@ -41,7 +41,7 @@
       compile all .php files except files representing tests or CLI tools
     -->
     <Compile Include="**/*.php" Exclude="$(WpExclude);" />
-    <Content Include="**" Exclude="$(WpExclude);*.msbuildproj;*.msbuildproj.user" />
+    <Content Include="**" Exclude="$(WpExclude);*.msbuildproj;*.msbuildproj.user;*.msbuildproj.vspscc" />
   </ItemGroup>
 
   <!-- signing -->
