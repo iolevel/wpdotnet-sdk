@@ -47,12 +47,11 @@
       <PackageCopyToOutput>true</PackageCopyToOutput>
       <Link>wordpress\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
+    <None Include="license.txt" Pack="true" PackagePath=""/>
   </ItemGroup>
   <ItemGroup>
     <!--PackageReference Include="Peachpie.RequestHandler" Version="$(PeachpieVersion)" /-->
     <ProjectReference Include="..\PeachPied.WordPress.Standard\PeachPied.WordPress.Standard.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 </Project>
