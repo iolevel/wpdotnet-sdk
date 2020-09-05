@@ -75,4 +75,5 @@ The panel provides information about the current .NET runtime version, consumed 
 ## Related links
 
 - https://wpdotnet.peachpie.io/
-- https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/ [![NuGet](https://img.shields.io/nuget/v/PeachPied.WordPress.AspNetCore.svg)](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/)
+- https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/   
+[![NuGet](https://img.shields.io/nuget/v/PeachPied.WordPress.AspNetCore.svg)](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/)
