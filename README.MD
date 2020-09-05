@@ -118,6 +118,6 @@ Therefore, if everything works as it should, you will see the standard unchanged
 
 ## Prerequisites
 
-- .NET Core 2.1 or newer
+- .NET Core 3.1 or newer
 - MySQL server
 - Optionally - Visual Studio 2017 or Visual Studio Code using the official Peachpie for VSCode extension available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=iolevel.peachpie-vscode)

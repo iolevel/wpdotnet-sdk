@@ -1,7 +1,6 @@
 <?php
 /**
  * @package PeachPied.WordPress.DotNetBridge
- * @version 1.0.0
  */
 /*
 Plugin Name: PeachPied.WordPress.DotNetBridge
@@ -9,7 +8,6 @@ Plugin URI: https://github.com/iolevel/wpdotnet-sdk
 Description: Plugin that provides bridge between WordPress API and .NET.
 Tags: peachpie, wpdotnet
 Author: iolevel s.r.o.
-Version: 1.0.0
 */
 
 namespace PeachPied\WordPress\Standard;
