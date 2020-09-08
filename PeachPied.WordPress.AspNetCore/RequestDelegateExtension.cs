@@ -32,7 +32,7 @@ namespace Microsoft.AspNetCore.Builder
         {
             var req = context.HttpContext.Request;
             var subpath = req.Path.Value;
-            if (subpath != "/")
+            if (subpath != "/" && subpath.Length != 0)
             {
                 if (subpath.IndexOf("wp-content/", StringComparison.Ordinal) != -1 ||   // it is in the wp-content -> definitely a file
                     files.GetFileInfo(subpath).Exists ||                            // the script is in the file system
