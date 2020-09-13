@@ -15,6 +15,7 @@
 
       See https://github.com/iolevel/wpdotnet-sdk for more details.
     </Description>
+    <PackageReadmePath>$(MSBuildProjectDirectory)/../README.MD</PackageReadmePath>
   </PropertyGroup>
 
   <ItemGroup>

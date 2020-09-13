@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <GeneratePackageOnBuild Condition="'$(IsPackable)' != 'false'">true</GeneratePackageOnBuild>
+    <ManifestFullPath Condition=" '$(ManifestFullPath)'=='' ">$(MSBuildProjectDirectory)/$(MSBuildProjectName).manifest</ManifestFullPath>
   </PropertyGroup>
 
   <!-- Pack assets into NuGet -->
   <ItemGroup>
     <None Include="$(PackageIconPath)" Pack="true" PackagePath="$(PackageIcon)" Condition=" Exists('$(PackageIconPath)') "/>
     <None Include="$(PackageReadmePath)" Pack="true" PackagePath="$(PackageReadme)" Condition=" Exists('$(PackageReadmePath)') "/>
+    <None Include="$(ManifestFullPath)" Pack="true" PackagePath="$(PackageId).manifest" Condition=" Exists('$(ManifestFullPath)') " />
   </ItemGroup>
 
 </Project>
