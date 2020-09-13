@@ -39,6 +39,7 @@
     <PackageReadme>assets/$([System.IO.Path]::GetFileName(&quot;$(PackageReadmePath)&quot;))</PackageReadme>
     <PackageLicenseExpression>GPL-2.0-or-later</PackageLicenseExpression >
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Authors>wordpress.org, iolevel</Authors>
   </PropertyGroup>
 
 </Project>
