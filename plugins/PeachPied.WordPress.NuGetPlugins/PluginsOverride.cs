@@ -166,6 +166,10 @@ namespace Peachpied.WordPress.NuGetPlugins
         public string version;
         public string preview_url;
         public string author;
+        public string requires; // empty or wp version
+        public bool compatible_wp; // set by wp
+        public string requires_php; // empty 
+        public bool compatible_php; // set by wp
         public string screenshot_url;
         public double rating = 100;
         public long num_ratings = 0;
