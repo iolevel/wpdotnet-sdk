@@ -31,7 +31,7 @@ public class Startup
 
 ## Configuration
 
-### `appsettings.json`
+### appsettings.json
 
 WordPress on .NET can be configured using the standard [`appsettings.json`](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/), you are no longer editing the `wp-config.php` source file.
 
@@ -61,11 +61,11 @@ WordPress on .NET can be configured using the standard [`appsettings.json`](http
 
 To generate your unique set of `SALT`, feel free to use Daniel Llewellyn's tool on https://wpdotnet-salts.azurewebsites.net/.
 
-Note: WordPress expects the MySql database to be running, with the database `dbname` already created. Otherwise you'll get an error. Any of the configuration values can be omitted to use the default value.
+Note: WordPress expects the MySql database to be running, with the database `dbname` (`wordpress` by default) already created. Any of the configuration values can be omitted to use the default value.
 
-### Configuration method
+### ConfigureServices method
 
-The service can be configured using `AddWordPress` configuration method. First argument is a callback providing options object which can be modified.
+The service can be configured using `AddWordPress` configuration method. First argument is a callback providing options to be modified.
 
 ```C#
 public class Startup
