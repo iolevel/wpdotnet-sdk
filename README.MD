@@ -43,15 +43,17 @@ WordPress on .NET can be configured using the standard [`appsettings.json`](http
     "dbuser":        "root",
     "dbname":        "wordpress",
     "dbTablePrefix": "wp_",
+    "siteUrl":       "",
+    "homeUrl":       "",
     "SALT": {
-      "AUTH_KEY":         "r(EoMbKEvlg){+!T42fh-e+~IGj-4q}g8HHB9hjbiC0J*ySU1Y*3z[3c}F;6=TA5",
-      "AUTH_SALT":        "q0#AzvJ*[4~Bexa9*M(sC_#pDuGQBdjL1}j*RilSe0ku]P~KuTir[7PxjE:4)_zR",
-      "LOGGED_IN_KEY":    "!AAienFSridCUzF(v}m#}_;+t%Rclg;mOPKwe;w7dN0M{d,]?8V+TRW_UG)tSswa",
-      "LOGGED_IN_SALT":   "C=(4(8WPMeRu_h?g7!ddI*P:+SYU=3C%g)92oV}-y5tE0r?DHWl!fjPOp=bjx2YJ",
-      "NONCE_KEY":        "Z[e37@=y)m.CHa:OSldh#RT@nIZxKYGwu!/hd:vK#^{_Ec7e{KNb(G.8ch/MkH(d",
-      "NONCE_SALT":       ";v7Wv/BV)Pz{W,FaAKC0buH*5U4:g]qn~;b94x]f8=lm6!yyYSbW5*2y*kRXXEF5",
-      "SECURE_AUTH_KEY":  "pc}_Pv52,m=j9l#llSkLVQib.Zm!;9FRzg:{(G]tM8}[}]pPDwB4k{xV+!e)9lmR",
-      "SECURE_AUTH_SALT": "#n]+o^w/%-~MVzf{AUuxUAwF[n03r{kr^r1V?wqQ?Vjt}!0HSkCB-):u-ra1%tB="
+      "AUTH_KEY":         "r(EoMbKEvlg)",
+      "AUTH_SALT":        "q0#AzvJ*[4~B",
+      "LOGGED_IN_KEY":    "!AAienFSridC",
+      "LOGGED_IN_SALT":   "C=(4(8WPMeRu",
+      "NONCE_KEY":        "Z[e37@=y)m.C",
+      "NONCE_SALT":       ";v7Wv/BV)Pz{",
+      "SECURE_AUTH_KEY":  "pc}_Pv52,m=j",
+      "SECURE_AUTH_SALT": "#n]+o^w/%-~M"
     },
     "constants": {
     }
@@ -99,9 +101,9 @@ The solution provides all of WordPress as a .NET standard assembly. Consisting o
 
 - **app** is a demo project that runs WordPress as a part of ASP.NET Core application.
 - **PeachPied.WordPress** contains the sources of WordPress that are compiled into a single .NET standard assembly (`PeachPied.WordPress.dll`). Together with its content files it is packed into a NuGet package `PeachPied.WordPress`. The project contains additional files:
-  - `wp-content/mu-plugins/peachpie-api.php` is a "must-use" plugin exposing the WordPress API to .NET.
   - `wp-dummy.php` declaring dummy classes required but not used by most plugins to be compiled successfully.
-- **PeachPied.WordPress.Standard** defines an abstraction layer providing .NET interfaces over the PHP WordPress instance. The interface is implemented and provided by `peachpie-api.php` above.
+- **PeachPied.WordPress.DotNetBridge** is a "must-use" plugin exposing the WordPress API to .NET.
+- **PeachPied.WordPress.Standard** defines an abstraction layer providing predefined PHP constants, and .NET interfaces that get implemented and called by the **DotNetBridge** plugin.
 - **PeachPied.WordPress.AspNetCore** is an ASP.NET Core request handler that configures the ASP.NET pipeline to pass requests to compiled `WordPress` scripts. The configuration includes response caching, short URL mapping, various .NET enhancements and the settings of the WordPress database.
 
 This project contains the complete source code of WordPress with the additional "must use" WordPress plugin that exposes the PHP API to .NET. The purpose is for this code to be compiled by PeachPie, resulting in the output running purely on Microsoft .NET Core. 
