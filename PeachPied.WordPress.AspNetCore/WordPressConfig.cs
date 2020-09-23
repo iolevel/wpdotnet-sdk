@@ -45,7 +45,7 @@ namespace PeachPied.WordPress.AspNetCore
             get => _siteUrl;
             set
             {
-                if (value != null)
+                if (!string.IsNullOrEmpty(value))
                 {
                     if (!value.StartsWith("http"))
                         throw new ArgumentException("SiteUrl must start with http:// or https://.");
@@ -70,7 +70,7 @@ namespace PeachPied.WordPress.AspNetCore
             get => _homeUrl;
             set
             {
-                if (value != null)
+                if (!string.IsNullOrEmpty(value))
                 {
                     if (!value.StartsWith("http"))
                         throw new ArgumentException("HomeUrl must start with http:// or https://.");
