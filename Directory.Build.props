@@ -32,8 +32,8 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/iolevel/wpdotnet-sdk</RepositoryUrl>
     <PackageProjectUrl>https://github.com/iolevel/wpdotnet-sdk</PackageProjectUrl>
-    <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts</PackageOutputPath>
-    <PackageIconPath>$(MSBuildThisFileDirectory)wpdotnet.png</PackageIconPath>
+    <PackageOutputPath Condition=" '$(PackageOutputPath)'=='' ">$(MSBuildThisFileDirectory)artifacts</PackageOutputPath>
+    <PackageIconPath Condition=" '$(PackageIconPath)'=='' ">$(MSBuildThisFileDirectory)wpdotnet.png</PackageIconPath>
     <PackageIcon>assets/$([System.IO.Path]::GetFileName(&quot;$(PackageIconPath)&quot;))</PackageIcon>
     <PackageReadmePath>$(MSBuildProjectDirectory)/readme.md</PackageReadmePath>
     <PackageReadme>assets/$([System.IO.Path]::GetFileName(&quot;$(PackageReadmePath)&quot;))</PackageReadme>
