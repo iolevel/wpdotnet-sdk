@@ -46,6 +46,12 @@ The following tutorial is shown in Visual Studio 2019.
 5. Prepare the MySQL server. Make sure you have MySQL server running:
 
     - MySQL server is installed and running. It is up to you whether to install it locally, run it in a virtualized environment, such as Docker, or elsewhere.
+
+    Example command to run MySql using docker:
+    ```shell
+    docker run -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=wordpress -p 3306:3306 -d mysql:latest
+    ```
+
     - A database is created. It can be an empty database or a duplicate of an existing database with WordPress.
     - Ensure you have a valid username, password, and server address.
 
