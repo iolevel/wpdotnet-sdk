@@ -31,6 +31,7 @@
       bin/**;
       .vs/**;
       .vscode/**;
+      *.manifest;readme.html;
       wp-admin/**/*.php;
       wp-includes/**/*.php;
       wp-content/cache/**;
@@ -41,9 +42,9 @@
       wp-content/plugins/*.php;
       wp-content/themes/**/*.php;
       *.php;
-      *.msbuildproj
+      *.msbuildproj;*.msbuildproj.user;
       " CopyToOutputDirectory="PreserveNewest">
-      <PackagePath>contentFiles/any/netcoreapp3.0/wordpress/</PackagePath>
+      <PackagePath>contentFiles/any/$(TargetFramework)/wordpress/</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
       <Link>wordpress\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
