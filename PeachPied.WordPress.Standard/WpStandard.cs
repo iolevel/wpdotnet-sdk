@@ -43,6 +43,11 @@ namespace PeachPied.WordPress.Standard
         public const bool WP_CACHE = false;
 
         /// <summary>
+        /// Relative path to the 'wp-includes'. Cannot be changed.
+        /// </summary>
+        public const string WPINC = "wp-includes";
+
+        /// <summary>
         /// Overwrite how installing plugins is handled, skips the fs check.
         /// </summary>
         public const string FS_METHOD = "direct";
@@ -67,6 +72,6 @@ namespace PeachPied.WordPress.Standard
         /// </summary>
         public const int AUTOSAVE_INTERVAL = 60;
 
-        // TODO: ABSPATH, WPINC, ... // frequently used constants that can be resolved statically
+        // TODO: ABSPATH, ... // frequently used constants that can be resolved statically
     }
 }
