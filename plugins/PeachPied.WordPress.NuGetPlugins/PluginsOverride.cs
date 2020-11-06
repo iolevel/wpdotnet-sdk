@@ -493,8 +493,8 @@ namespace Peachpied.WordPress.NuGetPlugins
                 }));
                 app.AddFilter("user_has_cap", new Func<PhpArray, PhpArray, PhpArray, PhpArray>((allcaps, cap, args) =>
                 {
-                    // remove 'update_core'
                     allcaps["update_core"] = false;
+                    allcaps["update_php"] = false;
                     //
                     return allcaps;
                 }), accepted_args: 3);
