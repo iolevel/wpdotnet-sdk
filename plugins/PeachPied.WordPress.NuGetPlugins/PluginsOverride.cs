@@ -498,6 +498,15 @@ namespace Peachpied.WordPress.NuGetPlugins
                     //
                     return allcaps;
                 }), accepted_args: 3);
+                app.AddFilter("pre_site_transient_update_core", new Func<stdClass>(() =>
+                {
+                    return new PhpArray()
+                    {
+                        { "last_checked", Pchp.Library.DateTime.DateTimeFunctions.time() },
+                        { "version_checked", app.Context.Globals["wp_version"].ToString() },
+                    }.ToObject();
+
+                }), accepted_args: 0);
                 // defined in PeachPied.WordPress.Standard: // app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
 
                 // ensure "plugins" directory exists, otherwise eventual mkdir() in wp fails
