@@ -500,6 +500,8 @@ namespace Peachpied.WordPress.NuGetPlugins
                 }), accepted_args: 3);
                 app.AddFilter("pre_site_transient_update_core", new Func<stdClass>(() =>
                 {
+                    // TODO: wpdotnet check for version update
+
                     return new PhpArray()
                     {
                         { "last_checked", Pchp.Library.DateTime.DateTimeFunctions.time() },
