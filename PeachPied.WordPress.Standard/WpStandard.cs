@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Pchp.Core;
 
 namespace PeachPied.WordPress.Standard
 {
@@ -72,6 +73,12 @@ namespace PeachPied.WordPress.Standard
         /// </summary>
         public const int AUTOSAVE_INTERVAL = 60;
 
-        // TODO: ABSPATH, ... // frequently used constants that can be resolved statically
+        /// <summary>
+        /// WordPress root path including the trailing slash. Always "/" at the end.
+        /// </summary>
+        [PhpConstant("{RootPath}/")]
+        public static readonly Func<Context, string> ABSPATH = (ctx) => ctx.RootPath + "/";
+
+        // TODO: frequently used constants that can be resolved statically
     }
 }

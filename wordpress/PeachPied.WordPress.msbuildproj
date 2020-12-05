@@ -4,14 +4,14 @@
   </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <NoWarn>PHP0125,PHP5011,PHP6002,PHP5018,PHP5026</NoWarn>
+    <NoWarn>PHP0125,PHP5011,PHP6002,PHP5018,PHP5026,PHP6006</NoWarn>
     <Copyright>WordPress</Copyright>
     <Description>
       Use "Peachpied.WordPress.AspNetCore" package to use the WordPress within ASP.NET Core application.
       
       This package is a dependency and does not work standalone.
     </Description>
-    <DefineConstants>OBJECT="OBJECT";</DefineConstants>
+    <DefineConstants>$(DefineConstants);OBJECT="OBJECT";</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.php" Exclude="
