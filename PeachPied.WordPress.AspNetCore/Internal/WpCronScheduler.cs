@@ -17,8 +17,6 @@ namespace PeachPied.WordPress.AspNetCore.Internal
 
         public Action<Context> Startup { get; }
 
-        static string ScriptPath = "wp-cron.php";
-
         public string RootPath { get; }
 
         readonly CancellationTokenSource _cancel = new CancellationTokenSource();
@@ -38,7 +36,8 @@ namespace PeachPied.WordPress.AspNetCore.Internal
                 {
                     ctx.RootPath = ctx.WorkingDirectory = RootPath;        // wordpress content files location
                     Startup(ctx);                   // sets the settings constants
-                    ctx.Include("", ScriptPath);  // include 'wp-cron.php'
+                    ctx.Include("", "wp-load.php", once: true); // include 'wp-load.php'
+                    ctx.Include("", "wp-cron.php");             // include 'wp-cron.php'
                 }
             }
             catch
