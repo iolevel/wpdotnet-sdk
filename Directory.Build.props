@@ -8,7 +8,7 @@
     <LangVersion>latest</LangVersion>
 
     <!-- common version -->
-    <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">5.5.1</VersionPrefix>
+    <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">5.6.0</VersionPrefix>
     <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">preview4</VersionSuffix>
     <!--PeachpieVersion> specified in global.json </PeachpieVersion-->
 
