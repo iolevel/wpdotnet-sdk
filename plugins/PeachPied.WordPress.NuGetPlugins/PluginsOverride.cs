@@ -271,7 +271,7 @@ namespace Peachpied.WordPress.NuGetPlugins
                     case "featured":
                     case "popular":
                     case "new":         // theme
-                    case "favorites":   // theme
+                    case "favorites":   // theme, wp_args["user"]
                     case "beta":
                     case "recommended": // = premium
                     default:
@@ -501,7 +501,6 @@ namespace Peachpied.WordPress.NuGetPlugins
                 app.AddFilter("pre_site_transient_update_core", new Func<stdClass>(() =>
                 {
                     // TODO: wpdotnet check for version update
-
                     return new PhpArray()
                     {
                         { "last_checked", Pchp.Library.DateTime.DateTimeFunctions.time() },
@@ -509,6 +508,33 @@ namespace Peachpied.WordPress.NuGetPlugins
                     }.ToObject();
 
                 }), accepted_args: 0);
+                app.AddFilter("site_transient_update_themes", new Func<PhpValue, stdClass>(current =>
+                {
+                    // TODO: wpdotnet check for version update
+                    return new PhpArray()
+                    {
+                        { "last_checked", Pchp.Library.DateTime.DateTimeFunctions.time() },
+                        //{ "checked", [name => version] },
+                        //{ "response", [name => [package, url, new_version]] },
+                        //{ "no_update", [name => [package, url, new_version]] },
+                        //{ "translations", [] },
+                    }.ToObject();
+
+                }), accepted_args: 1);
+                app.AddFilter("site_transient_update_plugins", new Func<PhpValue, stdClass>(current =>
+                {
+                    // TODO: wpdotnet check for version update
+                    return new PhpArray()
+                    {
+                        { "last_checked", Pchp.Library.DateTime.DateTimeFunctions.time() },
+                        //{ "checked", [name => version] },
+                        //{ "response", [name => [package, url, new_version]] },
+                        //{ "no_update", [name => [package, url, new_version]] },
+                        //{ "translations", [] },
+                    }.ToObject();
+
+                }), accepted_args: 1);
+
                 // defined in PeachPied.WordPress.Standard: // app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
 
                 // ensure "plugins" directory exists, otherwise eventual mkdir() in wp fails
