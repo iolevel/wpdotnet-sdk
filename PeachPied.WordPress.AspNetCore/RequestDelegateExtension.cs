@@ -108,6 +108,7 @@ namespace Microsoft.AspNetCore.Builder
 
             // workaround HTTPS under proxy,
             // set $_SERVER['HTTPS'] = 'on'
+            // https://wordpress.org/support/article/administration-over-ssl/#using-a-reverse-proxy
             if (ctx.IsWebApplication && ctx.GetHttpContext().Request.Headers["X-Forwarded-Proto"] == "https")
             {
                 ctx.Server["HTTPS"] = "on";
