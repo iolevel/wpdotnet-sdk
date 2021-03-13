@@ -7,7 +7,7 @@
 
   <PropertyGroup>
     <!-- tells the Sdk to reference WordPress from source as well -->
-    <WpDotNetVersion>Current</WpDotNetVersion>
+    <WpDotNetVersion>current</WpDotNetVersion>
     <BuildPlugin>PeachPied.WordPress.Build.Plugin</BuildPlugin>
   </PropertyGroup>
 
