@@ -74,6 +74,11 @@ namespace PeachPied.WordPress.Standard
         public const int AUTOSAVE_INTERVAL = 60;
 
         /// <summary>
+        /// MySql connection flags.
+        /// </summary>
+        public const int MYSQL_CLIENT_FLAGS = 2048; // MYSQL_CLIENT_SSL
+
+        /// <summary>
         /// WordPress root path including the trailing slash. Always "/" at the end.
         /// </summary>
         [PhpConstant("{RootPath}/")]
