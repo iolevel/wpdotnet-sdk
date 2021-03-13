@@ -20,7 +20,7 @@ Open or create an ASP NET Core application, version 3.0 or newer.
 Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/) (note it is a pre-release package):
 
 ```shell
-dotnet add package PeachPied.WordPress.AspNetCore --version 5.6.0-preview5
+dotnet add package PeachPied.WordPress.AspNetCore --version 5.6.0-preview6
 ```
 
 Add WordPress middleware within your request pipeline, in the `Configure` startup method:
