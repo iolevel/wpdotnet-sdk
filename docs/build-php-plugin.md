@@ -45,14 +45,14 @@ Project file is an XML file with the following content:
 
 > *MyHelloDollyPlugin.msbuildproj:*
 ```xml
-<Project Sdk="PeachPied.WordPress.Build.Plugin/5.6.0-preview6">
+<Project Sdk="PeachPied.WordPress.Build.Plugin/5.7.0-preview6">
 
 </Project>
 ```
 
 For most cases, the project file does not specify anything else as all the properties are defined by default in the Sdk. In case a build property or a build item needs to be altered, add it to your project file.
 
-Note the project file specifies a version after the slash, i.e. `"/5.6.0-preview6"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
+Note the project file specifies a version after the slash, i.e. `"/5.7.0-preview6"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
 
 ## Build the plugin
 
