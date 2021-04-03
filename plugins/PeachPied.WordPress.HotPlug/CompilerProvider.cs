@@ -76,8 +76,10 @@ namespace PeachPied.WordPress.HotPlug
 
         public PhpSyntaxTree CreateSyntaxTree(string filename)
         {
+            using var fstream = File.OpenRead(filename);
+
             return PhpSyntaxTree.ParseCode(
-                SourceText.From(File.OpenRead(filename)),
+                SourceText.From(fstream),
                 new PhpParseOptions(
                     kind: SourceCodeKind.Regular,
                     languageVersion: CoreCompilation.Options.LanguageVersion,
