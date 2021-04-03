@@ -17,10 +17,9 @@ if (!defined('PEACHPIE_VERSION'))
 	die("This plugin only works on .NET.");
 }
 
-// call "AppStarted" event to load additional plugins
+// call "WpLoader::AppStarted" event
 
-/** @var \PeachPied\WordPress\Sdk\WpLoader $peachpie_wp_loader  */
-$peachpie_wp_loader->AppStarted(new class extends WpApp
+WpLoader::AppStarted(new class extends WpApp
 {
 	// just an obbject-oriented shortcuts to call wordpress methods,
 	// could be done through `Context` API in C#  as well:

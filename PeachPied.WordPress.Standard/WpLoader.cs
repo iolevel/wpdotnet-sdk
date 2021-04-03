@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Pchp.Core;
 
 namespace PeachPied.WordPress.Standard
 {
@@ -26,15 +27,27 @@ namespace PeachPied.WordPress.Standard
             }
         }
 
-        /// <summary>
-        /// Invoked by PHP plugin implementation (peachpie-api.php) to bridge into .NET.
-        /// </summary>
-        public virtual void AppStarted(WpApp app)
+        void AppStarted(WpApp app)
         {
             // activate plugins:
             foreach (var plugin in _plugins)
             {
                 plugin.Configure(app);
+            }
+        }
+
+        /// <summary>
+        /// Invoked by PHP plugin implementation (DotNetBridge.php) to pass the WpApp PHP class.
+        /// </summary>
+        public static void AppStarted(Context ctx, WpApp host)
+        {
+            if (ctx.Globals["peachpie_wp_loader"].AsObject() is WpLoader loader)
+            {
+                loader.AppStarted(host);
+            }
+            else
+            {
+                throw new InvalidOperationException();
             }
         }
     }
