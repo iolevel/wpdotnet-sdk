@@ -25,6 +25,7 @@ namespace Microsoft.AspNetCore.Builder
             services.AddPhp(options =>
             {
             });
+
             services.Configure(configure);
 
             //
