@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PeachPied.WordPress.AspNetCore;
+using PeachPied.WordPress.Standard;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -27,6 +26,8 @@ namespace Microsoft.AspNetCore.Builder
             });
 
             services.Configure(configure);
+
+            services.AddSingleton<IWpPluginLogger, PeachPied.WordPress.AspNetCore.Internal.Logger>();
 
             //
             return services;
