@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Pchp.CodeAnalysis;
 using System;
@@ -54,12 +55,23 @@ namespace PeachPied.WordPress.HotPlug
 
         public PhpCompilation CreateCompilation(string assemblyName, IEnumerable<PhpSyntaxTree> sources, bool debug)
         {
-            return (PhpCompilation)CoreCompilation
+            var compilation = (PhpCompilation)CoreCompilation
                     //.WithLangVersion(languageVersion)
                     .WithAssemblyName(assemblyName)
                     .AddSyntaxTrees(sources)
                     //.AddReferences(metadatareferences)
                     ;
+
+            if (debug)
+            {
+                compilation = compilation.WithPhpOptions(compilation.Options.WithOptimizationLevel(OptimizationLevel.Debug).WithDebugPlusMode(true));
+            }
+            else
+            {
+                compilation = compilation.WithPhpOptions(compilation.Options.WithOptimizationLevel(OptimizationLevel.Release));
+            }
+
+            return compilation;
         }
 
         public PhpSyntaxTree CreateSyntaxTree(string filename)
