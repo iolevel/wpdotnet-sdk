@@ -47,7 +47,7 @@ namespace peachserver
             // add wordpress into the pipeline
             // using default configuration from appsettings.json (IConfiguration), section WordPress
             // using empty set of .NET plugins
-            app.UseWordPress(path: null);
+            app.UseWordPress();
 
             app.UseDefaultFiles();
         }
