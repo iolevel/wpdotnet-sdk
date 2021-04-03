@@ -23,8 +23,9 @@ namespace PeachPied.WordPress.Standard
         /// </summary>
         /// <param name="host">Instance of <see cref="CompositionHost"/> providing exported parts.</param>
         /// <param name="provider">Service provider for dependency injection.</param>
+        /// <param name="wpRootPath">The WordPress root path. Location of WordPress installation.</param>
         /// <returns>Enumeration of plugin instances.</returns>
-        public static IEnumerable<IWpPlugin>/*!!*/GetPlugins(CompositionHost host, IServiceProvider provider)
+        public static IEnumerable<IWpPlugin>/*!!*/GetPlugins(CompositionHost host, IServiceProvider provider, string wpRootPath)
         {
             // import providers from composition host:
             IEnumerable<IWpPluginProvider> providers = host != null
@@ -35,7 +36,7 @@ namespace PeachPied.WordPress.Standard
             providers = new[] { new Internal.PluginsProvider() }.Concat(providers);
 
             // create plugins:
-            return providers.SelectMany(p => p.GetPlugins(provider));
+            return providers.SelectMany(p => p.GetPlugins(provider, wpRootPath));
         }
 
         //static IEnumerable<Assembly> CollectCompositionAssemblies()

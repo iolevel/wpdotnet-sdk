@@ -24,7 +24,7 @@ namespace Peachpied.WordPress.NuGetPlugins
     [Export(typeof(IWpPluginProvider))]
     sealed class Provider : IWpPluginProvider
     {
-        IEnumerable<IWpPlugin>/*!!*/IWpPluginProvider.GetPlugins(IServiceProvider provider)
+        IEnumerable<IWpPlugin>/*!!*/IWpPluginProvider.GetPlugins(IServiceProvider provider, string wpRootPath)
         {
             yield return new PluginsOverride();
         }

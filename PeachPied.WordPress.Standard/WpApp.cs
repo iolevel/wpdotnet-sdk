@@ -10,24 +10,25 @@ namespace PeachPied.WordPress.Standard
     public abstract class WpApp
     {
         /// <summary>
+        /// Do not modify.
+        /// Well-known form recognized by the compiler.
+        /// </summary>
+        protected readonly Context _ctx;
+
+        /// <summary>
         /// Minimal constructor that initializes runtime context.
         /// The .ctor is called implicitly by derived PHP class.
         /// </summary>
         protected WpApp(Context ctx)
         {
-            _ctx = ctx;
+            _ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
         }
 
         /// <summary>
         /// Runtime context of the application.
+        /// Representing the current web request.
         /// </summary>
         public Context Context => _ctx;
-
-        /// <summary>
-        /// Runtime context of the application.
-        /// Special signature recognized by the compiler.
-        /// </summary>
-        protected readonly Context _ctx;
 
         /// <summary>
         /// Calls <c>add_filter</c> function, see https://developer.wordpress.org/reference/functions/add_filter/.
