@@ -202,7 +202,7 @@ namespace PeachPied.WordPress.HotPlug
 
             foreach (var d in diagnostics)
             {
-                Log(d.Severity, $"{d.Id}: {d.GetMessage()} at {d.Location}");
+                Log(d.Severity, $"{d.Id}: {d.GetMessage()} in {d.Location.SourceTree.FilePath}:{d.Location.GetLineSpan().StartLinePosition.Line + 1}");
                 success &= d.Severity != DiagnosticSeverity.Error;
             }
 
