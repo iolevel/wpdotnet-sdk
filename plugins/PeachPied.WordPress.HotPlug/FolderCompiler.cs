@@ -1,8 +1,12 @@
-﻿using Pchp.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Emit;
+using Pchp.CodeAnalysis;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace PeachPied.WordPress.HotPlug
@@ -24,8 +28,6 @@ namespace PeachPied.WordPress.HotPlug
         readonly string _assemblyName;
         int _assemblyCounter;
 
-        // TODO: ILogger
-
         public FolderCompiler(CompilerProvider provider, string subPath, string outputAssemblyName)
         {
             this.Provider = provider ?? throw new ArgumentNullException(nameof(provider));
@@ -34,20 +36,95 @@ namespace PeachPied.WordPress.HotPlug
             _assemblyName = outputAssemblyName ?? throw new ArgumentNullException(nameof(outputAssemblyName));
         }
 
+        void LogInfo(string message)
+        {
+            // TODO: ILogger
+        }
+
+        void LogError(string message)
+        {
+            // TODO: ILogger
+        }
+
         public FolderCompiler Build(bool watch)
         {
-            // tree.Diagnostics ...
+            TryBuild();
 
-            var compilation = Provider.CreateCompilation(
-                $"{_assemblyName}+{_assemblyCounter++}",
-                EnumerateSourceTrees(),
-                true);
-
-            var diagnostics = compilation.GetDiagnostics();
-
-            // ...
+            if (watch)
+            {
+                // ...
+            }
 
             return this;
+        }
+
+        bool TryBuild()
+        {
+            var success = true;
+
+            var trees = ParseSourceTrees();
+
+            foreach (var x in trees)
+            {
+                success &= IsSuccess(x.Diagnostics);
+            }
+
+            if (success)
+            {
+                var debug = true;
+                var compilation = Provider.CreateCompilation(
+                    $"{_assemblyName}+{_assemblyCounter++}",
+                    trees,
+                    debug);
+
+                var diagnostics = compilation.GetDiagnostics();
+
+                if (success = IsSuccess(diagnostics))
+                {
+                    var peStream = new MemoryStream();
+                    var pdbStream = debug ? new MemoryStream() : null;
+                    var emitOptions = new EmitOptions();
+
+                    if (debug)
+                    {
+                        emitOptions = emitOptions.WithDebugInformationFormat(DebugInformationFormat.PortablePdb);
+                    }
+
+                    var result = compilation.Emit(peStream,
+                        pdbStream: pdbStream,
+                        options: emitOptions);
+
+                    if (success = result.Success)
+                    {
+                        // Assembly.Load()
+                    }
+                }
+            }
+
+            return success;
+        }
+
+        bool IsSuccess(ImmutableArray<Diagnostic> diagnostics)
+        {
+            bool success = true;
+
+            foreach (var d in diagnostics)
+            {
+                var message = $"{d.Id}: {d.GetMessage()} at {d.Location}";
+
+                switch (d.Severity)
+                {
+                    case DiagnosticSeverity.Warning:
+                        LogInfo(message);
+                        break;
+                    case DiagnosticSeverity.Error:
+                        LogError(message);
+                        success = false;
+                        break;
+                }
+            }
+
+            return success;
         }
 
         IEnumerable<string> EnumerateSourceFiles()
@@ -55,9 +132,11 @@ namespace PeachPied.WordPress.HotPlug
             return Directory.EnumerateFiles(FullPath, "*.php", SearchOption.AllDirectories);
         }
 
-        IEnumerable<PhpSyntaxTree> EnumerateSourceTrees()
+        IReadOnlyCollection<PhpSyntaxTree> ParseSourceTrees()
         {
-            return EnumerateSourceFiles().Select(fname => Provider.CreateSyntaxTree(fname));
+            return EnumerateSourceFiles()
+                .Select(fname => Provider.CreateSyntaxTree(fname))
+                .ToList();
         }
 
         public void Dispose()
