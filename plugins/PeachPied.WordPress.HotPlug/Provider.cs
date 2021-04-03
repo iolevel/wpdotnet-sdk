@@ -14,7 +14,6 @@ namespace PeachPied.WordPress.HotPlug
         IEnumerable<IWpPlugin>/*!!*/IWpPluginProvider.GetPlugins(IServiceProvider provider, string wpRootPath)
         {
             yield return new HotPlug(wpRootPath);
-            yield break;
         }
     }
 }

@@ -21,8 +21,10 @@ namespace PeachPied.WordPress.HotPlug
         {
             RootPath = wpRootPath;
 
-            _pluginsCompiler = new FolderCompiler(RootPath, WpPluginsSubPath, "wp-plugins").Build(WatchForChanges);
-            _themesCompiler = new FolderCompiler(RootPath, WpThemesSubPath, "wp-themes").Build(WatchForChanges);
+            var compiler = new CompilerProvider(RootPath);
+
+            _pluginsCompiler = new FolderCompiler(compiler, WpPluginsSubPath, "wp-plugins").Build(WatchForChanges);
+            _themesCompiler = new FolderCompiler(compiler, WpThemesSubPath, "wp-themes").Build(WatchForChanges);
         }
 
         void IWpPlugin.Configure(WpApp app)
