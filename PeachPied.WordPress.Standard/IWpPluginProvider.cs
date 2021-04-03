@@ -14,7 +14,8 @@ namespace PeachPied.WordPress.Standard
         /// Gets enumeration of plugins to be loaded into the WordPress.
         /// </summary>
         /// <param name="provider">Service provider for dependency injection.</param>
+        /// <param name="wpRootPath">The WordPress root path. Location of WordPress installation.</param>
         /// <returns>Enumeration of plugin instances.</returns>
-        IEnumerable<IWpPlugin>/*!!*/GetPlugins(IServiceProvider provider);
+        IEnumerable<IWpPlugin>/*!!*/GetPlugins(IServiceProvider provider, string wpRootPath);
     }
 }

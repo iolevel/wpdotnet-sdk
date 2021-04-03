@@ -151,7 +151,7 @@ namespace Microsoft.AspNetCore.Builder
             var options = new WordPressConfig()
                 .LoadFromSettings(app.ApplicationServices)      // appsettings.json
                 .LoadFromEnvironment(app.ApplicationServices)   // environment variables (known cloud hosts)
-                .LoadFromOptions(app.ApplicationServices)      // IConfigureOptions<WordPressConfig> service
+                .LoadFromOptions(app.ApplicationServices)       // IConfigureOptions<WordPressConfig> service
                 .LoadDefaults();    // 
 
             // list of plugins:
@@ -176,7 +176,7 @@ namespace Microsoft.AspNetCore.Builder
             // }
 
             var wploader = new WpLoader(plugins:
-                CompositionHelpers.GetPlugins(options.CompositionContainers.CreateContainer(), app.ApplicationServices)
+                CompositionHelpers.GetPlugins(options.CompositionContainers.CreateContainer(), app.ApplicationServices, root)
                 .Concat(plugins.GetPlugins(app.ApplicationServices)));
 
             // url rewriting:

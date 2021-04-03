@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C906C21A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Build.Plugin.Tests", "tests\Build.Plugin.Tests\Build.Plugin.Tests.csproj", "{60EDA913-F00F-47F5-B30E-026D3F696C07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeachPied.WordPress.HotPlug", "plugins\PeachPied.WordPress.HotPlug\PeachPied.WordPress.HotPlug.csproj", "{36FC3271-CCD6-4B00-A2DD-9130775E5E5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{60EDA913-F00F-47F5-B30E-026D3F696C07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60EDA913-F00F-47F5-B30E-026D3F696C07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60EDA913-F00F-47F5-B30E-026D3F696C07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36FC3271-CCD6-4B00-A2DD-9130775E5E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36FC3271-CCD6-4B00-A2DD-9130775E5E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36FC3271-CCD6-4B00-A2DD-9130775E5E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36FC3271-CCD6-4B00-A2DD-9130775E5E5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{B4D65744-3AC3-46B3-8756-E4E0F5ECEAE5} = {9804AA94-2F4D-41B9-8C70-0A2337F91C0C}
 		{628789D3-AECC-4D22-9B7B-6BA36454F3AF} = {9804AA94-2F4D-41B9-8C70-0A2337F91C0C}
 		{60EDA913-F00F-47F5-B30E-026D3F696C07} = {C906C21A-FF54-42AD-BBEA-36B28FBE3A81}
+		{36FC3271-CCD6-4B00-A2DD-9130775E5E5A} = {9804AA94-2F4D-41B9-8C70-0A2337F91C0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {439122F2-5021-44BB-A50B-A3627AD58C09}

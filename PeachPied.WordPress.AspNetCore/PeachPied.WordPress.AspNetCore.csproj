@@ -33,13 +33,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\plugins\PeachPied.WordPress.HotPlug\PeachPied.WordPress.HotPlug.csproj" />
     <ProjectReference Include="..\wordpress\PeachPied.WordPress.msbuildproj">
       <PrivateAssets>None</PrivateAssets>
     </ProjectReference>
     <ProjectReference Include="..\plugins\PeachPied.WordPress.DotNetBridge\PeachPied.WordPress.DotNetBridge.msbuildproj">
       <PrivateAssets>None</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\plugins\PeachPied.WordPress.NuGetPlugins\PeachPied.WordPress.NuGetPlugins.csproj" />
   </ItemGroup>
 
 </Project>
