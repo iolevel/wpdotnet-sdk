@@ -17,14 +17,14 @@ namespace PeachPied.WordPress.HotPlug
 
         readonly FolderCompiler _pluginsCompiler, _themesCompiler;
 
-        public HotPlug(string wpRootPath)
+        public HotPlug(string wpRootPath, IWpPluginLogger logger)
         {
             RootPath = wpRootPath;
 
             var compiler = new CompilerProvider(RootPath);
 
-            _pluginsCompiler = new FolderCompiler(compiler, WpPluginsSubPath, "wp-plugins").Build(WatchForChanges);
-            _themesCompiler = new FolderCompiler(compiler, WpThemesSubPath, "wp-themes").Build(WatchForChanges);
+            _pluginsCompiler = new FolderCompiler(compiler, WpPluginsSubPath, "wp-plugins", logger).Build(WatchForChanges);
+            _themesCompiler = new FolderCompiler(compiler, WpThemesSubPath, "wp-themes", logger).Build(WatchForChanges);
         }
 
         void IWpPlugin.Configure(WpApp app)

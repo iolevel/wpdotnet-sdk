@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Emit;
 using Pchp.CodeAnalysis;
 using Pchp.Core;
+using PeachPied.WordPress.Standard;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -38,6 +39,8 @@ namespace PeachPied.WordPress.HotPlug
 
         CompilerProvider Compiler { get; }
 
+        IWpPluginLogger Logger { get; }
+
         public string RootPath => Compiler.RootPath;
 
         public string SubPath { get; }
@@ -59,17 +62,39 @@ namespace PeachPied.WordPress.HotPlug
 
         bool _filesDirty;
 
-        public FolderCompiler(CompilerProvider compiler, string subPath, string outputAssemblyName)
+        public FolderCompiler(CompilerProvider compiler, string subPath, string outputAssemblyName, IWpPluginLogger logger)
         {
             this.Compiler = compiler ?? throw new ArgumentNullException(nameof(compiler));
             this.SubPath = subPath ?? string.Empty;
+            this.Logger = logger;
 
             _assemblyNamePrefix = outputAssemblyName ?? throw new ArgumentNullException(nameof(outputAssemblyName));
         }
 
         void Log(DiagnosticSeverity severity, string message)
         {
-            // TODO: ILogger
+            Logger?.Log(severity switch
+            {
+                DiagnosticSeverity.Error => IWpPluginLogger.Severity.Error,
+                DiagnosticSeverity.Warning => IWpPluginLogger.Severity.Warning,
+                _ => IWpPluginLogger.Severity.Message,
+            }, message);
+        }
+
+        void LogMessage(string message)
+        {
+            Logger?.Log(IWpPluginLogger.Severity.Message, message);
+        }
+
+        void Log(IEnumerable<Diagnostic> diagnostics)
+        {
+            if (diagnostics != null)
+            {
+                foreach (var d in diagnostics)
+                {
+                    Log(d.Severity, $"{d.Id}: {d.GetMessage()} in {d.Location.SourceTree.FilePath}:{d.Location.GetLineSpan().StartLinePosition.Line + 1}");
+                }
+            }
         }
 
         public FolderCompiler Build(bool watch)
@@ -140,6 +165,8 @@ namespace PeachPied.WordPress.HotPlug
 
         bool TryBuild(bool debug, out CompilationResult assembly)
         {
+            LogMessage($"Rebuilding '{FullPath}' ...");
+
             assembly = null;
 
             var success = true;
@@ -148,6 +175,7 @@ namespace PeachPied.WordPress.HotPlug
 
             if (trees.Count == 0)
             {
+                LogMessage($"No files.");
                 return false;
             }
 
@@ -158,6 +186,7 @@ namespace PeachPied.WordPress.HotPlug
 
             if (!success)
             {
+                Log(trees.SelectMany(x => x.Diagnostics));
                 return false;
             }
 
@@ -181,7 +210,7 @@ namespace PeachPied.WordPress.HotPlug
                     pdbStream: pdbStream,
                     options: emitOptions);
 
-                if (IsSuccess(result.Diagnostics) && result.Success)
+                if (result.Success)
                 {
                     // Assembly.Load()
                     assembly = new CompilationResult
@@ -191,22 +220,31 @@ namespace PeachPied.WordPress.HotPlug
                         RawSymbols = pdbStream?.ToArray(),
                     };
                 }
+
+                Log(result.Diagnostics);
             }
+            else
+            {
+                Log(diagnostics);
+            }
+
+            LogMessage($"Build finished ({(assembly != null ? "Success" : "Fail")})");
 
             return assembly != null;
         }
 
         bool IsSuccess(ImmutableArray<Diagnostic> diagnostics)
         {
-            bool success = true;
-
+            //return diagnostics.All(d => d.Severity != DiagnosticSeverity.Error);
             foreach (var d in diagnostics)
             {
-                Log(d.Severity, $"{d.Id}: {d.GetMessage()} in {d.Location.SourceTree.FilePath}:{d.Location.GetLineSpan().StartLinePosition.Line + 1}");
-                success &= d.Severity != DiagnosticSeverity.Error;
+                if (d.Severity == DiagnosticSeverity.Error)
+                {
+                    return false;
+                }
             }
 
-            return success;
+            return true;
         }
 
         IEnumerable<string> EnumerateSourceFiles()
