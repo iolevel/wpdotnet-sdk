@@ -99,5 +99,16 @@ namespace PeachPied.WordPress.Standard
         {
             return app.Context.Call("get_metadata", metaType, (PhpValue)objectId, metaKey, single);
         }
+
+        /// <summary>
+        /// Registers ajax hook.
+        /// </summary>
+        /// <param name="app">WP app.</param>
+        /// <param name="action">Name of the ajax action. Internally it will be prefixed with "wp_ajax_{<paramref name="action"/>}".</param>
+        /// <param name="callback">The callback handler.</param>
+        public static void AddAjaxAction(this WpApp app, string action, Func<string> callback)
+        {
+            app.AddFilter("wp_ajax_" + action, callback);
+        }
     }
 }
