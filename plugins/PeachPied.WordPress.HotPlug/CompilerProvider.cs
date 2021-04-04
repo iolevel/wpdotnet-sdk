@@ -74,21 +74,6 @@ namespace PeachPied.WordPress.HotPlug
             return compilation;
         }
 
-        public PhpSyntaxTree CreateSyntaxTree(string filename)
-        {
-            using var fstream = File.OpenRead(filename);
-
-            return PhpSyntaxTree.ParseCode(
-                SourceText.From(fstream),
-                new PhpParseOptions(
-                    kind: SourceCodeKind.Regular,
-                    languageVersion: CoreCompilation.Options.LanguageVersion,
-                    shortOpenTags: false),
-                PhpParseOptions.Default,
-                filename
-            );
-        }
-
         static MetadataReference CreateMetadataReference(string path) => MetadataReference.CreateFromFile(path);
 
         /// <summary>
