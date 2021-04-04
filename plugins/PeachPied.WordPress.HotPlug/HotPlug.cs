@@ -56,6 +56,11 @@ namespace PeachPied.WordPress.HotPlug
         {
             FirstRequest();
 
+            // delay the build action,
+            // website is being just requested
+            _pluginsCompiler.PostponeBuild();
+            _themesCompiler.PostponeBuild();
+
             // no hooks necessary
         }
     }

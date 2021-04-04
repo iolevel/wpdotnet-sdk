@@ -68,7 +68,7 @@ namespace PeachPied.WordPress.HotPlug
         FileSystemWatcher _fsWatcher;
 
         /// <summary>
-        /// Successfuly built assembly, waiting to be loaded in memory lazily.
+        /// Successfully built assembly, waiting to be loaded in memory lazily.
         /// </summary>
         CompilationResult _pendingBuild;
 
@@ -191,6 +191,18 @@ namespace PeachPied.WordPress.HotPlug
             if (IsAllowedFile(fname))
             {
                 Touch(true);
+            }
+        }
+
+        /// <summary>
+        /// Postpone any pending operation a moment,
+        /// the website has been just used.
+        /// </summary>
+        public void PostponeBuild()
+        {
+            if (_filesDirty || _pendingBuild != null)
+            {
+                Touch(false);
             }
         }
 
