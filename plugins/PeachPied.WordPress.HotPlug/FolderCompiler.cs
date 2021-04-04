@@ -70,6 +70,11 @@ namespace PeachPied.WordPress.HotPlug
 
         CompilerProvider Compiler { get; }
 
+        /// <summary>
+        /// Compilation helper.
+        /// </summary>
+        FolderCompilation _compilation = new FolderCompilation();
+
         /// <summary>Optional. Logger for build events.</summary>
         IWpPluginLogger Logger { get; }
 
@@ -104,7 +109,18 @@ namespace PeachPied.WordPress.HotPlug
         /// <summary>
         /// Determines if the given file is allowed to be watched and compiled.
         /// </summary>
-        bool IsAllowedFile(string fullpath) => _ignoredScripts == null || !_ignoredScripts.Contains(fullpath);
+        bool IsAllowedFile(string fullpath)
+        {
+            if (fullpath.IndexOf(".phpstorm.meta.php", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                fullpath.IndexOf($"{Path.DirectorySeparatorChar}.git{Path.DirectorySeparatorChar}", StringComparison.Ordinal) >= 0)
+            {
+                return false;
+            }
+
+            // TODO: other excluded files - tests, etc.
+
+            return _ignoredScripts == null || !_ignoredScripts.Contains(fullpath);
+        }
 
         /// <summary>
         /// Optional. The file system watcher of <see cref="FullPath"/>.
@@ -242,12 +258,19 @@ namespace PeachPied.WordPress.HotPlug
                 _pendingBuild.Load();
                 _pendingBuild = null;
             }
+            else
+            {
+                // free the cache of syntax trees
+                _compilation.InvalidateFiles();
+            }
         }
 
         void OnModified(string fname)
         {
             if (IsAllowedFile(fname))
             {
+                _compilation.InvalidateFile(fname);
+
                 Touch(true);
             }
         }
@@ -286,97 +309,37 @@ namespace PeachPied.WordPress.HotPlug
 
             assembly = null;
 
-            var success = true;
-
-            var trees = ParseSourceTrees();
-
-            if (trees.Count == 0)
+            var sources = CollectSourceFiles();
+            if (sources.Count == 0)
             {
                 LogMessage($"No files.");
                 return false;
             }
 
-            foreach (var x in trees)
-            {
-                success &= IsSuccess(x.Diagnostics);
-            }
-
-            if (!success)
-            {
-                Log(trees.SelectMany(x => x.Diagnostics));
-                return false;
-            }
-
             var assname = $"{_assemblyNamePrefix}+{Interlocked.Increment(ref _assemblyNameCounter)}";
 
-            var compilation = Compiler.CreateCompilation(assname, trees, debug);
-            var diagnostics = compilation.GetDiagnostics();
-
-            if (IsSuccess(diagnostics))
+            if (_compilation.Compile(Compiler, assname, debug, sources, out var diagnostics, out var rawassembly, out var rawsymbols))
             {
-                var peStream = new MemoryStream();
-                var pdbStream = debug ? new MemoryStream() : null;
-                var emitOptions = new EmitOptions();
-
-                if (debug)
+                // Assembly.Load()
+                assembly = new CompilationResult
                 {
-                    emitOptions = emitOptions.WithDebugInformationFormat(DebugInformationFormat.PortablePdb);
-                }
-
-                var result = compilation.Emit(peStream,
-                    pdbStream: pdbStream,
-                    options: emitOptions);
-
-                if (result.Success)
-                {
-                    // Assembly.Load()
-                    assembly = new CompilationResult
-                    {
-                        AssemblyName = assname,
-                        RawAssembly = peStream.ToArray(),
-                        RawSymbols = pdbStream?.ToArray(),
-                    };
-                }
-
-                Log(result.Diagnostics);
-            }
-            else
-            {
-                Log(diagnostics);
+                    AssemblyName = assname,
+                    RawAssembly = rawassembly,
+                    RawSymbols = rawsymbols,
+                };
             }
 
+            Log(diagnostics);
             LogMessage($"Build finished ({(assembly != null ? "Success" : "Fail")})");
 
             return assembly != null;
         }
 
-        bool IsSuccess(ImmutableArray<Diagnostic> diagnostics)
-        {
-            //return diagnostics.All(d => d.Severity != DiagnosticSeverity.Error);
-            foreach (var d in diagnostics)
-            {
-                if (d.Severity == DiagnosticSeverity.Error)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        IEnumerable<string> EnumerateSourceFiles()
+        IReadOnlyCollection<string> CollectSourceFiles()
         {
             return Directory
                 .EnumerateFiles(FullPath, "*.php", SearchOption.AllDirectories)
-                .Where(IsAllowedFile);
-        }
-
-        IReadOnlyCollection<PhpSyntaxTree> ParseSourceTrees()
-        {
-            // TODO: cache, parse only modified
-
-            return EnumerateSourceFiles()
-                .Select(fname => Compiler.CreateSyntaxTree(fname))
+                .Where(IsAllowedFile)
                 .ToList();
         }
 
