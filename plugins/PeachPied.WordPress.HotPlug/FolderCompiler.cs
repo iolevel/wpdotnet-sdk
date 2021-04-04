@@ -148,7 +148,7 @@ namespace PeachPied.WordPress.HotPlug
         /// <summary>
         /// Gets an identifier signaling the currently loaded compilation "version".
         /// </summary>
-        public string VersionLoaded { get; private set; }
+        public string VersionLoaded { get; private set; } = string.Empty;
 
         #endregion
 

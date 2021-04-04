@@ -67,6 +67,15 @@ namespace PeachPied.WordPress.HotPlug
             _themesCompiler.PostponeBuild();
 
             // wp hooks:
+
+            //// ajax hook to get the currently loaded assemblies version:
+            //app.AddAjaxAction(
+            //    "hotplug_version",
+            //    () => (_pluginsCompiler.VersionLoaded.GetHashCode() ^ _themesCompiler.VersionLoaded.GetHashCode()).ToString("X"));
+
+            //// TODO: add script to the footer that periodically checks ajax_hotplug_version for changes,
+            //// in such case it refreshes the page
+
             // ...
         }
     }
