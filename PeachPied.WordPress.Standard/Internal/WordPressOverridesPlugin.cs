@@ -48,7 +48,7 @@ namespace PeachPied.WordPress.Standard.Internal
 </tbody></table>");
         }
 
-        static readonly string GeneratorHtml = "<meta name=\"generator\" content=\"WpDotNet (PeachPie) " + InformationalVersion + " \" />";
+        static readonly string GeneratorHtml = $"<meta name=\"generator\" content=\"WpDotNet (PeachPie) {InformationalVersion} \" />";
 
         public void Configure(WpApp app)
         {
@@ -58,13 +58,6 @@ namespace PeachPied.WordPress.Standard.Internal
 
             // add information into Right Now section
             app.DashboardRightNow(DashboardRightNow);
-
-            // do not allow editing of .php files:
-            app.AddFilter("editable_extensions", new Func<IList, IList>(editable_extensions =>
-            {
-                editable_extensions.Remove("php");
-                return editable_extensions;
-            }));
 
             //
             // Blogs:

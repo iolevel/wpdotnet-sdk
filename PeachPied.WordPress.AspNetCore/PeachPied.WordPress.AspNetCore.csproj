@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\plugins\PeachPied.WordPress.DotNet\PeachPied.WordPress.DotNet.csproj" />
     <ProjectReference Include="..\plugins\PeachPied.WordPress.HotPlug\PeachPied.WordPress.HotPlug.csproj" />
     <ProjectReference Include="..\wordpress\PeachPied.WordPress.msbuildproj">
       <PrivateAssets>None</PrivateAssets>

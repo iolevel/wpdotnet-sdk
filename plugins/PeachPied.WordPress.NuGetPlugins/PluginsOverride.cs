@@ -491,23 +491,6 @@ namespace Peachpied.WordPress.NuGetPlugins
                     tabs["recommended"] = "Premium";
                     return tabs;
                 }));
-                app.AddFilter("user_has_cap", new Func<PhpArray, PhpArray, PhpArray, PhpArray>((allcaps, cap, args) =>
-                {
-                    allcaps["update_core"] = false;
-                    allcaps["update_php"] = false;
-                    //
-                    return allcaps;
-                }), accepted_args: 3);
-                app.AddFilter("pre_site_transient_update_core", new Func<stdClass>(() =>
-                {
-                    // TODO: wpdotnet check for version update
-                    return new PhpArray()
-                    {
-                        { "last_checked", Pchp.Library.DateTime.DateTimeFunctions.time() },
-                        { "version_checked", app.Context.Globals["wp_version"].ToString() },
-                    }.ToObject();
-
-                }), accepted_args: 0);
                 app.AddFilter("site_transient_update_themes", new Func<PhpValue, stdClass>(current =>
                 {
                     // TODO: wpdotnet check for version update
@@ -535,14 +518,15 @@ namespace Peachpied.WordPress.NuGetPlugins
 
                 }), accepted_args: 1);
 
-                // defined in PeachPied.WordPress.Standard: // app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
-
-                // ensure "plugins" directory exists, otherwise eventual mkdir() in wp fails
-                if (app.Context.TryGetConstant("WP_PLUGIN_DIR", out var plugindir))
+                // do not allow editing of .php files:
+                app.AddFilter("editable_extensions", new Func<PhpArray, PhpArray>(editable_extensions =>
                 {
-                    try { Directory.CreateDirectory(plugindir.ToString(app.Context)); }
-                    catch { }
-                }
+                    editable_extensions.Remove("php");
+                    return editable_extensions;
+                }));
+
+
+                // defined in PeachPied.WordPress.Standard: // app.Context.DefineConstant("FS_METHOD", "direct"); // overwrite how installing plugins is handled, skips the fs check
 
                 //// ensure "themes" directory exists (always exists)
                 //var themedir = app.Context.Call("get_theme_root");
