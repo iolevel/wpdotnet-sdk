@@ -17,18 +17,45 @@ namespace PeachPied.WordPress.HotPlug
 
         readonly FolderCompiler _pluginsCompiler, _themesCompiler;
 
+        bool _wasbuilt;
+
         public HotPlug(string wpRootPath, IWpPluginLogger logger)
         {
-            RootPath = wpRootPath;
+            this.RootPath = wpRootPath;
 
             var compiler = new CompilerProvider(RootPath);
 
-            _pluginsCompiler = new FolderCompiler(compiler, WpPluginsSubPath, "wp-plugins", logger).Build(WatchForChanges);
-            _themesCompiler = new FolderCompiler(compiler, WpThemesSubPath, "wp-themes", logger).Build(WatchForChanges);
+            _pluginsCompiler = new FolderCompiler(compiler, WpPluginsSubPath, "wp-plugins", logger);
+            _themesCompiler = new FolderCompiler(compiler, WpThemesSubPath, "wp-themes", logger);
+        }
+
+        void FirstRequest()
+        {
+            if (_wasbuilt)
+            {
+                return;
+            }
+
+            //
+
+            lock (this)
+            {
+                if (!_wasbuilt)
+                {
+                    // compile plugins and themes on first use
+                    _pluginsCompiler.Build(WatchForChanges);
+                    _themesCompiler.Build(WatchForChanges);
+
+                    //
+                    _wasbuilt = true;
+                }
+            }
         }
 
         void IWpPlugin.Configure(WpApp app)
         {
+            FirstRequest();
+
             // no hooks necessary
         }
     }
