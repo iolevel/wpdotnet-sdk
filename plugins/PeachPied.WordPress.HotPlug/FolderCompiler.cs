@@ -21,14 +21,34 @@ namespace PeachPied.WordPress.HotPlug
     /// </summary>
     class FolderCompiler : IDisposable
     {
+        #region CompilationResult
+
+        /// <summary>
+        /// The result of successful compilation.
+        /// </summary>
         [DebuggerDisplay("CompilationResult ({AssemblyName,nq})")]
         sealed class CompilationResult
         {
+            /// <summary>
+            /// Informational assembly name.
+            /// </summary>
             public string AssemblyName;
 
+            /// <summary>
+            /// Content of the compiled assembly.
+            /// Can't be <c>null</c>.
+            /// </summary>
             public byte[] RawAssembly;
+
+            /// <summary>
+            /// Optional. Content of the corresponding symbol file (portable PDB).
+            /// </summary>
             public byte[] RawSymbols;
 
+            /// <summary>
+            /// Loads the assembly into app domain,
+            /// processes contyained scripts and injects them into <see cref="Context"/>.
+            /// </summary>
             public void Load()
             {
                 // load in-memory assembly
@@ -36,6 +56,10 @@ namespace PeachPied.WordPress.HotPlug
                 Context.AddScriptReference(Assembly.Load(RawAssembly, RawSymbols));
             }
         }
+
+        #endregion
+
+        #region Fields & Properties
 
         static HashSet<string> s_ignoredErrCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -46,14 +70,28 @@ namespace PeachPied.WordPress.HotPlug
 
         CompilerProvider Compiler { get; }
 
+        /// <summary>Optional. Logger for build events.</summary>
         IWpPluginLogger Logger { get; }
 
+        /// <summary>
+        /// The root folder absolute path. Usually ".../wordpress".
+        /// </summary>
         public string RootPath => Compiler.RootPath;
 
+        /// <summary>
+        /// The path relative to <see cref="RootPath"/> being watched for scripts.
+        /// </summary>
         public string SubPath { get; }
 
+        /// <summary>
+        /// Full path to the folder.
+        /// Normalized slashes important for the file system watcher.
+        /// </summary>
         public string FullPath => Path.GetFullPath(Path.Combine(RootPath, SubPath)); // normalize slashes
 
+        /// <summary>
+        /// The in-memory assembly name.
+        /// </summary>
         readonly string _assemblyNamePrefix;
         int _assemblyNameCounter;
 
@@ -63,8 +101,14 @@ namespace PeachPied.WordPress.HotPlug
         /// </summary>
         HashSet<string> _ignoredScripts;
 
+        /// <summary>
+        /// Determines if the given file is allowed to be watched and compiled.
+        /// </summary>
         bool IsAllowedFile(string fullpath) => _ignoredScripts == null || !_ignoredScripts.Contains(fullpath);
 
+        /// <summary>
+        /// Optional. The file system watcher of <see cref="FullPath"/>.
+        /// </summary>
         FileSystemWatcher _fsWatcher;
 
         /// <summary>
@@ -72,14 +116,20 @@ namespace PeachPied.WordPress.HotPlug
         /// </summary>
         CompilationResult _pendingBuild;
 
+        /// <summary>
+        /// Postponed action, invokes in-memory build and eventual inject into <see cref="Context"/>.
+        /// </summary>
         Timer _lazyActionTimer;
 
-        /// <summary>
-        /// 
-        /// </summary>
         static TimeSpan s_ActionDelay => TimeSpan.FromSeconds(2.0);
 
+        /// <summary>
+        /// Flags signaling a file within <see cref="FullPath"/> has been changed
+        /// and the folder needs to be rebuilt.
+        /// </summary>
         bool _filesDirty;
+
+        #endregion
 
         public FolderCompiler(CompilerProvider compiler, string subPath, string outputAssemblyName, IWpPluginLogger logger)
         {
@@ -121,6 +171,14 @@ namespace PeachPied.WordPress.HotPlug
             }
         }
 
+        /// <summary>
+        /// Synchronously build and load the scripts within <see cref="FullPath"/>.
+        /// </summary>
+        /// <param name="watch"
+        /// >Whether to start watching the <see cref="FullPath"/> directory for changes.
+        /// In such case, any change will result in compilation on a thread pool
+        /// and eventual load into <see cref="Context"/> which effectively overrides previous compilation.
+        /// </param>
         public void Build(bool watch)
         {
             DisposeWatcher();
@@ -133,7 +191,7 @@ namespace PeachPied.WordPress.HotPlug
                 Context.TryGetScriptsInDirectory(Compiler.RootPath, SubPath, out var existingscripts);
 
                 _ignoredScripts = new HashSet<string>(
-                    existingscripts.Select(s => Path.Combine(RootPath, s.Path)),
+                    existingscripts.Select(s => Path.GetFullPath(Path.Combine(RootPath, s.Path))),
                     StringComparer.InvariantCultureIgnoreCase);
             }
 
@@ -331,9 +389,13 @@ namespace PeachPied.WordPress.HotPlug
             }
         }
 
+        #region IDisposable
+
         public void Dispose()
         {
             DisposeWatcher();
         }
+
+        #endregion
     }
 }
