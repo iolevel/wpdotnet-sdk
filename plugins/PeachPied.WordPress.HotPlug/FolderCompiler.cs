@@ -240,6 +240,23 @@ namespace PeachPied.WordPress.HotPlug
             }
         }
 
+        /// <summary>
+        /// Schedules <see cref="LazyAction"/>.
+        /// </summary>
+        void ScheduleNextAction(bool markdirty, TimeSpan delay)
+        {
+            if (_lazyActionTimer == null)
+            {
+                _lazyActionTimer = new Timer(state => LazyAction(state), this, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            }
+
+            // Context.DeclareScript(Path.Relative(RootPath, fname), () => ... )
+
+            _filesDirty |= markdirty;
+
+            _lazyActionTimer.Change(delay, Timeout.InfiniteTimeSpan);
+        }
+
         void LazyAction(object sender)
         {
             // nothing happened for a few seconds,
@@ -250,13 +267,15 @@ namespace PeachPied.WordPress.HotPlug
 
                 if (TryBuild(true, out _pendingBuild))
                 {
-                    Touch(false);
+                    ScheduleNextAction(false, s_ActionDelay);
                 }
             }
             else if (_pendingBuild != null)
             {
                 _pendingBuild.Load();
                 _pendingBuild = null;
+
+                ScheduleNextAction(false, TimeSpan.FromSeconds(60.0));
             }
             else
             {
@@ -271,7 +290,7 @@ namespace PeachPied.WordPress.HotPlug
             {
                 _compilation.InvalidateFile(fname);
 
-                Touch(true);
+                ScheduleNextAction(true, s_ActionDelay);
             }
         }
 
@@ -283,22 +302,8 @@ namespace PeachPied.WordPress.HotPlug
         {
             if (_filesDirty || _pendingBuild != null)
             {
-                Touch(false);
+                ScheduleNextAction(false, s_ActionDelay);
             }
-        }
-
-        void Touch(bool markdirty)
-        {
-            if (_lazyActionTimer == null)
-            {
-                _lazyActionTimer = new Timer(state => LazyAction(state), this, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-            }
-
-            // Context.DeclareScript(Path.Relative(RootPath, fname), () => ... )
-
-            _filesDirty |= markdirty;
-
-            _lazyActionTimer.Change(s_ActionDelay, Timeout.InfiniteTimeSpan);
         }
 
         bool TryBuild(bool debug, out CompilationResult assembly)

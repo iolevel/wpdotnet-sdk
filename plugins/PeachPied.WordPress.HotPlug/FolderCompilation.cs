@@ -73,7 +73,9 @@ namespace PeachPied.WordPress.HotPlug
             }
 
             var compilation = compiler.CreateCompilation(assname, trees, debug);
+
             var analysis = compilation.GetDiagnostics();
+
             if (IsSuccess(analysis))
             {
                 var peStream = new MemoryStream();
@@ -107,7 +109,7 @@ namespace PeachPied.WordPress.HotPlug
                 diagnostics = analysis;
                 return false;
             }
-            
+
         }
     }
 }
