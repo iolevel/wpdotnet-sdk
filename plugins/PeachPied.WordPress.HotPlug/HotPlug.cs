@@ -9,10 +9,6 @@ namespace PeachPied.WordPress.HotPlug
     {
         public string RootPath { get; }
 
-        static string WpPluginsSubPath => "wp-content/plugins";
-
-        static string WpThemesSubPath => "wp-content/themes";
-
         static bool WatchForChanges => true;
 
         readonly FolderCompiler _pluginsCompiler, _themesCompiler;
@@ -25,8 +21,8 @@ namespace PeachPied.WordPress.HotPlug
 
             var compiler = new CompilerProvider(RootPath);
 
-            _pluginsCompiler = new FolderCompiler(compiler, WpPluginsSubPath, "wp-plugins", logger);
-            _themesCompiler = new FolderCompiler(compiler, WpThemesSubPath, "wp-themes", logger);
+            _pluginsCompiler = new FolderCompiler(compiler, "wp-content/plugins", "wp-plugins", logger);
+            _themesCompiler = new FolderCompiler(compiler, "wp-content/themes", "wp-themes", logger);
         }
 
         /// <summary>
