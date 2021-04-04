@@ -126,7 +126,7 @@ namespace PeachPied.WordPress.HotPlug
                     {
                         refassembly = Assembly.Load(refname);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         continue;
                     }

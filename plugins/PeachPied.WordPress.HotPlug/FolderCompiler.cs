@@ -57,6 +57,14 @@ namespace PeachPied.WordPress.HotPlug
         readonly string _assemblyNamePrefix;
         int _assemblyNameCounter;
 
+        /// <summary>
+        /// Full paths to ignored scripts.
+        /// Those won't be watched and won't be compiled.
+        /// </summary>
+        HashSet<string> _ignoredScripts;
+
+        bool IsAllowedFile(string fullpath) => _ignoredScripts == null || !_ignoredScripts.Contains(fullpath);
+
         FileSystemWatcher _fsWatcher;
 
         /// <summary>
@@ -64,8 +72,12 @@ namespace PeachPied.WordPress.HotPlug
         /// </summary>
         CompilationResult _pendingBuild;
 
-        Timer _lazyAction;
-        TimeSpan ActionDelay => TimeSpan.FromSeconds(2.0);
+        Timer _lazyActionTimer;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        static TimeSpan s_ActionDelay => TimeSpan.FromSeconds(2.0);
 
         bool _filesDirty;
 
@@ -109,8 +121,22 @@ namespace PeachPied.WordPress.HotPlug
             }
         }
 
-        public FolderCompiler Build(bool watch)
+        public void Build(bool watch)
         {
+            DisposeWatcher();
+
+            if (_ignoredScripts == null)
+            {
+                // remember scripts that were compiled in advance
+                // do not compile them again nor allow them to be redefined
+
+                Context.TryGetScriptsInDirectory(Compiler.RootPath, SubPath, out var existingscripts);
+
+                _ignoredScripts = new HashSet<string>(
+                    existingscripts.Select(s => Path.Combine(RootPath, s.Path)),
+                    StringComparer.InvariantCultureIgnoreCase);
+            }
+
             if (TryBuild(debug: true, out var assembly))
             {
                 assembly.Load();
@@ -118,6 +144,10 @@ namespace PeachPied.WordPress.HotPlug
 
             if (watch)
             {
+                // watch the directory for changes
+                // recompile the directory if necessary and
+                // inject the newly compiled scripts once the compilation is successfull
+
                 _fsWatcher = new FileSystemWatcher(FullPath, "*.php")
                 {
                     IncludeSubdirectories = true,
@@ -134,49 +164,54 @@ namespace PeachPied.WordPress.HotPlug
                     OnModified(e.FullPath);
                 };
             }
+        }
 
-            return this;
+        void LazyAction(object sender)
+        {
+            // nothing happened for a few seconds,
+            // do the dirty work now
+            if (_filesDirty)
+            {
+                _filesDirty = false;
+
+                if (TryBuild(true, out _pendingBuild))
+                {
+                    Touch(false);
+                }
+            }
+            else if (_pendingBuild != null)
+            {
+                _pendingBuild.Load();
+                _pendingBuild = null;
+            }
         }
 
         void OnModified(string fname)
         {
-            _filesDirty = true;
-            Touch();
+            if (IsAllowedFile(fname))
+            {
+                Touch(true);
+            }
         }
 
-        public void Touch()
+        void Touch(bool markdirty)
         {
-            if (_lazyAction == null)
+            if (_lazyActionTimer == null)
             {
-                Interlocked.CompareExchange(ref _lazyAction, new Timer(_ =>
-                {
-                    // nothing happened for a few seconds,
-                    // do the dirty work now
-                    if (_filesDirty)
-                    {
-                        _filesDirty = false;
-
-                        if (TryBuild(true, out _pendingBuild))
-                        {
-                            Touch();
-                        }
-                    }
-                    else if (_pendingBuild != null)
-                    {
-                        _pendingBuild.Load();
-                        _pendingBuild = null;
-                    }
-
-                }, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan), null);
+                _lazyActionTimer = new Timer(state => LazyAction(state), this, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
             }
 
             // Context.DeclareScript(Path.Relative(RootPath, fname), () => ... )
 
-            _lazyAction.Change(ActionDelay, Timeout.InfiniteTimeSpan);
+            _filesDirty |= markdirty;
+
+            _lazyActionTimer.Change(s_ActionDelay, Timeout.InfiniteTimeSpan);
         }
 
         bool TryBuild(bool debug, out CompilationResult assembly)
         {
+            Debug.Assert(_ignoredScripts != null);
+
             LogMessage($"Rebuilding '{FullPath}' ...");
 
             assembly = null;
@@ -261,7 +296,9 @@ namespace PeachPied.WordPress.HotPlug
 
         IEnumerable<string> EnumerateSourceFiles()
         {
-            return Directory.EnumerateFiles(FullPath, "*.php", SearchOption.AllDirectories);
+            return Directory
+                .EnumerateFiles(FullPath, "*.php", SearchOption.AllDirectories)
+                .Where(IsAllowedFile);
         }
 
         IReadOnlyCollection<PhpSyntaxTree> ParseSourceTrees()
@@ -273,13 +310,18 @@ namespace PeachPied.WordPress.HotPlug
                 .ToList();
         }
 
-        public void Dispose()
+        void DisposeWatcher()
         {
             if (_fsWatcher != null)
             {
                 _fsWatcher.Dispose();
                 _fsWatcher = null;
             }
+        }
+
+        public void Dispose()
+        {
+            DisposeWatcher();
         }
     }
 }
