@@ -29,6 +29,11 @@ namespace PeachPied.WordPress.HotPlug
             _themesCompiler = new FolderCompiler(compiler, WpThemesSubPath, "wp-themes", logger);
         }
 
+        /// <summary>
+        /// In case of the first request,
+        /// this invokes the compiler to build user's plugins and themes for the first time
+        /// and initializes the file sytem watchers.
+        /// </summary>
         void FirstRequest()
         {
             if (_wasbuilt)
@@ -61,7 +66,8 @@ namespace PeachPied.WordPress.HotPlug
             _pluginsCompiler.PostponeBuild();
             _themesCompiler.PostponeBuild();
 
-            // no hooks necessary
+            // wp hooks:
+            // ...
         }
     }
 }

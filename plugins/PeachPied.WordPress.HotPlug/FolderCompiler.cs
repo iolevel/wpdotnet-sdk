@@ -145,6 +145,11 @@ namespace PeachPied.WordPress.HotPlug
         /// </summary>
         bool _filesDirty;
 
+        /// <summary>
+        /// Gets an identifier signaling the currently loaded compilation "version".
+        /// </summary>
+        public string VersionLoaded { get; private set; }
+
         #endregion
 
         public FolderCompiler(CompilerProvider compiler, string subPath, string outputAssemblyName, IWpPluginLogger logger)
@@ -265,22 +270,30 @@ namespace PeachPied.WordPress.HotPlug
             {
                 _filesDirty = false;
 
+                // TODO: needs some versioning (critical section)
+
                 if (TryBuild(true, out _pendingBuild))
                 {
                     ScheduleNextAction(false, s_ActionDelay);
                 }
             }
-            else if (_pendingBuild != null)
-            {
-                _pendingBuild.Load();
-                _pendingBuild = null;
-
-                ScheduleNextAction(false, TimeSpan.FromSeconds(60.0));
-            }
             else
             {
-                // free the cache of syntax trees
-                _compilation.InvalidateFiles();
+                var pending = Interlocked.Exchange(ref _pendingBuild, null);
+                if (pending != null)
+                {
+                    pending.Load();
+
+                    VersionLoaded = pending.AssemblyName;
+
+                    ScheduleNextAction(false, TimeSpan.FromSeconds(60.0));
+                }
+                else
+                {
+                    // nothing happened for some time,
+                    // free the cache of syntax trees
+                    _compilation.InvalidateFiles();
+                }
             }
         }
 
