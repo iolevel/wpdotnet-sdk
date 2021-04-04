@@ -108,7 +108,11 @@ namespace PeachPied.WordPress.Standard
         /// <param name="callback">The callback handler.</param>
         public static void AddAjaxAction(this WpApp app, string action, Func<string> callback)
         {
-            app.AddFilter("wp_ajax_" + action, callback);
+            app.AddFilter("wp_ajax_" + action, new Action(() =>
+            {
+                app.Context.Echo(callback());
+                app.Context.Call("wp_die");
+            }));
         }
     }
 }
