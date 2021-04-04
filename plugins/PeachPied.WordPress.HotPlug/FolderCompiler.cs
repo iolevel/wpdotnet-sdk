@@ -136,7 +136,7 @@ namespace PeachPied.WordPress.HotPlug
         {
             if (_lazyAction == null)
             {
-                _lazyAction = new Timer(_ =>
+                Interlocked.CompareExchange(ref _lazyAction, new Timer(_ =>
                 {
                     // nothing happened for a few seconds,
                     // do the dirty work now
@@ -155,7 +155,7 @@ namespace PeachPied.WordPress.HotPlug
                         _pendingBuild = null;
                     }
 
-                }, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+                }, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan), null);
             }
 
             // Context.DeclareScript(Path.Relative(RootPath, fname), () => ... )
