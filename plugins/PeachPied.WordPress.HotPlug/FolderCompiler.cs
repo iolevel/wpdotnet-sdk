@@ -37,6 +37,13 @@ namespace PeachPied.WordPress.HotPlug
             }
         }
 
+        static HashSet<string> s_ignoredErrCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "PHP5011", // unreachable code
+            "PHP6003", // Wrong letter case in class name
+            "PHP6005", // Wrong letter case in function override
+        };
+
         CompilerProvider Compiler { get; }
 
         IWpPluginLogger Logger { get; }
@@ -92,6 +99,11 @@ namespace PeachPied.WordPress.HotPlug
             {
                 foreach (var d in diagnostics)
                 {
+                    if (s_ignoredErrCodes.Contains(d.Id))
+                    {
+                        continue;
+                    }
+
                     Log(d.Severity, $"{d.Id}: {d.GetMessage()} in {d.Location.SourceTree.FilePath}:{d.Location.GetLineSpan().StartLinePosition.Line + 1}");
                 }
             }
