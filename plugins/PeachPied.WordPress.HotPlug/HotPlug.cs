@@ -1,6 +1,9 @@
-﻿using PeachPied.WordPress.Standard;
+﻿using Microsoft.CodeAnalysis;
+using PeachPied.WordPress.Standard;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Text;
 
 namespace PeachPied.WordPress.HotPlug
@@ -64,6 +67,12 @@ namespace PeachPied.WordPress.HotPlug
 
             // wp hooks:
 
+            app.AddFilter("admin_init", new Action(() =>
+            {
+                // render notices if there are compile time errors
+                app.AdminNotices(() => CollectAdminNotices(app));
+            }));
+
             //// ajax hook to get the currently loaded assemblies version:
             //app.AddAjaxAction(
             //    "hotplug_version",
@@ -73,6 +82,38 @@ namespace PeachPied.WordPress.HotPlug
             //// in such case it refreshes the page
 
             // ...
+        }
+
+        string DiagnosticToString(Diagnostic d)
+        {
+            return d.ToString().Replace(RootPath, "", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        string CollectAdminNotices(WpApp app, ImmutableArray<Diagnostic> diagnostics)
+        {
+            if (diagnostics.IsDefaultOrEmpty)
+            {
+                return null;
+            }
+
+            var noticeclass = diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error) ? "notice-error" : "notice-warning";
+            return
+                @$"<div class=""notice {noticeclass} is-dismissible"">" +
+                @"<p>There are some issues in the code you're running:</p>" +
+                "<ul>" +
+                string.Join("", diagnostics.Select(d => $"<li>{DiagnosticToString(d)}</li>")) +
+                @"</ul></div>";
+        }
+
+        string CollectAdminNotices(WpApp app)
+        {
+            var pagenow = app.Context.Globals["pagenow"].ToString();
+            return pagenow switch
+            {
+                "plugins.php" => CollectAdminNotices(app, _pluginsCompiler.LastDiagnostics),
+                "themes.php" => CollectAdminNotices(app, _themesCompiler.LastDiagnostics),
+                _ => null,
+            };
         }
     }
 }

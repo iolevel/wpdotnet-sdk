@@ -246,13 +246,13 @@ namespace PeachPied.WordPress.HotPlug
                     EnableRaisingEvents = true,
                 };
 
-                _fsWatcher.Created += (sender, e) => OnModified(e.FullPath);
-                _fsWatcher.Deleted += (sender, e) => OnModified(e.FullPath);
-                _fsWatcher.Changed += (sender, e) => OnModified(e.FullPath);
+                _fsWatcher.Created += (sender, e) => OnModified(e.FullPath, false);
+                _fsWatcher.Deleted += (sender, e) => OnModified(e.FullPath, true);
+                _fsWatcher.Changed += (sender, e) => OnModified(e.FullPath, false);
                 _fsWatcher.Renamed += (sender, e) =>
                 {
-                    OnModified(e.OldFullPath);
-                    OnModified(e.FullPath);
+                    OnModified(e.OldFullPath, true);
+                    OnModified(e.FullPath, false);
                 };
             }
         }
@@ -309,13 +309,18 @@ namespace PeachPied.WordPress.HotPlug
             }
         }
 
-        void OnModified(string fname)
+        void OnModified(string fname, bool removed)
         {
             if (IsAllowedFile(fname))
             {
                 _compilation.InvalidateFile(fname);
 
                 ScheduleNextAction(true, s_ActionDelay);
+
+                if (removed)
+                {
+                    //Context.TryRemoveScript(...)
+                }
             }
         }
 
