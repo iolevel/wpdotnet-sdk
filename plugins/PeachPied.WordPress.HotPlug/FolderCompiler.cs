@@ -61,13 +61,6 @@ namespace PeachPied.WordPress.HotPlug
 
         #region Fields & Properties
 
-        static HashSet<string> s_ignoredErrCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "PHP5011", // unreachable code
-            "PHP6003", // Wrong letter case in class name
-            "PHP6005", // Wrong letter case in function override
-        };
-
         CompilerProvider Compiler { get; }
 
         /// <summary>
@@ -188,7 +181,7 @@ namespace PeachPied.WordPress.HotPlug
             }
 
             //
-            var visible = diagnostics.Where(d => d.Severity != DiagnosticSeverity.Hidden && !s_ignoredErrCodes.Contains(d.Id));
+            var visible = diagnostics.Where(d => d.Severity != DiagnosticSeverity.Hidden);
 
             // log the diagnostics at once,
             // grouped by the severity

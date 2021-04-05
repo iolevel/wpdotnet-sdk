@@ -48,6 +48,7 @@ namespace PeachPied.WordPress.HotPlug
                 references: MetadataReferences().Select(CreateMetadataReference),
                 syntaxTrees: Array.Empty<PhpSyntaxTree>(),
                 options: new PhpCompilationOptions(
+                    specificDiagnosticOptions: IgnoredWarnings.Select(id => new KeyValuePair<string, ReportDiagnostic>(id, ReportDiagnostic.Hidden)),
                     outputKind: OutputKind.DynamicallyLinkedLibrary,
                     baseDirectory: RootPath,
                     sdkDirectory: null));
@@ -125,5 +126,12 @@ namespace PeachPied.WordPress.HotPlug
 
             return set.Select(ass => ass.Location);
         }
+
+        /// <summary>
+        /// Set of diagnostics that are not important for the user to know.
+        /// </summary>
+        public static readonly HashSet<string> IgnoredWarnings = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {"PHP0125", "PHP5006", "PHP5008", "PHP5010", "PHP5011", "PHP5026", "PHP5032", "PHP6002", "PHP6003", "PHP6005"};
+
     }
 }
