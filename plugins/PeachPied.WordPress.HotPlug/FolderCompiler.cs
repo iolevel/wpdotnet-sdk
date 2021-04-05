@@ -150,6 +150,11 @@ namespace PeachPied.WordPress.HotPlug
         /// </summary>
         public string VersionLoaded { get; private set; } = string.Empty;
 
+        /// <summary>
+        /// Gets the last compilation diagnostics.
+        /// </summary>
+        public ImmutableArray<Diagnostic> LastDiagnostics { get; private set; } = ImmutableArray<Diagnostic>.Empty;
+
         #endregion
 
         public FolderCompiler(CompilerProvider compiler, string subPath, string outputAssemblyName, IWpPluginLogger logger)
@@ -161,34 +166,41 @@ namespace PeachPied.WordPress.HotPlug
             _assemblyNamePrefix = outputAssemblyName ?? throw new ArgumentNullException(nameof(outputAssemblyName));
         }
 
-        void Log(DiagnosticSeverity severity, string message)
-        {
-            Logger?.Log(severity switch
-            {
-                DiagnosticSeverity.Error => IWpPluginLogger.Severity.Error,
-                DiagnosticSeverity.Warning => IWpPluginLogger.Severity.Warning,
-                _ => IWpPluginLogger.Severity.Message,
-            }, message);
-        }
-
         void LogMessage(string message)
         {
             Logger?.Log(IWpPluginLogger.Severity.Message, message);
         }
 
-        void Log(IEnumerable<Diagnostic> diagnostics)
+        string DiagnosticToString(Diagnostic d)
         {
-            if (diagnostics != null)
-            {
-                foreach (var d in diagnostics)
-                {
-                    if (s_ignoredErrCodes.Contains(d.Id))
-                    {
-                        continue;
-                    }
+            Debug.Assert(d != null);
+            return $"{d.Id}: {d.GetMessage()} in {d.Location.SourceTree.FilePath}:{d.Location.GetLineSpan().StartLinePosition.Line + 1}";
+        }
 
-                    Log(d.Severity, $"{d.Id}: {d.GetMessage()} in {d.Location.SourceTree.FilePath}:{d.Location.GetLineSpan().StartLinePosition.Line + 1}");
-                }
+        void LogDiagnostics(ImmutableArray<Diagnostic> diagnostics)
+        {
+            LastDiagnostics = diagnostics;
+
+            //
+            if (Logger == null)
+            {
+                return;
+            }
+
+            //
+            var visible = diagnostics.Where(d => d.Severity != DiagnosticSeverity.Hidden && !s_ignoredErrCodes.Contains(d.Id));
+
+            // log the diagnostics at once,
+            // grouped by the severity
+            foreach (var g in visible
+                .GroupBy(d => d.Severity switch
+                {
+                    DiagnosticSeverity.Error => IWpPluginLogger.Severity.Error,
+                    DiagnosticSeverity.Warning => IWpPluginLogger.Severity.Warning,
+                    _ => IWpPluginLogger.Severity.Message
+                }))
+            {
+                Logger.Log(g.Key, string.Join(Environment.NewLine, g.Select(d => DiagnosticToString(d))));
             }
         }
 
@@ -323,6 +335,8 @@ namespace PeachPied.WordPress.HotPlug
         {
             Debug.Assert(_ignoredScripts != null);
 
+            var timeStart = DateTime.UtcNow;
+
             LogMessage($"Rebuilding '{FullPath}' ...");
 
             assembly = null;
@@ -347,8 +361,11 @@ namespace PeachPied.WordPress.HotPlug
                 };
             }
 
-            Log(diagnostics);
-            LogMessage($"Build finished ({(assembly != null ? "Success" : "Fail")})");
+            // log
+
+            LogDiagnostics(diagnostics);
+
+            LogMessage($"Build finished ({(assembly != null ? "Success" : "Fail")}) in {(DateTime.UtcNow - timeStart).ToString()}");
 
             return assembly != null;
         }

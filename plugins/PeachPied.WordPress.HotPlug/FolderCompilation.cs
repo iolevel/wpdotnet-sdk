@@ -52,7 +52,7 @@ namespace PeachPied.WordPress.HotPlug
         public bool Compile(
             CompilerProvider compiler, string assname, bool debug,
             IReadOnlyCollection<string> files,
-            out IEnumerable<Diagnostic> diagnostics,
+            out ImmutableArray<Diagnostic> diagnostics,
             out byte[] rawassembly, out byte[] rawsymbols)
         {
             rawassembly = null;
@@ -68,7 +68,7 @@ namespace PeachPied.WordPress.HotPlug
 
             if (!success)
             {
-                diagnostics = trees.SelectMany(x => x.Diagnostics);
+                diagnostics = trees.SelectMany(x => x.Diagnostics).ToImmutableArray();
                 return false;
             }
 
