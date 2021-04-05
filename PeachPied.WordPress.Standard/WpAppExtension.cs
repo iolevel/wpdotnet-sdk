@@ -114,5 +114,15 @@ namespace PeachPied.WordPress.Standard
                 app.Context.Call("wp_die");
             }));
         }
+
+        /// <summary>
+        /// Registers 'admin_notices' callback.
+        /// </summary>
+        /// <param name="app">WP app.</param>
+        /// <param name="callback">Delegate that returns the notices HTML code.</param>
+        public static void AdminNotices(this WpApp app, Func<string> callback)
+        {
+            app.AddFilter("admin_notices", new Action(() => app.Context.Echo(callback())));
+        }
     }
 }
