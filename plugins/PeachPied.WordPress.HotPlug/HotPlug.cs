@@ -84,11 +84,6 @@ namespace PeachPied.WordPress.HotPlug
             // ...
         }
 
-        string DiagnosticToString(Diagnostic d)
-        {
-            return d.ToString().Replace(RootPath, "", StringComparison.InvariantCultureIgnoreCase);
-        }
-
         string CollectAdminNotices(WpApp app, ImmutableArray<Diagnostic> diagnostics)
         {
             if (diagnostics.IsDefaultOrEmpty)
@@ -96,13 +91,21 @@ namespace PeachPied.WordPress.HotPlug
                 return null;
             }
 
-            var noticeclass = diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error) ? "notice-error" : "notice-warning";
-            return
-                @$"<div class=""notice {noticeclass} is-dismissible"">" +
-                @"<p>There are some issues in the code you're running:</p>" +
-                "<ul>" +
-                string.Join("", diagnostics.Select(d => $"<li>{DiagnosticToString(d)}</li>")) +
-                @"</ul></div>";
+            var result = new StringBuilder();
+
+            foreach (var d in diagnostics)
+            {
+                if (d.Severity != DiagnosticSeverity.Hidden)
+                {
+                    var noticeclass = d.Severity == DiagnosticSeverity.Error ? "notice-error" : "notice-warning";
+
+                    result.Append(@$"<div class=""notice {noticeclass} is-dismissible""><p>");
+                    result.Append(d.ToString().Replace(RootPath, "", StringComparison.InvariantCultureIgnoreCase));
+                    result.Append(@$"</p></div>");
+                }
+            }
+
+            return result.ToString();
         }
 
         string CollectAdminNotices(WpApp app)
