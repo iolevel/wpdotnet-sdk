@@ -84,9 +84,21 @@ namespace PeachPied.WordPress.HotPlug
             // ...
         }
 
-        string IconHtml(Diagnostic d)
+        static string IconHtml(Diagnostic d) => d.Severity switch
         {
-            return null;
+            DiagnosticSeverity.Warning => IconHtml(Resources.notification_warn),
+            DiagnosticSeverity.Error => IconHtml(Resources.notification_error),
+            _ => IconHtml(Resources.notification_info),
+        };
+
+        static string IconHtml(byte[] pngbytes)
+        {
+            if (pngbytes == null)
+            {
+                return null;
+            }
+
+            return $"<img style='width:1rem;height:1rem;user-select:none;' src='data:image/png;base64,{System.Web.HttpUtility.HtmlAttributeEncode(Convert.ToBase64String(pngbytes))}' />";
         }
 
         string LocationHtml(Location location)
