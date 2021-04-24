@@ -9,7 +9,7 @@
 
     <!-- common version -->
     <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">5.7.0</VersionPrefix>
-    <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">preview6</VersionSuffix>
+    <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">preview7</VersionSuffix>
     <!--PeachpieVersion> specified in global.json </PeachpieVersion-->
 
     <!-- metadata generation -->
