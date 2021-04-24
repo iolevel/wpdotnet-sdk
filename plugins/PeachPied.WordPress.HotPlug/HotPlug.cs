@@ -84,6 +84,22 @@ namespace PeachPied.WordPress.HotPlug
             // ...
         }
 
+        string IconHtml(Diagnostic d)
+        {
+            return null;
+        }
+
+        string LocationHtml(Location location)
+        {
+            if (location.SourceTree != null)
+            {
+                var pos = location.GetLineSpan().StartLinePosition;
+                return $"{location.SourceTree.FilePath.Replace(RootPath, "", StringComparison.InvariantCultureIgnoreCase)} ({pos.Line + 1},{pos.Character + 1})";
+            }
+
+            return null;
+        }
+
         string CollectAdminNotices(WpApp app, ImmutableArray<Diagnostic> diagnostics)
         {
             if (diagnostics.IsDefaultOrEmpty)
@@ -91,21 +107,35 @@ namespace PeachPied.WordPress.HotPlug
                 return null;
             }
 
-            var result = new StringBuilder();
+            var rows = new List<string>(diagnostics.Length);
 
             foreach (var d in diagnostics)
             {
-                if (d.Severity != DiagnosticSeverity.Hidden)
+                if (d.Severity == DiagnosticSeverity.Hidden)
                 {
-                    var noticeclass = d.Severity == DiagnosticSeverity.Error ? "notice-error" : "notice-warning";
-
-                    result.Append(@$"<div class=""notice {noticeclass} is-dismissible""><p>");
-                    result.Append(d.ToString().Replace(RootPath, "", StringComparison.InvariantCultureIgnoreCase));
-                    result.Append(@$"</p></div>");
+                    continue;
                 }
+
+                rows.Add($@"
+<tr>
+    <td>{IconHtml(d)}</td>
+    <td style='font-weight:500;'>{d.Id}</td>
+    <td>{LocationHtml(d.Location)}:</td>
+    <td>{d.GetMessage()}</td>
+</tr>
+");
+
+                var noticeclass = d.Severity == DiagnosticSeverity.Error ? "notice-error" : "notice-warning";
+
+                //result.Append(@$"<div class=""notice {noticeclass} is-dismissible""><p>");
+                //result.Append(d.ToString().Replace(RootPath, "", StringComparison.InvariantCultureIgnoreCase));
+                //result.Append(@$"</p></div>");
             }
 
-            return result.ToString();
+            return @$"<div class='notice notice-warning is-dismissible' style='max-height:10.5rem;overflow-y:scroll;'>"
+                + "<table>"
+                + string.Join("", rows)
+                + "</table></div>";
         }
 
         string CollectAdminNotices(WpApp app)
