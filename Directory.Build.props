@@ -8,7 +8,8 @@
     <LangVersion>latest</LangVersion>
 
     <!-- common version -->
-    <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">5.7.0</VersionPrefix>
+    <VersionFileContent>$([System.IO.File]::ReadAllText($(MSBuildThisFileDirectory)wordpress/wp-includes/version.php) )</VersionFileContent>
+    <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">$([System.Text.RegularExpressions.Regex]::Match($(VersionFileContent), "\$wp_version\s*=\s*'([0-9\.]+)';").Groups.get_Item(1) )</VersionPrefix>
     <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">preview7</VersionSuffix>
     <!--PeachpieVersion> specified in global.json </PeachpieVersion-->
 
