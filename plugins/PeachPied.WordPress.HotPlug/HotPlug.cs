@@ -67,11 +67,11 @@ namespace PeachPied.WordPress.HotPlug
 
             // wp hooks:
 
-            app.AddFilter("admin_init", new Action(() =>
+            app.OnAdminInit(() =>
             {
                 // render notices if there are compile time errors
                 app.AdminNotices(() => CollectAdminNotices(app));
-            }));
+            });
 
             //// ajax hook to get the currently loaded assemblies version:
             //app.AddAjaxAction(

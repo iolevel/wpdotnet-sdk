@@ -471,7 +471,7 @@ namespace Peachpied.WordPress.NuGetPlugins
         void IWpPlugin.Configure(WpApp app)
         {
             // postpone admin actions
-            app.AddFilter("admin_init", new Action(() =>
+            app.OnAdminInit(() =>
             {
                 // plugins_api
                 app.AddFilter("plugins_api", new Func<PhpValue, string, object, PhpValue>(PluginsApi), accepted_args: 3);
@@ -532,7 +532,7 @@ namespace Peachpied.WordPress.NuGetPlugins
                 //var themedir = app.Context.Call("get_theme_root");
                 //try { Directory.CreateDirectory(themedir.ToString(app.Context)); }
                 //catch { }
-            }));
+            });
         }
     }
 }

@@ -116,6 +116,14 @@ namespace PeachPied.WordPress.Standard
         }
 
         /// <summary>
+        /// Registers 'admin_init' hook.
+        /// </summary>
+        public static void OnAdminInit(this WpApp app, Action action)
+        {
+            app.AddFilter("admin_init", action);
+        }
+
+        /// <summary>
         /// Registers 'admin_notices' callback.
         /// </summary>
         /// <param name="app">WP app.</param>
