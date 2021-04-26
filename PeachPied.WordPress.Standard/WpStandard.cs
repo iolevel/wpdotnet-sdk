@@ -26,6 +26,9 @@ namespace PeachPied.WordPress.Standard
         /// <summary>Database Charset to use in creating database tables</summary>
         public const string DB_CHARSET = "utf8";
 
+        /// <summary>The Database Collate type. Don't change this if in doubt</summary>
+        public const string DB_COLLATE = "";
+
         /// <summary>
         /// Implicitly defined <c>WP_DEBUG</c> constant that will be used in compile time.
         /// </summary>
