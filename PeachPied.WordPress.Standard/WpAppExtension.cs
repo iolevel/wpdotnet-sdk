@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -152,6 +154,17 @@ namespace PeachPied.WordPress.Standard
             }
 
             return hook.ToString();
+        }
+
+        /// <summary>
+        /// Registers 'wp_footer' callback.
+        /// </summary>
+        public static void Footer(this WpApp app, Action<TextWriter> callback, long priority = 100)
+        {
+            app.AddFilter("wp_footer", new Action(() =>
+            {
+                callback(app.Context.Output);
+            }), priority);
         }
     }
 }
