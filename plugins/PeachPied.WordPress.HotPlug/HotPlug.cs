@@ -95,9 +95,9 @@ namespace PeachPied.WordPress.HotPlug
                     {
                         output.Write("<div style='margin:24px;padding:16px;background:white;border:solid 1px #aaa;'>");
 
-                        output.Write(CreateDiagnosticsTable(app, _pluginsCompiler.LastDiagnostics, true));
+                        output.Write(CreateDiagnosticsTable(_pluginsCompiler.LastDiagnostics, true));
 
-                        output.Write(CreateDiagnosticsTable(app, _themesCompiler.LastDiagnostics, true));
+                        output.Write(CreateDiagnosticsTable(_themesCompiler.LastDiagnostics, true));
 
                         output.Write("</div>");
                     }
@@ -160,7 +160,7 @@ namespace PeachPied.WordPress.HotPlug
             return null;
         }
 
-        string CreateDiagnosticsTable(WpApp app, ImmutableArray<Diagnostic> diagnostics, bool showhidden = false)
+        string CreateDiagnosticsTable(ImmutableArray<Diagnostic> diagnostics, bool showhidden = false)
         {
             if (diagnostics.IsDefaultOrEmpty)
             {
@@ -195,9 +195,9 @@ namespace PeachPied.WordPress.HotPlug
             return @$"<table>" + string.Join("", rows) + "</table>";
         }
 
-        string CollectAdminNotices(WpApp app, ImmutableArray<Diagnostic> diagnostics)
+        string CollectAdminNotices(ImmutableArray<Diagnostic> diagnostics)
         {
-            var tablehtml = CreateDiagnosticsTable(app, diagnostics);
+            var tablehtml = CreateDiagnosticsTable(diagnostics);
             if (string.IsNullOrEmpty(tablehtml))
             {
                 return null;
@@ -213,8 +213,8 @@ namespace PeachPied.WordPress.HotPlug
             var pagenow = app.Context.Globals["pagenow"].ToString();
             return pagenow switch
             {
-                "plugins.php" => CollectAdminNotices(app, _pluginsCompiler.LastDiagnostics),
-                "themes.php" => CollectAdminNotices(app, _themesCompiler.LastDiagnostics),
+                "plugins.php" => CollectAdminNotices(_pluginsCompiler.LastDiagnostics),
+                "themes.php" => CollectAdminNotices(_themesCompiler.LastDiagnostics),
                 _ => null,
             };
         }
