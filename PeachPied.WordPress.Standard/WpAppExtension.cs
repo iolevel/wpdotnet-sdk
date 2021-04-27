@@ -134,5 +134,24 @@ namespace PeachPied.WordPress.Standard
         {
             app.AddFilter("admin_notices", new Action(() => app.Context.Echo(callback())));
         }
+
+        /// <summary>
+        /// Registers 'add_management_page' callback.
+        /// </summary>
+        public static string? AddManagementPage(this WpApp app, string pageTitle, string menuTitle, string capability, string slug, Action<TextWriter> callback, int? position = null)
+        {
+            var hook = app.Context.Call("add_management_page", pageTitle, menuTitle, capability, slug, new Action(() =>
+            {
+                callback(app.Context.Output);
+
+            }), position.HasValue ? position.Value : PhpValue.Null);
+
+            if (hook.IsFalse)
+            {
+                return null;
+            }
+
+            return hook.ToString();
+        }
     }
 }

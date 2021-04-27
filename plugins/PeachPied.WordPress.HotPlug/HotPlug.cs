@@ -75,16 +75,16 @@ namespace PeachPied.WordPress.HotPlug
 
             app.AdminMenu(() =>
             {
-                var hook = app.Context.Call("add_management_page", "Code Problems", "Code Problems", "install_plugins", "list-problems", new Action(() =>
+                var hook = app.AddManagementPage("Code Problems", "Code Problems", "install_plugins", "list-problems", (output) =>
                 {
                     var hasany = _pluginsCompiler.LastDiagnostics.Length != 0 || _themesCompiler.LastDiagnostics.Length != 0;
                     var maxseverity = hasany
                         ? _pluginsCompiler.LastDiagnostics.Concat(_themesCompiler.LastDiagnostics).Max(d => d.Severity)
                         : DiagnosticSeverity.Hidden;
 
-                    var overallicon = hasany ? IconHtml(maxseverity) : IconHtml(Resources.notification_success);
+                    var overallicon = hasany ? IconHtml(maxseverity) : IconHtmlSuccess();
 
-                    app.Context.Echo($@"
+                    output.Write($@"
 <div style='margin:16px;'>
 	<div><h1>Code Problems</h1></div>
 	<div class='hide-if-no-js orange'>
@@ -93,16 +93,16 @@ namespace PeachPied.WordPress.HotPlug
 </div>");
                     if (_pluginsCompiler.LastDiagnostics.Length != 0 || _themesCompiler.LastDiagnostics.Length != 0)
                     {
-                        app.Context.Echo("<div style='margin:24px;padding:16px;background:white;border:solid 1px #aaa;'>");
+                        output.Write("<div style='margin:24px;padding:16px;background:white;border:solid 1px #aaa;'>");
 
-                        app.Context.Echo(CreateDiagnosticsTable(app, _pluginsCompiler.LastDiagnostics, true));
+                        output.Write(CreateDiagnosticsTable(app, _pluginsCompiler.LastDiagnostics, true));
 
-                        app.Context.Echo(CreateDiagnosticsTable(app, _themesCompiler.LastDiagnostics, true));
+                        output.Write(CreateDiagnosticsTable(app, _themesCompiler.LastDiagnostics, true));
 
-                        app.Context.Echo("</div>");
+                        output.Write("</div>");
                     }
 
-                }), 4);
+                }, 4);
                 //app.AddFilter($"load-{hook}", new Action(() =>
                 //{
                 //    //
@@ -129,6 +129,8 @@ namespace PeachPied.WordPress.HotPlug
             _ => IconHtml(Resources.notification_info),
         };
 
+        static string IconHtmlSuccess() => IconHtml(Resources.notification_success);
+
         static string IconHtml(byte[] pngbytes)
         {
             if (pngbytes == null)
@@ -154,7 +156,7 @@ namespace PeachPied.WordPress.HotPlug
         {
             if (diagnostics.IsDefaultOrEmpty)
             {
-                return null;
+                return string.Empty;
             }
 
             var rows = new List<string>(diagnostics.Length);
