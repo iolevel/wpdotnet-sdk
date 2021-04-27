@@ -73,6 +73,42 @@ namespace PeachPied.WordPress.HotPlug
                 app.AdminNotices(() => CollectAdminNotices(app));
             });
 
+            app.AddFilter("admin_menu", new Action(() =>
+            {
+                var hook = app.Context.Call("add_management_page", "Code Problems", "Code Problems", "install_plugins", "list-problems", new Action(() =>
+                {
+                    var hasany = _pluginsCompiler.LastDiagnostics.Length != 0 || _themesCompiler.LastDiagnostics.Length != 0;
+                    var maxseverity = hasany
+                        ? _pluginsCompiler.LastDiagnostics.Concat(_themesCompiler.LastDiagnostics).Max(d => d.Severity)
+                        : DiagnosticSeverity.Hidden;
+
+                    var overallicon = hasany ? IconHtml(maxseverity) : IconHtml(Resources.notification_success);
+
+                    app.Context.Echo($@"
+<div style='margin:16px;'>
+	<div><h1>Code Problems</h1></div>
+	<div class='hide-if-no-js orange'>
+		<div>{overallicon} {(maxseverity != 0 ? "Should be checked." : "No problems.")}</div>
+	</div>
+</div>");
+                    if (_pluginsCompiler.LastDiagnostics.Length != 0 || _themesCompiler.LastDiagnostics.Length != 0)
+                    {
+                        app.Context.Echo("<div style='margin:24px;padding:16px;background:white;border:solid 1px #aaa;'>");
+
+                        app.Context.Echo(CreateDiagnosticsTable(app, _pluginsCompiler.LastDiagnostics, true));
+
+                        app.Context.Echo(CreateDiagnosticsTable(app, _themesCompiler.LastDiagnostics, true));
+
+                        app.Context.Echo("</div>");
+                    }
+
+                }), 4);
+                //app.AddFilter($"load-{hook}", new Action(() =>
+                //{
+                //    //
+                //}));
+            }));
+
             //// ajax hook to get the currently loaded assemblies version:
             //app.AddAjaxAction(
             //    "hotplug_version",
@@ -84,7 +120,9 @@ namespace PeachPied.WordPress.HotPlug
             // ...
         }
 
-        static string IconHtml(Diagnostic d) => d.Severity switch
+        static string IconHtml(Diagnostic d) => IconHtml(d.Severity);
+
+        static string IconHtml(DiagnosticSeverity severity) => severity switch
         {
             DiagnosticSeverity.Warning => IconHtml(Resources.notification_warn),
             DiagnosticSeverity.Error => IconHtml(Resources.notification_error),
