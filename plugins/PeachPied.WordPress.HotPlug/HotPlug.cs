@@ -73,7 +73,7 @@ namespace PeachPied.WordPress.HotPlug
                 app.AdminNotices(() => CollectAdminNotices(app));
             });
 
-            app.AddFilter("admin_menu", new Action(() =>
+            app.AdminMenu(() =>
             {
                 var hook = app.Context.Call("add_management_page", "Code Problems", "Code Problems", "install_plugins", "list-problems", new Action(() =>
                 {
@@ -107,7 +107,7 @@ namespace PeachPied.WordPress.HotPlug
                 //{
                 //    //
                 //}));
-            }));
+            });
 
             //// ajax hook to get the currently loaded assemblies version:
             //app.AddAjaxAction(

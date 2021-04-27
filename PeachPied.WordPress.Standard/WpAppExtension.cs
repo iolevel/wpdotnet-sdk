@@ -118,10 +118,12 @@ namespace PeachPied.WordPress.Standard
         /// <summary>
         /// Registers 'admin_init' hook.
         /// </summary>
-        public static void OnAdminInit(this WpApp app, Action action)
-        {
-            app.AddFilter("admin_init", action);
-        }
+        public static void OnAdminInit(this WpApp app, Action action) => app.AddFilter("admin_init", action);
+
+        /// <summary>
+        /// Registers 'admin_menu' hook.
+        /// </summary>
+        public static void AdminMenu(this WpApp app, Action action) => app.AddFilter("admin_menu", action);
 
         /// <summary>
         /// Registers 'admin_notices' callback.
