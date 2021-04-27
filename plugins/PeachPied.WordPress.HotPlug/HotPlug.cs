@@ -93,7 +93,7 @@ namespace PeachPied.WordPress.HotPlug
 </div>");
                     if (_pluginsCompiler.LastDiagnostics.Length != 0 || _themesCompiler.LastDiagnostics.Length != 0)
                     {
-                        output.Write("<div style='margin:24px;padding:16px;background:white;border:solid 1px #aaa;'>");
+                        output.Write("<div style='margin:24px;padding:8px;background:white;border:solid 1px #aaa;'>");
 
                         output.Write(CreateDiagnosticsTable(_pluginsCompiler.LastDiagnostics, true));
 
@@ -151,10 +151,24 @@ namespace PeachPied.WordPress.HotPlug
 
         string LocationHtml(Location location)
         {
+            const string pluginsprefix = "/wp-content/plugins/";
+
             if (location.SourceTree != null)
             {
                 var pos = location.GetLineSpan().StartLinePosition;
-                return $"{location.SourceTree.FilePath.Replace(RootPath, "", StringComparison.InvariantCultureIgnoreCase)} ({pos.Line + 1},{pos.Character + 1})";
+                var path = location.SourceTree.FilePath
+                    .Replace(RootPath, "", StringComparison.InvariantCultureIgnoreCase)
+                    .Replace('\\', '/'); // plugin-editor expects forward slashes always
+
+                var pathhtml = path;
+
+                if (path.StartsWith(pluginsprefix))
+                {
+                    var file = System.Web.HttpUtility.UrlEncode(path.Substring(pluginsprefix.Length));
+                    pathhtml = $"<a href='/wp-admin/plugin-editor.php?file={file}'>{path}</a>";
+                }
+
+                return $"{pathhtml} ({pos.Line + 1},{pos.Character + 1})";
             }
 
             return null;
@@ -176,10 +190,14 @@ namespace PeachPied.WordPress.HotPlug
                     continue;
                 }
 
+                var trstyle = (rows.Count % 2) == 1
+                    ? "background-color:#eee;"
+                    : "";
+
                 rows.Add($@"
-<tr>
+<tr style='padding-left:8px;{trstyle}'>
     <td>{IconHtml(d)}</td>
-    <td style='font-weight:500;'>{d.Id}</td>
+    <td style='font-weight:500;'><a href='https://docs.peachpie.io/php/diagnostics/' target='_blank'>{d.Id}</a></td>
     <td>{LocationHtml(d.Location)}:</td>
     <td>{d.GetMessage()}</td>
 </tr>
@@ -192,7 +210,7 @@ namespace PeachPied.WordPress.HotPlug
                 //result.Append(@$"</p></div>");
             }
 
-            return @$"<table>" + string.Join("", rows) + "</table>";
+            return @$"<table style='padding:8px;width:100%;'>" + string.Join("", rows) + "</table>";
         }
 
         string CollectAdminNotices(ImmutableArray<Diagnostic> diagnostics)
