@@ -112,7 +112,7 @@ namespace PeachPied.WordPress.HotPlug
             return null;
         }
 
-        string CollectAdminNotices(WpApp app, ImmutableArray<Diagnostic> diagnostics)
+        string CreateDiagnosticsTable(WpApp app, ImmutableArray<Diagnostic> diagnostics, bool showhidden = false)
         {
             if (diagnostics.IsDefaultOrEmpty)
             {
@@ -123,7 +123,7 @@ namespace PeachPied.WordPress.HotPlug
 
             foreach (var d in diagnostics)
             {
-                if (d.Severity == DiagnosticSeverity.Hidden)
+                if (d.Severity == DiagnosticSeverity.Hidden && !showhidden)
                 {
                     continue;
                 }
@@ -144,10 +144,20 @@ namespace PeachPied.WordPress.HotPlug
                 //result.Append(@$"</p></div>");
             }
 
+            return @$"<table>" + string.Join("", rows) + "</table>";
+        }
+
+        string CollectAdminNotices(WpApp app, ImmutableArray<Diagnostic> diagnostics)
+        {
+            var tablehtml = CreateDiagnosticsTable(app, diagnostics);
+            if (string.IsNullOrEmpty(tablehtml))
+            {
+                return null;
+            }
+
             return @$"<div class='notice notice-warning is-dismissible' style='max-height:10.5rem;overflow-y:scroll;'>"
-                + "<table>"
-                + string.Join("", rows)
-                + "</table></div>";
+                + tablehtml
+                + "</div>";
         }
 
         string CollectAdminNotices(WpApp app)
