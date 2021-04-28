@@ -36,9 +36,8 @@ namespace PeachPied.WordPress.Standard.Internal
 <tr>
     <td><img src=""https://github.com/iolevel/wpdotnet-sdk/raw/master/wpdotnet.png"" style=""width:76px;margin:8px;display:inline;""></td>
     <td>
-        <b>Your WordPress is running on .NET</b>
+        <b>Your WordPress is running on {frameworkVersion}</b>
         <div>
-            <b>Framework:</b> {frameworkVersion}<br/>
             <b title=""Memory allocated by the whole process."">Memory usage:</b> {process.WorkingSet64/1024/1024} MB<br/>
             <b title=""CPU time consumed by the whole process."">CPU usage:</b> {process.TotalProcessorTime:c}<br/>
             <b>Project URL:</b> <a href=""{WpDotNetUrl}"" target=""_blank"">wpdotnet-sdk</a><br/>
