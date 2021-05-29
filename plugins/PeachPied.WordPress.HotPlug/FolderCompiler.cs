@@ -94,10 +94,10 @@ namespace PeachPied.WordPress.HotPlug
         int _assemblyNameCounter;
 
         /// <summary>
-        /// Full paths to ignored scripts.
+        /// Full directory names of scripts in referenced compiled assemblies.
         /// Those won't be watched and won't be compiled.
         /// </summary>
-        HashSet<string> _ignoredScripts;
+        HashSet<string> _ignored;
 
         /// <summary>
         /// Determines if the given file is allowed to be watched and compiled.
@@ -112,7 +112,7 @@ namespace PeachPied.WordPress.HotPlug
 
             // TODO: other excluded files - tests, etc.
 
-            return _ignoredScripts == null || !_ignoredScripts.Contains(fullpath);
+            return _ignored == null || !_ignored.Contains(Path.GetDirectoryName(fullpath));
         }
 
         /// <summary>
@@ -209,15 +209,15 @@ namespace PeachPied.WordPress.HotPlug
         {
             DisposeWatcher();
 
-            if (_ignoredScripts == null)
+            if (_ignored == null)
             {
-                // remember scripts that were compiled in advance
+                // remember directories that were compiled in advance
                 // do not compile them again nor allow them to be redefined
 
-                Context.TryGetScriptsInDirectory(Compiler.RootPath, SubPath, out var existingscripts);
-
-                _ignoredScripts = new HashSet<string>(
-                    existingscripts.Select(s => Path.GetFullPath(Path.Combine(RootPath, s.Path))),
+                _ignored = new HashSet<string>(
+                    Directory
+                        .GetDirectories(Path.Combine(Compiler.RootPath, SubPath), "*", SearchOption.AllDirectories)
+                        .Where(d => Context.TryGetScriptsInDirectory(Compiler.RootPath, d, out _)),
                     StringComparer.InvariantCultureIgnoreCase);
             }
 
@@ -331,7 +331,7 @@ namespace PeachPied.WordPress.HotPlug
 
         bool TryBuild(bool debug, out CompilationResult assembly)
         {
-            Debug.Assert(_ignoredScripts != null);
+            Debug.Assert(_ignored != null);
 
             var timeStart = DateTime.UtcNow;
 
