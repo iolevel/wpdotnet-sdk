@@ -109,14 +109,6 @@ namespace PeachPied.WordPress.HotPlug
                 //}));
             });
 
-            app.Footer(output =>
-            {
-//                 output.Write(@$"
-// <div style='margin:4px auto;padding:6px;text-align:right;background:#eee;border-top:solid 1px #ccc;color:#444;font-size:13px;'>
-// Built with WordPress on .NET
-// </div>");
-            });
-
             //// ajax hook to get the currently loaded assemblies version:
             //app.AddAjaxAction(
             //    "hotplug_version",
