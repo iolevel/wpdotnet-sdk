@@ -103,6 +103,22 @@ namespace PeachPied.WordPress.Standard
         }
 
         /// <summary>
+        /// Retrieves an option value based on an option name.
+        /// </summary>
+        public static PhpValue GetOption(this WpApp app, string option, PhpValue @default = default/*NULL*/)
+        {
+            return app.Context.Call("get_option", option, @default);
+        }
+
+        /// <summary>
+        /// Gets <c>admin_email</c> option (Administrator email).
+        /// </summary>
+        public static string? GetAdminEmail(this WpApp app)
+        {
+            return GetOption(app, "admin_email").IsString(out var email) ? email : null;
+        }
+
+        /// <summary>
         /// Registers ajax hook.
         /// </summary>
         /// <param name="app">WP app.</param>
