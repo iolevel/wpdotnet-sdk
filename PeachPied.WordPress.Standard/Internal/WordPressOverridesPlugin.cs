@@ -21,7 +21,7 @@ namespace PeachPied.WordPress.Standard.Internal
 
     sealed class WordPressOverridesPlugin : IWpPlugin
     {
-        public static string WpDotNetUrl = "https://github.com/iolevel/wpdotnet-sdk";
+        public static string WpDotNetUrl = "https://www.wpdotnet.com/";
 
         public static readonly string InformationalVersion = typeof(WordPressOverridesPlugin).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
@@ -41,7 +41,7 @@ namespace PeachPied.WordPress.Standard.Internal
         <div>
             <b title=""Memory allocated by the whole process."">Memory usage:</b> {process.WorkingSet64 / 1024 / 1024} MB<br/>
             <b title=""CPU time consumed by the whole process."">CPU usage:</b> {process.TotalProcessorTime:c}<br/>
-            <b>Project URL:</b> <a href=""{WpDotNetUrl}"" target=""_blank"">wpdotnet-sdk</a><br/>
+            <b>Project URL:</b> <a href=""{WpDotNetUrl}?from=dashboard"" target=""_blank"">wpdotnet-sdk</a><br/>
         </div>
     </td>
 </tr>
@@ -68,9 +68,9 @@ namespace PeachPied.WordPress.Standard.Internal
 
             app.Footer(output =>
             {
-                output.Write(@"
+                output.Write(@$"
 <div style='position:fixed;text-align:center; width:128px; height:50px; bottom:0; right:0;padding:12px 0 12px 0; margin:0 auto; vertical-align: middle;background:#68b227;border-left:solid 6px rgba(255,255,255,.5);line-height:24px;'>
-    <a href='https://www.wpdotnet.com/#pricing' style='color:#fff;font-size:16px;font-style:tahoma,helvetica;padding:0; margin:0;'>Get Rid of Me</a>
+    <a href='{WpDotNetUrl}?from=footer#pricing' style='color:#fff;font-size:16px;font-style:tahoma,helvetica;padding:0; margin:0;'>Get Rid of Me</a>
 </div>
 ");
                 //output.Write(@"<div style='margin:-55px 0 0 0;width:70px;height:70px;left:0;' class='foldtl'>&nbsp;</div>");
