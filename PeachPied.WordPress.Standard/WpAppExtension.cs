@@ -111,6 +111,14 @@ namespace PeachPied.WordPress.Standard
         }
 
         /// <summary>
+        /// Updates the value of an option that was already added.
+        /// </summary>
+        public static bool UpdateOption(this WpApp app, string option, PhpValue value)
+        {
+            return (bool)app.Context.Call("update_option", option, value);
+        }
+
+        /// <summary>
         /// Gets <c>admin_email</c> option (Administrator email).
         /// </summary>
         public static string? GetAdminEmail(this WpApp app)
