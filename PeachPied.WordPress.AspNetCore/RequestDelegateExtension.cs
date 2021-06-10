@@ -214,7 +214,7 @@ namespace Microsoft.AspNetCore.Builder
             app.UseStaticFiles(new StaticFileOptions() { FileProvider = fprovider });
 
             // fire wp-cron.php asynchronously
-            WpCronScheduler.StartScheduler(startup, TimeSpan.FromSeconds(60), root);
+            WpCronScheduler.StartScheduler(startup, TimeSpan.FromSeconds(120), root);
 
             //
             return app;
