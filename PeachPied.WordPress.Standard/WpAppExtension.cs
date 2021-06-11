@@ -35,6 +35,11 @@ namespace PeachPied.WordPress.Standard
         public static string GetVersion(this WpApp app) => app.Context.Globals["wp_version"].ToString();
 
         /// <summary>
+        /// Gets site url value.
+        /// </summary>
+        public static string GetSiteUrl(this WpApp app, string path = "", string? scheme = null) => app.Context.Call("site_url", path, scheme).ToString();
+
+        /// <summary>
         /// Registers <c>the_content</c> filter.
         /// </summary>
         public static void FilterContent(this WpApp app, the_content_filter filter) => app.AddFilter("the_content", filter);
@@ -186,6 +191,17 @@ namespace PeachPied.WordPress.Standard
         public static void Footer(this WpApp app, Action<TextWriter> callback, long priority = 100)
         {
             app.AddFilter("wp_footer", new Action(() =>
+            {
+                callback(app.Context.Output);
+            }), priority);
+        }
+
+        /// <summary>
+        /// Registers 'admin_footer_text' callback.
+        /// </summary>
+        public static void AdminFooterText(this WpApp app, Action<TextWriter> callback, long priority = 100)
+        {
+            app.AddFilter("admin_footer_text", new Action(() =>
             {
                 callback(app.Context.Output);
             }), priority);
