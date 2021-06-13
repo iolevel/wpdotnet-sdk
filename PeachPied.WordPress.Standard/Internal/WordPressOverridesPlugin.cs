@@ -4,26 +4,27 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Composition;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Text;
+using System.Text.Json;
 
 namespace PeachPied.WordPress.Standard.Internal
 {
-    [Export(typeof(IWpPluginProvider))]
-    sealed class PluginsProvider : IWpPluginProvider
-    {
-        public IEnumerable<IWpPlugin> GetPlugins(IServiceProvider provider, string wpRootPath)
-        {
-            yield return new WordPressOverridesPlugin();
-        }
-    }
-
     sealed class WordPressOverridesPlugin : IWpPlugin
     {
+        sealed class ValidationResponse
+        {
+            public int customer { get; set; }
+            public string email { get; set; }
+            public DateTime expiration { get; set; }
+            public byte[] signature { get; set; }
+        }
+
         static string WpDotNetUrl => "https://www.wpdotnet.com/";
 
         static string ValidateUrl => "https://apps.peachpie.io/api/ajax/validate-user?key={0}&domain={1}";
@@ -42,18 +43,27 @@ namespace PeachPied.WordPress.Standard.Internal
 
         bool IsRegistered => _registered.GetValueOrDefault();
 
-        bool ValidateUser(string key, string domain)
+        bool ValidateUser(string key, string url)
         {
-            var req = (HttpWebRequest)WebRequest.Create(string.Format(ValidateUrl, key, domain));
+            var uri = new Uri(url, UriKind.Absolute);
+
+            var req = (HttpWebRequest)WebRequest.Create(string.Format(ValidateUrl, key, url));
             req.Timeout = 5 * 1000;
             try
             {
                 using (var r = (HttpWebResponse)req.GetResponse())
                 {
                     if (r.StatusCode == HttpStatusCode.OK)
-                    {
-                        _registered = true;
-                        return true;
+                    {                        
+                        using var reader = new StreamReader(r.GetResponseStream());
+                        var value = JsonSerializer.Deserialize<ValidationResponse>(reader.ReadToEnd());
+                        var data = Encoding.ASCII.GetBytes($"{uri.Host}@{value.expiration.ToString("d", DateTimeFormatInfo.InvariantInfo)}");
+
+                        if (Keys.VerifyData(data, value.signature))
+                        {
+                            _registered = true;
+                            return true;
+                        }
                     }
                 }
             }
