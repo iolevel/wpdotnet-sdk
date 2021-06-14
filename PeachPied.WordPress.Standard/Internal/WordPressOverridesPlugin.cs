@@ -51,9 +51,11 @@ namespace PeachPied.WordPress.Standard.Internal
 
             public byte[] Signature;
 
-            public static ValidationData FromJson(string response)
+            public string Key; // original license key or email, used for automatic validation after expiration
+
+            public static ValidationData FromJson(string response, string key)
             {
-                if (string.IsNullOrEmpty(response))
+                if (string.IsNullOrEmpty(response) || string.IsNullOrEmpty(key))
                 {
                     throw new ArgumentException();
                 }
@@ -64,6 +66,7 @@ namespace PeachPied.WordPress.Standard.Internal
                 {
                     Expiration = value.expiration,
                     Signature = value.signature,
+                    Key = key,
                 };
             }
 
@@ -78,6 +81,7 @@ namespace PeachPied.WordPress.Standard.Internal
                 {
                     Expiration = DateTime.ParseExact(array[nameof(Expiration)].ToString(), "d", DateTimeFormatInfo.InvariantInfo),
                     Signature = JsonSerializer.Deserialize<byte[]>(array[nameof(Signature)].ToString()),
+                    Key = array[nameof(Key)].ToString(),
                 };
             }
 
@@ -99,6 +103,7 @@ namespace PeachPied.WordPress.Standard.Internal
                 {
                     { nameof(Expiration), Expiration.ToString("d", DateTimeFormatInfo.InvariantInfo) },
                     { nameof(Signature), JsonSerializer.Serialize(Signature) },
+                    { nameof(Key), Key },
                 };
             }
         }
@@ -115,9 +120,25 @@ namespace PeachPied.WordPress.Standard.Internal
         /// </summary>
         static string ValidateUrl => "https://apps.peachpie.io/api/ajax/validate-user?key={0}&domain={1}";
 
+        void AdminNotice(WpApp app, string message, bool success)
+        {
+            app.OnAdminInit(() =>
+            {
+                app.AdminNotices(() => $@"<div class='notice notice-{(success ? "success" : "warning")} is-dismissible' style='background:url({LogoUrl}) no-repeat 4px 4px;background-size:2.4em 2.4em;'>
+    <p style='margin-left:3em;'><b>WpDotNet:</b> {System.Web.HttpUtility.HtmlEncode(message)}</p>
+</div>");
+            });
+        }
+
         bool TryRegisterUser(WpApp app)
         {
-            if (app.GetOption(RegisterKeyName).IsPhpArray(out var dataarray))
+            string key = null;
+
+            if (app.Context.Post.TryGetValue(RegisterKeyName, out var keyvalue))
+            {
+                key = keyvalue.AsString();
+            }
+            else if (app.GetOption(RegisterKeyName).IsPhpArray(out var dataarray))
             {
                 try
                 {
@@ -126,21 +147,29 @@ namespace PeachPied.WordPress.Standard.Internal
                     if (data.Verify(uri))
                     {
                         _isRegistered = true;
+                        AdminNotice(app, $"License is valid until {data.Expiration.ToString("d")}.", success: true);
                         return true;
                     }
-                    else if (data.Expiration <= DateTime.UtcNow)
+                    else if (data.Expiration <= DateTime.UtcNow && data.Key != null)
                     {
+                        // AdminNotice(app, $"License has expired at {data.Expiration.ToString("d")}.", success: false);
+
                         // try to update the registration automatically
-                        // ...
+                        key = data.Key;
                     }
                 }
                 catch
                 {
                     // ignore invalid data
+                    AdminNotice(app, $"Invalid license data. Please register again.", success: false);
                 }
+
+                _isRegistered = false; // do not try to verify again
             }
 
-            if (app.Context.Post.TryGetValue(RegisterKeyName, out var keyvalue) && keyvalue.IsString(out var key))
+            // request user validation:
+
+            if (key != null)
             {
                 var siteurl = app.GetSiteUrl();
                 var uri = new Uri(siteurl, UriKind.Absolute);
@@ -151,9 +180,17 @@ namespace PeachPied.WordPress.Standard.Internal
                     if (data.Verify(uri))
                     {
                         _isRegistered = true;
+                        AdminNotice(app, $"Registration suceeded. Thank you!<br/>License is valid until {data.Expiration.ToString("d")}, then it will be renewed automatically.", success: true);
+                        return true;
                     }
-
-                    return true;
+                    else
+                    {
+                        AdminNotice(app, $"License has been verified, although it is no valid. Expiration date is {data.Expiration.ToString("d")}.", success: false);
+                    }
+                }
+                else
+                {
+                    AdminNotice(app, $"Invalid license '{key}'. Domain '{uri.Host}' has not been registered.", success: false);
                 }
             }
 
@@ -169,24 +206,26 @@ namespace PeachPied.WordPress.Standard.Internal
         /// <returns></returns>
         bool TryRequestUserValidation(string key, string url, out ValidationData data)
         {
-            var req = (HttpWebRequest)WebRequest.Create(string.Format(ValidateUrl, key, url));
-
-            req.Timeout = 5 * 1000;
-
-            try
+            if (!string.IsNullOrEmpty(key) && url != null)
             {
-                using (var r = (HttpWebResponse)req.GetResponse())
-                {
-                    if (r.StatusCode == HttpStatusCode.OK)
-                    {
-                        using var reader = new StreamReader(r.GetResponseStream());
+                var req = (HttpWebRequest)WebRequest.Create(string.Format(ValidateUrl, key, url));
+                req.Timeout = 5 * 1000;
 
-                        data = ValidationData.FromJson(reader.ReadToEnd());
-                        return true;
+                try
+                {
+                    using (var r = (HttpWebResponse)req.GetResponse())
+                    {
+                        if (r.StatusCode == HttpStatusCode.OK)
+                        {
+                            using var reader = new StreamReader(r.GetResponseStream());
+
+                            data = ValidationData.FromJson(reader.ReadToEnd(), key);
+                            return true;
+                        }
                     }
                 }
+                catch { }
             }
-            catch { }
 
             //
             data = default;
@@ -262,7 +301,7 @@ namespace PeachPied.WordPress.Standard.Internal
 
         public void Configure(WpApp app)
         {
-            if (_isRegistered.HasValue == false)
+            if (_isRegistered.HasValue == false || app.Context.Post.Count != 0)
             {
                 TryRegisterUser(app);
             }
