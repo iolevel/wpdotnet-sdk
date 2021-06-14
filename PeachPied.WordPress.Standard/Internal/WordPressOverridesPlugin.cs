@@ -17,17 +17,185 @@ namespace PeachPied.WordPress.Standard.Internal
 {
     sealed class WordPressOverridesPlugin : IWpPlugin
     {
-        sealed class ValidationResponse
+        #region Registration Validation
+
+        struct ValidationData
         {
-            public int customer { get; set; }
-            public string email { get; set; }
-            public DateTime expiration { get; set; }
-            public byte[] signature { get; set; }
+            /// <summary>
+            /// Object sent from the validate-user api.
+            /// </summary>
+            sealed class ValidationResponse
+            {
+                /// <summary>
+                /// The user ID.
+                /// </summary>
+                public int customer { get; set; }
+
+                /// <summary>
+                /// The registration email.
+                /// </summary>
+                public string email { get; set; }
+
+                /// <summary>
+                /// The subscription expiration date.s
+                /// </summary>
+                public DateTime expiration { get; set; }
+
+                /// <summary>
+                /// The verification signature for "data".
+                /// </summary>
+                public byte[] signature { get; set; }
+            }
+
+            public DateTime Expiration;
+
+            public byte[] Signature;
+
+            public static ValidationData FromJson(string response)
+            {
+                if (string.IsNullOrEmpty(response))
+                {
+                    throw new ArgumentException();
+                }
+
+                var value = JsonSerializer.Deserialize<ValidationResponse>(response);
+
+                return new ValidationData
+                {
+                    Expiration = value.expiration,
+                    Signature = value.signature,
+                };
+            }
+
+            public static ValidationData FromArray(PhpArray array)
+            {
+                if (array == null)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                return new ValidationData
+                {
+                    Expiration = DateTime.ParseExact(array[nameof(Expiration)].ToString(), "d", DateTimeFormatInfo.InvariantInfo),
+                    Signature = JsonSerializer.Deserialize<byte[]>(array[nameof(Signature)].ToString()),
+                };
+            }
+
+            byte[] ConstructDataString(Uri uri) => Encoding.ASCII.GetBytes($"{uri.Host}@{Expiration.ToString("d", DateTimeFormatInfo.InvariantInfo)}");
+
+            /// <summary>
+            /// Verifies the given validation footprint matches current date and domain.
+            /// </summary>
+            public bool Verify(Uri uri) =>
+                uri != null &&
+                Signature != null &&
+                Expiration > DateTime.UtcNow &&
+                Keys.VerifyData(ConstructDataString(uri), Signature);
+
+            /// <summary>Gets data as PHP array.</summary>
+            public PhpArray ToArray()
+            {
+                return new PhpArray(2)
+                {
+                    { nameof(Expiration), Expiration.ToString("d", DateTimeFormatInfo.InvariantInfo) },
+                    { nameof(Signature), JsonSerializer.Serialize(Signature) },
+                };
+            }
         }
 
-        static string WpDotNetUrl => "https://www.wpdotnet.com/";
+        /// <summary>
+        /// Gets value indicating the user is properly registered with an active license.
+        /// </summary>
+        bool IsRegistered => _isRegistered.GetValueOrDefault();
 
+        bool? _isRegistered; // cached value indicating the registration was resolved
+
+        /// <summary>
+        /// API for user validation.
+        /// </summary>
         static string ValidateUrl => "https://apps.peachpie.io/api/ajax/validate-user?key={0}&domain={1}";
+
+        bool TryRegisterUser(WpApp app)
+        {
+            if (app.GetOption(RegisterKeyName).IsPhpArray(out var dataarray))
+            {
+                try
+                {
+                    var uri = new Uri(app.GetSiteUrl(), UriKind.Absolute);
+                    var data = ValidationData.FromArray(dataarray);
+                    if (data.Verify(uri))
+                    {
+                        _isRegistered = true;
+                        return true;
+                    }
+                    else if (data.Expiration <= DateTime.UtcNow)
+                    {
+                        // try to update the registration automatically
+                        // ...
+                    }
+                }
+                catch
+                {
+                    // ignore invalid data
+                }
+            }
+
+            if (app.Context.Post.TryGetValue(RegisterKeyName, out var keyvalue) && keyvalue.IsString(out var key))
+            {
+                var siteurl = app.GetSiteUrl();
+                var uri = new Uri(siteurl, UriKind.Absolute);
+                if (TryRequestUserValidation(key, siteurl, out var data))
+                {
+                    app.UpdateOption(RegisterKeyName, data.ToArray());
+
+                    if (data.Verify(uri))
+                    {
+                        _isRegistered = true;
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Requests the <see cref="ValidateUrl"/> and updates user registration.
+        /// </summary>
+        /// <param name="key">Given license key or email of the subscription.</param>
+        /// <param name="url">Current website URL.</param>
+        /// <param name="data">Received and validate data.</param>
+        /// <returns></returns>
+        bool TryRequestUserValidation(string key, string url, out ValidationData data)
+        {
+            var req = (HttpWebRequest)WebRequest.Create(string.Format(ValidateUrl, key, url));
+
+            req.Timeout = 5 * 1000;
+
+            try
+            {
+                using (var r = (HttpWebResponse)req.GetResponse())
+                {
+                    if (r.StatusCode == HttpStatusCode.OK)
+                    {
+                        using var reader = new StreamReader(r.GetResponseStream());
+
+                        data = ValidationData.FromJson(reader.ReadToEnd());
+                        return true;
+                    }
+                }
+            }
+            catch { }
+
+            //
+            data = default;
+            return false;
+        }
+
+        #endregion
+
+        static string WpDotNetUrl => "https://www.wpdotnet.com/";
 
         static string LogoUrl => "https://raw.githubusercontent.com/iolevel/wpdotnet-sdk/master/wpdotnet.png";
 
@@ -38,39 +206,6 @@ namespace PeachPied.WordPress.Standard.Internal
         static string RegisterKeyName => "wpdotnet-register-key";
 
         static string InformationalVersion => typeof(WordPressOverridesPlugin).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-
-        bool? _registered;
-
-        bool IsRegistered => _registered.GetValueOrDefault();
-
-        bool ValidateUser(string key, string url)
-        {
-            var uri = new Uri(url, UriKind.Absolute);
-
-            var req = (HttpWebRequest)WebRequest.Create(string.Format(ValidateUrl, key, url));
-            req.Timeout = 5 * 1000;
-            try
-            {
-                using (var r = (HttpWebResponse)req.GetResponse())
-                {
-                    if (r.StatusCode == HttpStatusCode.OK)
-                    {                        
-                        using var reader = new StreamReader(r.GetResponseStream());
-                        var value = JsonSerializer.Deserialize<ValidationResponse>(reader.ReadToEnd());
-                        var data = Encoding.ASCII.GetBytes($"{uri.Host}@{value.expiration.ToString("d", DateTimeFormatInfo.InvariantInfo)}");
-
-                        if (Keys.VerifyData(data, value.signature))
-                        {
-                            _registered = true;
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch { }
-
-            return false;
-        }
 
         void DashboardRightNow(WpApp app, TextWriter output)
         {
@@ -121,20 +256,15 @@ namespace PeachPied.WordPress.Standard.Internal
 </div>
 ");
             }
-
         }
 
         static readonly string s_GeneratorHtml = $"<meta name=\"generator\" content=\"WpDotNet (PeachPie) {InformationalVersion} \" />";
 
         public void Configure(WpApp app)
         {
-            if (_registered.HasValue == false)
+            if (_isRegistered.HasValue == false)
             {
-                if (app.Context.Post.TryGetValue(RegisterKeyName, out var keyvalue) && keyvalue.IsString(out var key))
-                {
-                    ValidateUser(key, app.GetSiteUrl());
-                    app.UpdateOption(RegisterKeyName, key);
-                }
+                TryRegisterUser(app);
             }
 
             //
