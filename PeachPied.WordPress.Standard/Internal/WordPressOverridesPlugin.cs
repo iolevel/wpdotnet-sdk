@@ -349,7 +349,7 @@ namespace PeachPied.WordPress.Standard.Internal
             {
                 app.Footer(output =>
                 {
-                    output.Write(@$"
+                    output.Write($@"
 <div style='position:fixed;text-align:center; width:192px; height:50px; bottom:0; right:0;padding:12px 0 12px 50px; margin:0 auto; vertical-align: middle;background:#68b227;background-image:url({LogoUrl});background-size:50px 50px;background-repeat:no-repeat;border-left:solid 10px rgba(255,255,255,.5);line-height:24px;' title='WpDotNet'>
     <a href='{WpDotNetUrl}?from=footer' style='color:#fff;font-size:16px;font-style:tahoma,helvetica;padding:0; margin:0;'>WpDotNet</a>
 </div>
