@@ -147,7 +147,7 @@ namespace PeachPied.WordPress.Standard.Internal
                     if (data.Verify(uri))
                     {
                         _isRegistered = true;
-                        AdminNotice(app, $"License is valid until {data.Expiration.ToString("d")}.", success: true);
+                        AdminNotice(app, $"License is valid until {data.Expiration:d}.", success: true);
                         return true;
                     }
                     else if (data.Expiration <= DateTime.UtcNow && data.Key != null)
@@ -180,12 +180,12 @@ namespace PeachPied.WordPress.Standard.Internal
                     if (data.Verify(uri))
                     {
                         _isRegistered = true;
-                        AdminNotice(app, $"Registration suceeded. Thank you!<br/>License is valid until {data.Expiration.ToString("d")}, then it will be renewed automatically.", success: true);
+                        AdminNotice(app, $"Registration suceeded. Thank you!<br/>License is valid until {data.Expiration:d}, then it will be renewed automatically.", success: true);
                         return true;
                     }
                     else
                     {
-                        AdminNotice(app, $"License has been verified, although it is no valid. Expiration date is {data.Expiration.ToString("d")}.", success: false);
+                        AdminNotice(app, $"License has been verified, although it is no valid. Expiration date is {data.Expiration:d}.", success: false);
                     }
                 }
                 else
@@ -213,15 +213,14 @@ namespace PeachPied.WordPress.Standard.Internal
 
                 try
                 {
-                    using (var r = (HttpWebResponse)req.GetResponse())
-                    {
-                        if (r.StatusCode == HttpStatusCode.OK)
-                        {
-                            using var reader = new StreamReader(r.GetResponseStream());
+                    using var r = (HttpWebResponse)req.GetResponse();
 
-                            data = ValidationData.FromJson(reader.ReadToEnd(), key);
-                            return true;
-                        }
+                    if (r.StatusCode == HttpStatusCode.OK)
+                    {
+                        using var reader = new StreamReader(r.GetResponseStream());
+
+                        data = ValidationData.FromJson(reader.ReadToEnd(), key);
+                        return true;
                     }
                 }
                 catch { }

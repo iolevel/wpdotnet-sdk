@@ -82,52 +82,52 @@ namespace PeachPied.WordPress.AspNetCore.Internal
         {
             var responseStream = context.Response.Body;
 
-            using (var buffer = new MemoryStream())
+            using var buffer = new MemoryStream();
+
+            try
             {
-                try
-                {
-                    context.Response.Body = buffer;
+                context.Response.Body = buffer;
 
-                    await _next.Invoke(context);
-                }
-                finally
-                {
-                    context.Response.Body = responseStream;
-                }
-
-                if (buffer.Length == 0) return null;
-
-                byte[] bytes;
-
-                // gzip response
-                if (ShouldCompressResponse(context))
-                {
-                    context.Response.Headers.Append(HeaderNames.ContentEncoding, "gzip");
-                    context.Response.Headers.Remove(HeaderNames.ContentMD5); // Reset the MD5 because the content changed.
-                    context.Response.Headers.Remove(HeaderNames.ContentLength);
-
-                    using (var gzipStream = new MemoryStream((int)(buffer.Length / 2)))
-                    {
-                        using (var stream = new GZipStream(gzipStream, CompressionLevel.Optimal, leaveOpen: true))
-                        {
-                            buffer.Position = 0;
-                            await buffer.CopyToAsync(stream);
-                        }
-
-                        bytes = gzipStream.ToArray();
-                    }
-                }
-                else
-                {
-                    bytes = buffer.ToArray();
-                }
-
-                var cached = IsResponseCacheable(context) ? new CachedPage(context, bytes) : null;
-
-                //
-                await responseStream.WriteAsync(bytes, 0, bytes.Length);
-                return cached;
+                await _next.Invoke(context);
             }
+            finally
+            {
+                context.Response.Body = responseStream;
+            }
+
+            if (buffer.Length == 0)
+            {
+                return null;
+            }
+
+            byte[] bytes;
+
+            // gzip response
+            if (ShouldCompressResponse(context))
+            {
+                context.Response.Headers.Append(HeaderNames.ContentEncoding, "gzip");
+                context.Response.Headers.Remove(HeaderNames.ContentMD5); // Reset the MD5 because the content changed.
+                context.Response.Headers.Remove(HeaderNames.ContentLength);
+
+                using var gzipStream = new MemoryStream((int)(buffer.Length / 2));
+                using (var stream = new GZipStream(gzipStream, CompressionLevel.Optimal, leaveOpen: true))
+                {
+                    buffer.Position = 0;
+                    await buffer.CopyToAsync(stream);
+                }
+
+                bytes = gzipStream.ToArray();
+            }
+            else
+            {
+                bytes = buffer.ToArray();
+            }
+
+            var cached = IsResponseCacheable(context) ? new CachedPage(context, bytes) : null;
+
+            //
+            await responseStream.WriteAsync(bytes, 0, bytes.Length);
+            return cached;
         }
 
         static bool ShouldCompressResponse(HttpContext context)
@@ -184,7 +184,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             _logger = loggerFactory.CreateLogger<WpResponseCacheMiddleware>();
         }
 
-        CacheKey BuildCacheKey(HttpContext context) => new CacheKey(context);
+        CacheKey BuildCacheKey(HttpContext context) => new(context);
 
         static bool CookieDisallowsCaching(KeyValuePair<string, string> cookie)
         {
