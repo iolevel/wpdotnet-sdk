@@ -23,10 +23,11 @@ namespace PeachPied.WordPress.AspNetCore.Internal
 
         class CacheKey : IEquatable<CacheKey>
         {
-            public string Method, Host, PathBase, Path, QueryString;
-
+            public string Method, Scheme, Host, PathBase, Path, QueryString;
+            
             public CacheKey(HttpContext context)
             {
+                Scheme = context.Request.Scheme;
                 Method = context.Request.Method;
                 Host = context.Request.Host.Value ?? string.Empty;
                 PathBase = context.Request.PathBase.Value ?? string.Empty;
@@ -35,6 +36,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             }
 
             public override int GetHashCode() =>
+                Scheme.GetHashCode() ^
                 Method.GetHashCode() ^
                 Host.GetHashCode() ^
                 PathBase.GetHashCode() ^
@@ -47,6 +49,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             {
                 return
                     other != null &&
+                    other.Scheme == this.Scheme &&
                     other.Method == this.Method &&
                     other.Host == this.Host &&
                     other.PathBase == this.PathBase &&
