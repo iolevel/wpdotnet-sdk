@@ -1,23 +1,23 @@
 # Overview
 
-[WpDotNet](https://wpdotnet.peachpie.io/) is the latest unmodified WordPress, running compiled purely on .NET, provided as a NuGet package & ready to be used as a part of an ASP NET Core application. WpDotNet comes with additional components and features, making it easy to be used from C# and a .NET development environment in general.
+[WpDotNet](https://wpdotnet.peachpie.io/) is the unmodified WordPress, running compiled purely on .NET, provided as a NuGet package & ready to be used as a part of an ASP NET Core application. WpDotNet comes with additional components and features, making it easy to be used from C# and a .NET development environment in general.
 
 The project does not require PHP to be installed, and is purely built on top of the .NET platform.
 
 ## Requirements
 
-- .NET Core SDK 3.0 or newer. ([dotnet.microsoft.com](https://dotnet.microsoft.com/download) or [visualstudio.microsoft.com](https://visualstudio.microsoft.com/vs/))
+- .NET CoreSDK 3.0, .NET SDK 5.0, or newer. ([dotnet.microsoft.com](https://dotnet.microsoft.com/download) or [visualstudio.microsoft.com](https://visualstudio.microsoft.com/vs/))
 - MySQL Server ([dev.mysql.com](https://dev.mysql.com/downloads/mysql/) or [docker](https://hub.docker.com/_/mysql))
 
 Make sure you have valid credentials to your MySQL server and you have created a database in it. The following quick start expects a database named `"wordpress"`. Database charset `"UTF-8"` is recommended.
 
 ## Quick Start
 
-> A demo wordpress application is available at [github.com/iolevel/peachpie-wordpress](https://github.com/iolevel/peachpie-wordpress).
+> Sources of a demo wordpress application is available at [github.com/iolevel/peachpie-wordpress](https://github.com/iolevel/peachpie-wordpress).
 
 Open or create an ASP NET Core application, version 3.0 or newer.
 
-Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/) (note it is a pre-release package):
+Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/) (note it is a **pre-release** package):
 
 ```shell
 dotnet add package PeachPied.WordPress.AspNetCore --version 5.7.8-preview8
@@ -63,6 +63,19 @@ Besides regular WordPress dashboard pages, WpDotNet adds an informational panel 
 ![WpDotNet At Glance](img/wp-dashboard-glance.png)
 
 The panel provides information about the current .NET runtime version, consumed memory, or total CPU time spent in the whole application. Note that the values are reset if the process is restarted.
+
+## Registration
+
+Go to the **At a Glance** panel in the WordPress Dashboard. The current registration information is displayed next the to **License:** label.
+
+- **Register** opens dialog to enter the registration e-mail, or provided license key.
+- **Purchase** opens a web page to where the registration can be obtained.
+
+The registration is bound to the actual domain host name.
+
+![watermark](img/watermark.png)
+
+Without the registration, all the functionality is kept the same, although pages are marked with small logo.
 
 ## Remarks
 
