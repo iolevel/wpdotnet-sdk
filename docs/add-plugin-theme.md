@@ -1,8 +1,19 @@
 # Adding Plugin or Theme
 
-## In your ASP.NET Core project
+Plugins and themes can be added in several ways;
 
-Plugins and themes in WpDotNet are provided as separate packages (either as .NET projects or as NuGet packages). 
+- either in a standard WordPress Admin dashboard once the application is running,
+- or as a part of the ASP NET Core Application as compile-time references.
+
+## WordPress Admin
+
+Plugins and themes can be added into an already deployed ASP.NET Core application running WpDotNet. Navigate to the admin section at `/wp-admin`, sub-sections **Plugins** or **Appereance**.
+
+Follow the screen instruction to download and activate. Downloaded sources will be first compiled, analyzed, and upon passing the compilation, it may be used. Code that cannot be safely compiled will be rejected with detailed information in the dashboard top section.
+
+## In ASP.NET Core project
+
+Plugins and themes in WpDotNet are provided as separate packages (either as .NET projects or as NuGet packages).
 
 ### Add from NuGet gallery
 
@@ -31,9 +42,3 @@ Using **Visual Studio**, right click on your project and click command `Manage N
 
 - [Build a plugin](../build-php-plugin/)
 - [Build a theme](../build-php-theme/)
-
-## Managing packages in WordPress Admin
-
-Plugins and themes can be added into an already deployed ASP.NET Core application running WpDotNet. Navigate to the admin section at `/wp-admin/`, sub-sections 'Plugins' or 'Appereance'. Listed plugins and themes are actually compiled NuGet packages, ready to be installed and activated.
-
-Installed packages have to be activated here as well.
