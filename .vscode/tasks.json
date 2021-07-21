@@ -8,6 +8,7 @@
             "args": [
                 "build",
                 "${workspaceFolder}/app/app.csproj",
+                "--ignore-failed-sources",
                 "/p:GenerateFullPaths=true"
             ],
             "group": "build",
