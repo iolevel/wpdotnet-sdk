@@ -25,14 +25,14 @@ Project file is an XML file with the following content:
 
 > *MyWordPressTheme.msbuildproj:*
 ```xml
-<Project Sdk="PeachPied.WordPress.Build.Plugin/5.7.2-preview8">
+<Project Sdk="PeachPied.WordPress.Build.Plugin/5.8.0-preview9">
   <PropertyGroup>
     <WpContentTarget>themes</WpContentTarget>
   </PropertyGroup>
 </Project>
 ```
 
-Note the project file specifies a version after the slash, i.e. `"/5.7.2-preview8"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
+Note the project file specifies a version after the slash, i.e. `"/5.8.0-preview9"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
 
 ## Build the theme
 
