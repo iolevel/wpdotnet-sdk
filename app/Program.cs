@@ -18,7 +18,7 @@ namespace peachserver
         {
             var host = WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls("http://*:5004/")
+                .UseUrls("http://*:80/")
                 .Build();
 
             host.Run();
@@ -34,6 +34,21 @@ namespace peachserver
             services.AddWordPress(options =>
             {
                 //
+
+                // multisite scenario
+                
+                // 1
+                /*options.AllowMultiSite = true;*/
+
+                // 2
+                /*
+                options.MultiSite = true;
+                options.SubdomainInstall = false;
+                options.DomainCurrentSite = "localhost";
+                options.CurrentSitePath = "/";
+                options.SiteIDCurrentSite = 1;
+                options.BlogIDCurrentSite = 1;
+                */
             });
         }
 

@@ -153,5 +153,15 @@ namespace PeachPied.WordPress.AspNetCore
         /// Will be used to import <see cref="IWpPluginProvider"/> parts.
         /// </summary>
         public ContainerConfiguration CompositionContainers { get; } = new ContainerConfiguration();
+
+        // MULTISITE:
+
+        public bool AllowMultiSite { get; set; } = false;
+        public bool MultiSite { get; set; } = false;
+        public bool SubdomainInstall { get; set; } = false;
+        public string DomainCurrentSite { get; set; } = "localhost";
+        public string CurrentSitePath { get; set; } = "/";
+        public int SiteIDCurrentSite { get; set; } = 1;
+        public int BlogIDCurrentSite { get; set; } = 1;
     }
 }
