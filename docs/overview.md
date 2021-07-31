@@ -13,7 +13,7 @@ Make sure you have valid credentials to your MySQL server and you have created a
 
 ## Quick Start
 
-> Sources of a demo wordpress application is available at [github.com/iolevel/peachpie-wordpress](https://github.com/iolevel/peachpie-wordpress).
+> The sources of a demo WordPress application are available at [github.com/iolevel/peachpie-wordpress](https://github.com/iolevel/peachpie-wordpress).
 
 Open or create an ASP NET Core application, version 3.0 or newer.
 
@@ -23,7 +23,7 @@ Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuge
 dotnet add package PeachPied.WordPress.AspNetCore --version 5.8.0-preview9
 ```
 
-Add WordPress middleware within your request pipeline, in the `Configure` startup method:
+Add the WordPress middleware within your request pipeline, in the `Configure` startup method:
 
 ```C#
 public partial class Startup
@@ -68,21 +68,21 @@ The panel provides information about the current .NET runtime version, consumed 
 
 Go to the **At a Glance** panel in the WordPress Dashboard. The current registration information is displayed next the to **License:** label.
 
-- **Register** opens dialog to enter the registration e-mail, or provided license key.
-- **Purchase** opens a web page to where the registration can be obtained.
+- **Register** opens a dialog to enter the e-mail you provided when purchasing your subscription, or the license key we issued if you have a custom build.
+- **Purchase** opens the web page where you can buy your WpDotNet subscription.
 
-The registration is bound to the actual domain host name.
+The registration is bound to the host name of the domain you are running WpDotNet on.
 
 ![watermark](img/watermark.png)
 
-Without the registration, all the functionality is kept the same, although pages are marked with small logo.
+You can use WpDotNet with all of its functionality without purchasing a subscription, but your pages will include a small watermark. To remove it, please register your WpDotNet subscription.
 
 ## Remarks
 
 - Permalinks are implicitly enabled through the URL rewriting feature.
 - WordPress debugging is implicitly enabled when running in a *Development* environment.
 - When running on Azure with MySql in App enabled, the database connection is automatically configured.
-- Response caching and response compression is enabled by default.
+- Response caching and response compression are enabled by default.
 - Most of the original `.php` files are not present on the file system and cannot be edited.
 
 ## Related links
