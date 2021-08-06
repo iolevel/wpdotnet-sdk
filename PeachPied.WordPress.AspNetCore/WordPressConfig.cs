@@ -153,5 +153,47 @@ namespace PeachPied.WordPress.AspNetCore
         /// Will be used to import <see cref="IWpPluginProvider"/> parts.
         /// </summary>
         public ContainerConfiguration CompositionContainers { get; } = new ContainerConfiguration();
+
+        // MULTISITE:
+
+        /// <summary>
+        /// Multisite config.
+        /// </summary>
+        public class MultisiteData 
+        {
+            /// <summary>
+            /// Controls the <c>WP_ALLOW_MULTISITE</c> configuration constant.
+            /// </summary>
+            public bool Allow { get; set; } = false;
+            /// <summary>
+            /// Controls the <c>MULTISITE</c> configuration constant.
+            /// </summary>
+            public bool Enable { get; set; } = false;
+            /// <summary>
+            /// Controls the <c>SUBDOMAIN_INSTALL</c> configuration constant.
+            /// </summary>
+            public bool SubdomainInstall { get; set; } = false;
+            /// <summary>
+            /// Controls the <c>DOMAIN_CURRENT_SITE</c> configuration constant.
+            /// </summary>
+            public string DomainCurrentSite { get; set; } = "localhost";
+            /// <summary>
+            /// Controls the <c>PATH_CURRENT_SITE</c> configuration constant.
+            /// </summary>
+            public string PathCurrentSite { get; set; } = "/";
+            /// <summary>
+            /// Controls the <c>SITE_ID_CURRENT_SITE</c> configuration constant.
+            /// </summary>
+            public int SiteIDCurrentSite { get; set; } = 1;
+            /// <summary>
+            /// Controls the <c>BLOG_ID_CURRENT_SITE</c> configuration constant.
+            /// </summary>
+            public int BlogIDCurrentSite { get; set; } = 1;
+        }
+
+        /// <summary>
+        /// Multisite config.
+        /// </summary>
+        public MultisiteData Multisite { get; private set; } = new MultisiteData();
     }
 }

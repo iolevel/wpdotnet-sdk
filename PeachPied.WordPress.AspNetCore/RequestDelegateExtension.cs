@@ -154,6 +154,20 @@ namespace Microsoft.AspNetCore.Builder
                 ctx.DefineConstant("WP_HOME", config.HomeUrl);
             }
 
+            // multisite
+            if (config.Multisite.Allow)
+                ctx.DefineConstant("WP_ALLOW_MULTISITE", (PhpValue)config.Multisite.Allow);
+            
+            if (config.Multisite.Enable)
+            {
+                ctx.DefineConstant("MULTISITE", (PhpValue)config.Multisite.Enable);
+                ctx.DefineConstant("SUBDOMAIN_INSTALL", (PhpValue)config.Multisite.DomainCurrentSite);
+                ctx.DefineConstant("DOMAIN_CURRENT_SITE", (PhpValue)config.Multisite.DomainCurrentSite);
+                ctx.DefineConstant("PATH_CURRENT_SITE", (PhpValue)config.Multisite.PathCurrentSite);
+                ctx.DefineConstant("SITE_ID_CURRENT_SITE", (PhpValue)config.Multisite.SiteIDCurrentSite);
+                ctx.DefineConstant("BLOG_ID_CURRENT_SITE", (PhpValue)config.Multisite.BlogIDCurrentSite);
+            }
+
             // Additional constants
             if (config.Constants != null)
             {
@@ -240,8 +254,16 @@ namespace Microsoft.AspNetCore.Builder
                 .Concat(plugins.GetPlugins(app.ApplicationServices)));
 
             // url rewriting:
-            bool multisite = options.Constants.TryGetValue("MULTISITE", out string multi) && bool.TryParse(multi, out bool multiConverted) && multiConverted;
-            bool subdomainInstall = options.Constants.TryGetValue("SUBDOMAIN_INSTALL", out string domain) && bool.TryParse(domain, out bool domainConverted) && domainConverted;
+            bool multisite = options.Multisite.Enable;
+            bool subdomainInstall = options.Multisite.SubdomainInstall;
+            if (options.Constants != null && !multisite && !subdomainInstall) 
+            {
+                // using constants instead MultisiteData
+                if (options.Constants.TryGetValue("MULTISITE", out string multi))
+                    multisite = bool.TryParse(multi, out bool multiConverted) && multiConverted;
+                if (options.Constants.TryGetValue("SUBDOMAIN_INSTALL", out string domain))         
+                    subdomainInstall = bool.TryParse(domain, out bool domainConverted) && domainConverted;
+            }
             app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider, multisite, subdomainInstall)));
 
             // update globals used by WordPress:
