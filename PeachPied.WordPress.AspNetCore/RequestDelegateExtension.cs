@@ -34,7 +34,6 @@ namespace Microsoft.AspNetCore.Builder
             var subpath = req.Path.Value;
             if (subpath != "/" && subpath.Length != 0)
             {
-
                 if (multisite)
                 {
                     // add a trailing slash to /wp-admin
