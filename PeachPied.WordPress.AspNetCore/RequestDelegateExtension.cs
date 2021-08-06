@@ -28,32 +28,26 @@ namespace Microsoft.AspNetCore.Builder
     public static class RequestDelegateExtension
     {
         /// <summary>Redirect to `index.php` if the the file does not exist.</summary>
-        static void ShortUrlRule(RewriteContext context, IFileProvider files, WordPressConfig config)
+        static void ShortUrlRule(RewriteContext context, IFileProvider files, bool multisite, bool  subdomainInstall)
         {
             var req = context.HttpContext.Request;
             var subpath = req.Path.Value;
             if (subpath != "/" && subpath.Length != 0)
             {
 
-                if (config.MultiSite)
+                if (multisite)
                 {
                     // add a trailing slash to /wp-admin
-                    if (config.SubdomainInstall && subpath == "/wp-admin")
+                    if ((subdomainInstall && subpath == "/wp-admin") ||
+                        (!subdomainInstall && subpath.EndsWith("/wp-admin")))
                     {
                         context.HttpContext.Response.Redirect(req.PathBase + subpath + "/" + req.QueryString, true);
                         context.Result = RuleResult.EndResponse;
                         return;
                     }
-                    else if (!config.SubdomainInstall && subpath.EndsWith("/wp-admin"))
-                    {
-                        context.HttpContext.Response.Redirect(req.PathBase + subpath + "/" + req.QueryString, true);
-                        context.Result = RuleResult.EndResponse;
-                        return;
-                    }
-                    
                 }
 
-                if (subpath.IndexOf("wp-content/", StringComparison.Ordinal) != -1 ||   // it is in the wp-content -> definitely a file
+                if ((!multisite && subpath.IndexOf("wp-content/", StringComparison.Ordinal) != -1) ||   // it is in the wp-content -> definitely a file (When multisite is enabled, it requires rewriting the url)
                     files.GetFileInfo(subpath).Exists ||                            // the script is in the file system
                     Context.TryGetDeclaredScript(subpath.Substring(1)).IsValid ||   // the script is declared (compiled) in Context but not in the file system
                     context.StaticFileProvider.GetFileInfo(subpath).Exists ||       // the script is in the file system
@@ -77,20 +71,21 @@ namespace Microsoft.AspNetCore.Builder
                     return;
                 }
 
-                if (config.MultiSite)
+                if (multisite)
                 {
-                    if (config.SubdomainInstall)
+                    if (subdomainInstall)
                     {
                         if (subpath.StartsWith("/wp-content", StringComparison.Ordinal) ||
                             subpath.StartsWith("/wp-admin", StringComparison.Ordinal) ||
-                            subpath.StartsWith("/wp-includes", StringComparison.Ordinal) ||
-                            subpath.EndsWith(".php"))
+                            subpath.StartsWith("/wp-includes", StringComparison.Ordinal))
                         {
+                            // proceed to default document
                             return;
                         }
                     }
                     else
                     {
+
                         int shortcut = subpath.IndexOf("wp-content", StringComparison.Ordinal);
                         if (shortcut == -1)
                             shortcut = subpath.IndexOf("wp-admin", StringComparison.Ordinal);
@@ -99,13 +94,25 @@ namespace Microsoft.AspNetCore.Builder
 
                         if (shortcut != -1)
                         {
+                            // remove site path and proceed to default document
                             req.Path = new PathString("/" + subpath.Remove(0, shortcut));
                             return;
                         }
+                    }
 
-                        if (subpath.EndsWith(".php"))
+                    if (subpath.EndsWith(".php"))
+                    {
+                        if (!subdomainInstall)
                         {
+                            // remove site path
                             req.Path = new PathString(subpath.Remove(0, subpath.LastIndexOf('/')));
+                            subpath = req.Path.Value;
+                        }
+
+                        if (files.GetFileInfo(subpath).Exists ||                            // the script is in the file system
+                            Context.TryGetDeclaredScript(subpath.Substring(1)).IsValid ||   // the script is declared (compiled) in Context but not in the file system
+                            context.StaticFileProvider.GetFileInfo(subpath).Exists)         // the script is in the file system)
+                        {
                             return;
                         }
                     }
@@ -167,21 +174,6 @@ namespace Microsoft.AspNetCore.Builder
             {
                 ctx.Server["HTTPS"] = "on";
             }
-
-            // multisite
-            if (config.AllowMultiSite)
-                ctx.DefineConstant("WP_ALLOW_MULTISITE", config.AllowMultiSite);
-
-            if (config.MultiSite)
-            {
-                ctx.DefineConstant("MULTISITE", config.MultiSite);
-                ctx.DefineConstant("SUBDOMAIN_INSTALL", config.SubdomainInstall);
-                ctx.DefineConstant("DOMAIN_CURRENT_SITE", config.DomainCurrentSite);
-                ctx.DefineConstant("PATH_CURRENT_SITE", config.CurrentSitePath);
-                ctx.DefineConstant("SITE_ID_CURRENT_SITE", config.SiteIDCurrentSite);
-                ctx.DefineConstant("BLOG_ID_CURRENT_SITE", config.BlogIDCurrentSite);
-            }
-            
         }
 
         /// <summary>
@@ -249,7 +241,9 @@ namespace Microsoft.AspNetCore.Builder
                 .Concat(plugins.GetPlugins(app.ApplicationServices)));
 
             // url rewriting:
-            app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider, options)));
+            bool multisite = options.Constants.TryGetValue("MULTISITE", out string multi) && bool.TryParse(multi, out bool multiConverted) && multiConverted;
+            bool subdomainInstall = options.Constants.TryGetValue("SUBDOMAIN_INSTALL", out string domain) && bool.TryParse(domain, out bool domainConverted) && domainConverted;
+            app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider, multisite, subdomainInstall)));
 
             // update globals used by WordPress:
             WpStandard.DB_HOST = options.DbHost;
