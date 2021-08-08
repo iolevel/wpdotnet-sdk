@@ -101,4 +101,53 @@ As noted above, the application will redirect the user's requests to this addres
 
 ## Multisite
 
-> Multisite has not been documented yet.
+Multisite support can be allowed by the configuration below. It is equal to `define(WP_ALLOW_MULTISITE,true);` in the original WordPress.
+
+> appsettings.json
+
+```json
+{
+  "WordPress": {
+  	"Multisite": {
+  		"Allow": true
+  	}
+}
+```
+
+After the settings on the client side, WordPress shows you constants that have to be added into *config.php* file and changes which have to be done in *.htaccess*. You add the given constants to the `Multisite` section in *appsettings.json*. Ignore *.htaccess* changes. You can see an example below.
+
+>appsettings.json
+
+```json
+{
+  "WordPress": {
+  	"Multisite": {
+  		"Allow": true,
+  		"Enable": true,
+  		"SubdomainInstall": false,
+  		"DomainCurrentSite": "localhost",
+  		"PathCurrentSite": "/",
+  		"SiteIDCurrentSite": 1,
+  		"BlogIDCurrentSite": 1
+  	}
+}
+```
+Mapping the original constant names to .NET equivalents should be obvious except `Enable`, which represents the `MULTISITE` constant.
+You can also do it programmatically, as you can see below.
+
+**Sample ConfigureServices method**
+
+```C#
+public partial class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddWordPress(options =>
+        {
+            options.Allow = true;
+            options.Enable = true;
+            // ...
+        });
+    }
+}
+```
