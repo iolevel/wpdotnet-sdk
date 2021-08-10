@@ -90,7 +90,7 @@ namespace PeachPied.WordPress.HotPlug
         /// <summary>
         /// The in-memory assembly name.
         /// </summary>
-        readonly string _assemblyNamePrefix;
+        public string AssemblyNamePrefix { get; }
         int _assemblyNameCounter;
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace PeachPied.WordPress.HotPlug
             this.SubPath = subPath ?? string.Empty;
             this.Logger = logger;
 
-            _assemblyNamePrefix = outputAssemblyName ?? throw new ArgumentNullException(nameof(outputAssemblyName));
+            this.AssemblyNamePrefix = outputAssemblyName ?? throw new ArgumentNullException(nameof(outputAssemblyName));
         }
 
         void LogMessage(string message)
@@ -346,7 +346,7 @@ namespace PeachPied.WordPress.HotPlug
                 return false;
             }
 
-            var assname = $"{_assemblyNamePrefix}+{Interlocked.Increment(ref _assemblyNameCounter)}";
+            var assname = $"{AssemblyNamePrefix}+{Interlocked.Increment(ref _assemblyNameCounter)}";
 
             if (_compilation.Compile(Compiler, assname, debug, sources, out var diagnostics, out var rawassembly, out var rawsymbols))
             {

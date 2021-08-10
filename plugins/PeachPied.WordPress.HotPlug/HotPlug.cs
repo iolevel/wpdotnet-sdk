@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Pchp.Core;
 using PeachPied.WordPress.Standard;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace PeachPied.WordPress.HotPlug
 
         static bool WatchForChanges => true;
 
-        readonly FolderCompiler _pluginsCompiler, _themesCompiler;
+        readonly FolderCompiler[] _folders;
 
         bool _wasbuilt;
 
@@ -24,8 +25,29 @@ namespace PeachPied.WordPress.HotPlug
 
             var compiler = new CompilerProvider(RootPath);
 
-            _pluginsCompiler = new FolderCompiler(compiler, "wp-content/plugins", "wp-plugins", logger);
-            _themesCompiler = new FolderCompiler(compiler, "wp-content/themes", "wp-themes", logger);
+            _folders = new[]
+            {
+                new FolderCompiler(compiler, "wp-content/plugins", "wp-plugins", logger),
+                new FolderCompiler(compiler, "wp-content/themes", "wp-themes", logger),
+            };
+        }
+
+        void FoldersAction(Action<FolderCompiler> action)
+        {
+            for (int i = 0; i < _folders.Length; i++)
+            {
+                action(_folders[i]);
+            }
+        }
+
+        IEnumerable<Diagnostic> FoldersDiagnostic
+        {
+            get
+            {
+                var result = Enumerable.Empty<Diagnostic>();
+                FoldersAction(f => result = result.Concat(f.LastDiagnostics));
+                return result;
+            }
         }
 
         /// <summary>
@@ -47,8 +69,7 @@ namespace PeachPied.WordPress.HotPlug
                 if (!_wasbuilt)
                 {
                     // compile plugins and themes on first use
-                    _pluginsCompiler.Build(WatchForChanges);
-                    _themesCompiler.Build(WatchForChanges);
+                    FoldersAction(f => f.Build(WatchForChanges));
 
                     //
                     _wasbuilt = true;
@@ -56,14 +77,40 @@ namespace PeachPied.WordPress.HotPlug
             }
         }
 
+        PhpValue/*object|array|WP_Error*/EmptyApi(PhpValue/*false|object|array*/@override, string action, object args)
+        {
+            switch (action)
+            {
+                case "query_plugins":
+                case "query_themes":
+                    return new PhpArray() { PhpValue.Null };
+                default:
+                    return false;
+            }
+        }
+
         void IWpPlugin.Configure(WpApp app)
         {
+            if (app.Context.TryGetConstant("WPDOTNET_HOTPLUG_ENABLE", out var evalue) && (bool)evalue == false)
+            {
+                // docs/configuration/WPDOTNET_HOTPLUG_ENABLE
+
+                // disable listing online plugins from dashboard
+                app.OnAdminInit(() =>
+                {
+                    // plugins_api
+                    app.AddFilter("plugins_api", new Func<PhpValue, string, object, PhpValue>(EmptyApi), accepted_args: 3);
+                    app.AddFilter("themes_api", new Func<PhpValue, string, object, PhpValue>(EmptyApi), accepted_args: 3);
+                });
+
+                return;
+            }
+
             FirstRequest();
 
             // delay the build action,
             // website is being just requested
-            _pluginsCompiler.PostponeBuild();
-            _themesCompiler.PostponeBuild();
+            FoldersAction(f => f.PostponeBuild());
 
             // wp hooks:
 
@@ -77,11 +124,9 @@ namespace PeachPied.WordPress.HotPlug
             {
                 var hook = app.AddManagementPage("Code Problems", "Code Problems", "install_plugins", "list-problems", (output) =>
                 {
-                    var hasany = _pluginsCompiler.LastDiagnostics.Length != 0 || _themesCompiler.LastDiagnostics.Length != 0;
-                    var maxseverity = hasany
-                        ? _pluginsCompiler.LastDiagnostics.Concat(_themesCompiler.LastDiagnostics).Max(d => d.Severity)
-                        : DiagnosticSeverity.Hidden;
-
+                    var diagnostics = FoldersDiagnostic;
+                    var hasany = diagnostics.Any();
+                    var maxseverity = hasany ? diagnostics.Max(d => d.Severity) : DiagnosticSeverity.Hidden;
                     var overallicon = hasany ? IconHtml(maxseverity) : IconHtmlSuccess();
 
                     output.Write($@"
@@ -91,13 +136,11 @@ namespace PeachPied.WordPress.HotPlug
 		<div>{overallicon} {(maxseverity != 0 ? "Should be checked." : "No problems.")}</div>
 	</div>
 </div>");
-                    if (_pluginsCompiler.LastDiagnostics.Length != 0 || _themesCompiler.LastDiagnostics.Length != 0)
+                    if (hasany)
                     {
                         output.Write("<div style='margin:24px;padding:8px;background:white;border:solid 1px #aaa;'>");
 
-                        output.Write(CreateDiagnosticsTable(_pluginsCompiler.LastDiagnostics, true));
-
-                        output.Write(CreateDiagnosticsTable(_themesCompiler.LastDiagnostics, true));
+                        output.Write(CreateDiagnosticsTable(diagnostics, true));
 
                         output.Write("</div>");
                     }
@@ -138,10 +181,10 @@ namespace PeachPied.WordPress.HotPlug
                 return null;
             }
 
-            return $"<img style='width:1rem;height:1rem;user-select:none;' src='data:image/png;base64,{System.Web.HttpUtility.HtmlAttributeEncode(Convert.ToBase64String(pngbytes))}' />";
+            return $"<img style='width:1rem;height:1rem;user-select:none;' src='data:image/png;base64,{System.Web.HttpUtility.HtmlAttributeEncode(System.Convert.ToBase64String(pngbytes))}' />";
         }
 
-        string LocationHtml(Location location)
+        string LocationHtml(Microsoft.CodeAnalysis.Location location)
         {
             const string pluginsprefix = "/wp-content/plugins/";
 
@@ -166,14 +209,14 @@ namespace PeachPied.WordPress.HotPlug
             return null;
         }
 
-        string CreateDiagnosticsTable(ImmutableArray<Diagnostic> diagnostics, bool showhidden = false)
+        string CreateDiagnosticsTable(IEnumerable<Diagnostic> diagnostics, bool showhidden = false)
         {
-            if (diagnostics.IsDefaultOrEmpty)
+            if (diagnostics == null)
             {
                 return string.Empty;
             }
 
-            var rows = new List<string>(diagnostics.Length);
+            var rows = new List<string>();
 
             foreach (var d in diagnostics)
             {
@@ -223,8 +266,8 @@ namespace PeachPied.WordPress.HotPlug
             var pagenow = app.Context.Globals["pagenow"].ToString();
             return pagenow switch
             {
-                "plugins.php" => CollectAdminNotices(_pluginsCompiler.LastDiagnostics),
-                "themes.php" => CollectAdminNotices(_themesCompiler.LastDiagnostics),
+                "plugins.php" => CollectAdminNotices(_folders.Single(f => f.AssemblyNamePrefix == "wp-plugins").LastDiagnostics),
+                "themes.php" => CollectAdminNotices(_folders.Single(f => f.AssemblyNamePrefix == "wp-themes").LastDiagnostics),
                 _ => null,
             };
         }
