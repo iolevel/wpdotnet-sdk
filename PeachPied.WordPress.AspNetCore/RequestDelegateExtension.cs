@@ -28,11 +28,12 @@ namespace Microsoft.AspNetCore.Builder
     public static class RequestDelegateExtension
     {
         /// <summary>Redirect to `index.php` if the the file does not exist.</summary>
-        static void ShortUrlRule(RewriteContext context, IFileProvider files, bool multisite, bool  subdomainInstall)
+        static void ShortUrlRule(RewriteContext context, IFileProvider files, bool multisite = false, bool  subdomainInstall = false, string homeurl = null)
         {
             var req = context.HttpContext.Request;
             var subpath = req.Path.Value;
-            if (subpath != "/" && subpath.Length != 0)
+
+            if (subpath != "/" && subpath.Length != 0 && (subpath != homeurl || String.IsNullOrEmpty(homeurl)))
             {
                 if (multisite)
                 {
@@ -233,92 +234,99 @@ namespace Microsoft.AspNetCore.Builder
             if (Uri.TryCreate(options.HomeUrl, UriKind.Absolute, out Uri homeuri))
                 homeurl = homeuri.LocalPath;
 
-            bool IsWordPress(HttpContext context)
+            app.UseWhen(context =>
             {
                 var path = context.Request.Path;
-                //return true;
-                return String.IsNullOrEmpty(siteurl) || String.IsNullOrEmpty(homeurl) || path.StartsWithSegments(siteurl) || path.Equals(homeurl) || context.Request.PathBase == siteurl || context.Request.Path == homeurl || context.Request.Path == "/index.php";
-            }
+                return String.IsNullOrEmpty(siteurl) || String.IsNullOrEmpty(homeurl) || // don't specified -> wordpress is installed in /
+                        path.Equals(homeurl) || // website can be located by WP_HOME url
+                        path.StartsWithSegments(siteurl); // wordpress is installed in WP_SITE
+            }, app => {
 
-            // log exceptions:
-            app.UseWhen(ctx => IsWordPress(ctx), app => app.UseDiagnostic());
+                app.UsePathBase(siteurl);
 
-            // list of plugins:
-            var plugins = new WpPluginContainer(options.PluginContainer);
+                // log exceptions:
+                app.UseDiagnostic();
 
-            // response caching:
-            if (options.EnableResponseCaching)
-            {
-                // var cachepolicy = new WpResponseCachingPolicyProvider();
-                // var cachekey = app.ApplicationServices.GetService<WpResponseCachingKeyProvider>();
+                // load options
+                var options = new WordPressConfig()
+                    .LoadFromSettings(app.ApplicationServices)      // appsettings.json
+                    .LoadFromEnvironment(app.ApplicationServices)   // environment variables (known cloud hosts)
+                    .LoadFromOptions(app.ApplicationServices)       // IConfigureOptions<WordPressConfig> service
+                    .LoadDefaults();    // 
 
-                var cachepolicy = new WpResponseCachePolicy();
-                plugins.Add(cachepolicy);
+                // list of plugins:
+                var plugins = new WpPluginContainer(options.PluginContainer);
 
-                // app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
-                app.UseWhen(ctx => IsWordPress(ctx), app => app.UseMiddleware<WpResponseCacheMiddleware>(new MemoryCache(new MemoryCacheOptions { }), cachepolicy));
-            }
+                // response caching:
+                if (options.EnableResponseCaching)
+                {
+                    // var cachepolicy = new WpResponseCachingPolicyProvider();
+                    // var cachekey = app.ApplicationServices.GetService<WpResponseCachingKeyProvider>();
 
-            // if (options.LegacyPluginAssemblies != null)
-            // {
-            //     options.LegacyPluginAssemblies.ForEach(name => Context.AddScriptReference(Assembly.Load(new AssemblyName(name))));
-            // }
+                    var cachepolicy = new WpResponseCachePolicy();
+                    plugins.Add(cachepolicy);
 
-            var wploader = new WpLoader(plugins:
-                CompositionHelpers.GetPlugins(options.CompositionContainers.CreateContainer(), app.ApplicationServices, root)
-                .Concat(plugins.GetPlugins(app.ApplicationServices)));
+                    // app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
+                    app.UseMiddleware<WpResponseCacheMiddleware>(new MemoryCache(new MemoryCacheOptions { }), cachepolicy);
+                }
 
-            // url rewriting:
-            bool multisite = options.Multisite.Enable;
-            bool subdomainInstall = options.Multisite.SubdomainInstall;
-            if (options.Constants != null && !multisite && !subdomainInstall) 
-            {
-                // using constants instead MultisiteData
-                if (options.Constants.TryGetValue("MULTISITE", out string multi))
-                    multisite = bool.TryParse(multi, out bool multiConverted) && multiConverted;
-                if (options.Constants.TryGetValue("SUBDOMAIN_INSTALL", out string domain))         
-                    subdomainInstall = bool.TryParse(domain, out bool domainConverted) && domainConverted;
-            }
-            // rewrites wordpress folder
-            app.UseWhen(ctx => IsWordPress(ctx), app => app.UsePathBase(siteurl));
+                // if (options.LegacyPluginAssemblies != null)
+                // {
+                //     options.LegacyPluginAssemblies.ForEach(name => Context.AddScriptReference(Assembly.Load(new AssemblyName(name))));
+                // }
 
-            app.UseWhen(ctx => IsWordPress(ctx), app => app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider, multisite, subdomainInstall))));       
+                var wploader = new WpLoader(plugins:
+                    CompositionHelpers.GetPlugins(options.CompositionContainers.CreateContainer(), app.ApplicationServices, root)
+                    .Concat(plugins.GetPlugins(app.ApplicationServices)));
 
-            // update globals used by WordPress:
-            WpStandard.DB_HOST = options.DbHost;
-            WpStandard.DB_NAME = options.DbName;
-            WpStandard.DB_PASSWORD = options.DbPassword;
-            WpStandard.DB_USER = options.DbUser;
+                // url rewriting:
+                bool multisite = options.Multisite.Enable;
+                bool subdomainInstall = options.Multisite.SubdomainInstall;
+                if (options.Constants != null && !multisite && !subdomainInstall)
+                {
+                    // using constants instead MultisiteData
+                    if (options.Constants.TryGetValue("MULTISITE", out string multi))
+                        multisite = bool.TryParse(multi, out bool multiConverted) && multiConverted;
+                    if (options.Constants.TryGetValue("SUBDOMAIN_INSTALL", out string domain))
+                        subdomainInstall = bool.TryParse(domain, out bool domainConverted) && domainConverted;
+                }
+                app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider, multisite, subdomainInstall, homeurl)));
 
-            //
-            var env = app.ApplicationServices.GetService<IHostingEnvironment>();
-            WpStandard.WP_DEBUG = options.Debug || env.IsDevelopment();
+                // update globals used by WordPress:
+                WpStandard.DB_HOST = options.DbHost;
+                WpStandard.DB_NAME = options.DbName;
+                WpStandard.DB_PASSWORD = options.DbPassword;
+                WpStandard.DB_USER = options.DbUser;
 
-            // handling php files:
-            var startup = new Action<Context>(ctx =>
-            {
-                Apply(ctx, options, wploader);
+                //
+                var env = app.ApplicationServices.GetService<IHostingEnvironment>();
+                WpStandard.WP_DEBUG = options.Debug || env.IsDevelopment();
+
+                // handling php files:
+                var startup = new Action<Context>(ctx =>
+                {
+                    Apply(ctx, options, wploader);
+                });
+
+                // app.UsePhp(
+                //     prefix: default, // NOTE: maybe we can handle only index.php and wp-admin/*.php ?
+                //     configureContext: startup,
+                //     rootPath: root);
+
+                app.UsePhp(new PhpRequestOptions()
+                {
+                    ScriptAssembliesName = options.LegacyPluginAssemblies?.ToArray(),
+                    BeforeRequest = startup,
+                    RootPath = root,
+                });
+
+                // static files
+                app.UseStaticFiles(new StaticFileOptions() { FileProvider = fprovider });
+
+                // fire wp-cron.php asynchronously
+                WpCronScheduler.StartScheduler(startup, TimeSpan.FromSeconds(120), root);
             });
-
-            // app.UsePhp(
-            //     prefix: default, // NOTE: maybe we can handle only index.php and wp-admin/*.php ?
-            //     configureContext: startup,
-            //     rootPath: root);
-
-            app.UseWhen(ctx => IsWordPress(ctx), app => app.UsePhp(new PhpRequestOptions()
-            {
-                ScriptAssembliesName = options.LegacyPluginAssemblies?.ToArray(),
-                BeforeRequest = startup,
-                RootPath = root,
-            }));
-
-
-            // static files
-            app.UseWhen(ctx => IsWordPress(ctx), app=> app.UseStaticFiles(new StaticFileOptions() { FileProvider = fprovider }));
-
-            // fire wp-cron.php asynchronously
-            WpCronScheduler.StartScheduler(startup, TimeSpan.FromSeconds(120), root);
-
+            
             //
             return app;
         }
