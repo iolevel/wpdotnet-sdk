@@ -28,12 +28,12 @@ namespace Microsoft.AspNetCore.Builder
     public static class RequestDelegateExtension
     {
         /// <summary>Redirect to `index.php` if the the file does not exist.</summary>
-        static void ShortUrlRule(RewriteContext context, IFileProvider files, bool multisite = false, bool  subdomainInstall = false, string homeurl = null)
+        static void ShortUrlRule(RewriteContext context, IFileProvider files, bool multisite = false, bool  subdomainInstall = false, string siteurl = null)
         {
             var req = context.HttpContext.Request;
             var subpath = req.Path.Value;
 
-            if (subpath != "/" && subpath.Length != 0 && (subpath != homeurl || String.IsNullOrEmpty(homeurl)))
+            if (subpath != "/" && subpath.Length != 0 && (String.IsNullOrEmpty(siteurl) || (context.HttpContext.Request.PathBase == siteurl)))
             {
                 if (multisite)
                 {
@@ -238,9 +238,11 @@ namespace Microsoft.AspNetCore.Builder
             {
                 var path = context.Request.Path;
                 return String.IsNullOrEmpty(siteurl) || String.IsNullOrEmpty(homeurl) || // don't specified -> wordpress is installed in /
-                        path.Equals(homeurl) || // website can be located by WP_HOME url
-                        path.StartsWithSegments(siteurl); // wordpress is installed in WP_SITE
+                        path.Value.StartsWith(homeurl) || // website can be located by WP_HOME url
+                        path.Value.StartsWith(siteurl); // wordpress is installed in WP_SITE
             }, app => {
+
+                app.UsePathBase(homeurl);
 
                 app.UsePathBase(siteurl);
 
@@ -290,7 +292,7 @@ namespace Microsoft.AspNetCore.Builder
                     if (options.Constants.TryGetValue("SUBDOMAIN_INSTALL", out string domain))
                         subdomainInstall = bool.TryParse(domain, out bool domainConverted) && domainConverted;
                 }
-                app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider, multisite, subdomainInstall, homeurl)));
+                app.UseRewriter(new RewriteOptions().Add(context => ShortUrlRule(context, fprovider, multisite, subdomainInstall, siteurl)));
 
                 // update globals used by WordPress:
                 WpStandard.DB_HOST = options.DbHost;
