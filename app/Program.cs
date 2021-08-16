@@ -34,8 +34,6 @@ namespace peachserver
             services.AddWordPress(options =>
             {
                 //
-                options.SiteUrl = "http://localhost:5004/wordpress";
-                options.HomeUrl = "http://localhost:5004";
             });
         }
 
