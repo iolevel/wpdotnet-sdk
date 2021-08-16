@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Http;
 
 namespace peachserver
 {
@@ -35,8 +34,6 @@ namespace peachserver
             services.AddWordPress(options =>
             {
                 //
-                options.SiteUrl = "http://localhost:5004/wordpress"; // Where the wordpress resides
-                options.HomeUrl = "http://localhost:5004"; // What url has the client site
             });
         }
 
@@ -52,15 +49,7 @@ namespace peachserver
             // using empty set of .NET plugins
             app.UseWordPress();
 
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-            });
+            app.UseDefaultFiles();
         }
     }
 }
