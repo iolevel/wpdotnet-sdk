@@ -144,8 +144,8 @@ public partial class Startup
     {
         services.AddWordPress(options =>
         {
-            options.Allow = true;
-            options.Enable = true;
+            options.Multisite.Allow = true;
+            options.Multisite.Enable = true;
             // ...
         });
     }
