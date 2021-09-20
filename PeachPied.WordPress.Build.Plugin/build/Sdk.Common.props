@@ -2,6 +2,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 <Import Project="Sdk.props" Sdk="Peachpie.NET.Sdk" Version="1.0.6" />
 <PropertyGroup>
-<WpDotNetVersion Condition=" '$(WpDotNetVersion)'=='' ">5.8.0-preview10</WpDotNetVersion>
+<WpDotNetVersion Condition=" '$(WpDotNetVersion)'=='' ">5.8.1-preview10</WpDotNetVersion>
 </PropertyGroup>
 </Project>
