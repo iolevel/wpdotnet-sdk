@@ -105,20 +105,54 @@ namespace PeachPied.WordPress.HotPlug
         /// </summary>
         bool IsAllowedFile(string fullpath)
         {
-            if (fullpath.IndexOf(".phpstorm.meta.php", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                fullpath.IndexOf($"{Path.DirectorySeparatorChar}.git{Path.DirectorySeparatorChar}", StringComparison.Ordinal) >= 0)
+            if (fullpath.IndexOf(".phpstorm.meta.php", FullPath.Length, StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return false;
             }
 
-            // TODO: other excluded files - tests, etc.
-            string relativePath = Path.GetRelativePath(FullPath, fullpath);
-            string currentBaseFolderName = relativePath.Split(Path.DirectorySeparatorChar)[0];
+            if (fullpath.EndsWith("class-jetpack-search-debug-bar.php", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // (string pluginName) => { return pluginName == "jetpack" && !relativeFolderNames.Contains("query-monitor"); }}, //jetpack
+            }
 
-            if (_excludeFilesWhen.ContainsKey(Path.GetFileName(relativePath)) && _excludeFilesWhen[Path.GetFileName(relativePath)](currentBaseFolderName))
+            if (fullpath.EndsWith("class-fs-debug-bar-panel.php", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // (string pluginName) => { return pluginName == "gutenslider" && !relativeFolderNames.Contains("query-monitor"); }}, //gutenslider
+            }
+
+            return true;
+        }
+
+        bool IsAllowedDirectory(string dir)
+        {
+            if (_ignored.Contains(dir))
+            {
+                // this folder has been compiled statically in advance,
+                // ignore it
                 return false;
+            }
 
-            return _ignored == null || !_ignored.Contains(Path.GetDirectoryName(fullpath));
+            foreach (var exclude in s_excludeDirectories)
+            {
+                // check the path within the root
+                int lookat = FullPath.Length;
+                var match = dir.IndexOf(exclude, lookat, StringComparison.InvariantCultureIgnoreCase);
+                if (match >= 0)
+                {
+                    // separated with / on both ends
+                    if ((match == 0 || dir[match - 1] == Path.DirectorySeparatorChar) &&
+                        (match + exclude.Length == dir.Length || dir[match + exclude.Length] == Path.DirectorySeparatorChar))
+                    {
+                        // this directory is know it should not be compiled
+                        return false;
+                    }
+
+                    lookat = match + 1;
+                }
+            }
+
+            //
+            return true;
         }
 
         /// <summary>
@@ -155,30 +189,23 @@ namespace PeachPied.WordPress.HotPlug
         public ImmutableArray<Diagnostic> LastDiagnostics { get; private set; } = ImmutableArray<Diagnostic>.Empty;
 
         /// <summary>
-        /// Exclude files from compilation, when the predicates are true.
+        /// Directories excluded from the compilation.
         /// </summary>
-        public Dictionary<string, Func<string, bool>> _excludeFilesWhen;
-
-        /// <summary>
-        /// Contains names of folders(plugin/theme) in the compiling folder(plugins/themes).
-        /// </summary>
-        string[] relativeFolderNames;
-
-        /// <summary>
-        /// Directories wildcards excluded from the compilation.
-        /// </summary>
-        static readonly Regex[] s_excludeDirectories = new string[]
+        static readonly string[] s_excludeDirectories = new string[]
         {
-            $".*/tests(/.*)?$",
-            $".*/test(/.*)?$",
-            $".*/cli(/.*)?$",
-            $".*/composer-php52(/.*)?$",
-            $".*/cli(/.*)?$",
-            $".*/jetpack-autoloader/src$",
-            $".*/Composer/Installers$",
-        }
-        .Select(regex => new Regex(regex, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.Singleline))
-        .ToArray();
+            // sometimes plugin zip contains the repository files, ignore it
+            ".svn",
+            ".git",
+            // sometimes plugin zip contains tests, ignore it
+            "tests",
+            "test",
+            // known directories containing files that should not be included
+            // compilation may fail, or it's not desirable
+            "cli",
+            "composer-php52",
+            $"jetpack-autoloader{Path.DirectorySeparatorChar}src",
+            $"composer{Path.DirectorySeparatorChar}installers",
+        };
 
         #endregion
 
@@ -189,10 +216,6 @@ namespace PeachPied.WordPress.HotPlug
             this.Logger = logger;
 
             this.AssemblyNamePrefix = outputAssemblyName ?? throw new ArgumentNullException(nameof(outputAssemblyName));
-            _excludeFilesWhen = new Dictionary<string, Func<string, bool>> {
-                { "class-jetpack-search-debug-bar.php", (string pluginName) => { return pluginName == "jetpack" && !relativeFolderNames.Contains("query-monitor"); }}, //jetpack
-                { "class-fs-debug-bar-panel.php", (string pluginName) => { return pluginName == "gutenslider" && !relativeFolderNames.Contains("query-monitor"); }}, //gutenslider           
-            };
         }
 
         void LogMessage(string message)
@@ -375,7 +398,6 @@ namespace PeachPied.WordPress.HotPlug
 
             assembly = null;
 
-            relativeFolderNames = Directory.GetDirectories(FullPath).Select(x => x.Split(Path.DirectorySeparatorChar).Last()).ToArray();
             var sources = CollectSourceFiles();
             if (sources.Count == 0)
             {
@@ -408,10 +430,10 @@ namespace PeachPied.WordPress.HotPlug
         IReadOnlyCollection<string> CollectSourceFiles()
         { 
             return Directory.EnumerateDirectories(FullPath, "*", SearchOption.AllDirectories) // enumerate all directories
-            .Where(path => !s_excludeDirectories.Any(dir => dir.IsMatch(path.Replace(Path.DirectorySeparatorChar,'/')))) // exclude someones
-            .SelectMany(dir => Directory.EnumerateFiles(dir, "*.php")) // enumerate files
-            .Where(IsAllowedFile) // filter them
-            .ToList();
+                .Where(dir => IsAllowedDirectory(dir)) // exclude wellknown ignored directories
+                .SelectMany(dir => Directory.EnumerateFiles(dir, "*.php"))
+                .Where(IsAllowedFile) // exclude ignored files
+                .ToList();
         }
 
         void DisposeWatcher()
