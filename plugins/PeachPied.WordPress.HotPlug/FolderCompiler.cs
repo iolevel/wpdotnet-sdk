@@ -109,16 +109,21 @@ namespace PeachPied.WordPress.HotPlug
                 return false;
             }
 
+            // a quick workaround
+            // lets compile the following only if there is `query-monitor` plugin
             if (fullpath.EndsWith("class-jetpack-search-debug-bar.php", StringComparison.InvariantCultureIgnoreCase))
             {
                 // (string pluginName) => { return pluginName == "jetpack" && !relativeFolderNames.Contains("query-monitor"); }}, //jetpack
+                return false;
             }
 
             if (fullpath.EndsWith("class-fs-debug-bar-panel.php", StringComparison.InvariantCultureIgnoreCase))
             {
                 // (string pluginName) => { return pluginName == "gutenslider" && !relativeFolderNames.Contains("query-monitor"); }}, //gutenslider
+                return false;
             }
 
+            //
             return true;
         }
 
