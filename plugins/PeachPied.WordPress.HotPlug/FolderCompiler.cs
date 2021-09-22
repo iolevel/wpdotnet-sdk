@@ -165,17 +165,20 @@ namespace PeachPied.WordPress.HotPlug
         string[] relativeFolderNames;
 
         /// <summary>
-        /// Excluded directories from the compilation.
+        /// Directories wildcards excluded from the compilation.
         /// </summary>
-        static Regex[] _excludeDirectories = new Regex[] {
-            new Regex($".*/tests(/.*)?$"),
-            new Regex($".*/test(/.*)?$"),
-            new Regex($".*/cli(/.*)?$"),
-            new Regex($".*/composer-php52(/.*)?$"),
-            new Regex($".*/cli(/.*)?$"),
-            new Regex($".*/jetpack-autoloader/src$"),
-            new Regex($".*/Composer/Installers$")
-        };
+        static readonly Regex[] s_excludeDirectories = new string[]
+        {
+            $".*/tests(/.*)?$",
+            $".*/test(/.*)?$",
+            $".*/cli(/.*)?$",
+            $".*/composer-php52(/.*)?$",
+            $".*/cli(/.*)?$",
+            $".*/jetpack-autoloader/src$",
+            $".*/Composer/Installers$",
+        }
+        .Select(regex => new Regex(regex, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.Singleline))
+        .ToArray();
 
         #endregion
 
@@ -405,7 +408,7 @@ namespace PeachPied.WordPress.HotPlug
         IReadOnlyCollection<string> CollectSourceFiles()
         { 
             return Directory.EnumerateDirectories(FullPath, "*", SearchOption.AllDirectories) // enumerate all directories
-            .Where(path => !_excludeDirectories.Any(dir => dir.IsMatch(path.Replace(Path.DirectorySeparatorChar,'/')))) // exclude someones
+            .Where(path => !s_excludeDirectories.Any(dir => dir.IsMatch(path.Replace(Path.DirectorySeparatorChar,'/')))) // exclude someones
             .SelectMany(dir => Directory.EnumerateFiles(dir, "*.php")) // enumerate files
             .Where(IsAllowedFile) // filter them
             .ToList();
