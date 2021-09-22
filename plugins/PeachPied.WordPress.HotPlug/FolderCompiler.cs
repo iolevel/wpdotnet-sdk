@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace PeachPied.WordPress.HotPlug
 {
@@ -162,6 +163,19 @@ namespace PeachPied.WordPress.HotPlug
         /// Contains names of folders(plugin/theme) in the compiling folder(plugins/themes).
         /// </summary>
         string[] relativeFolderNames;
+
+        /// <summary>
+        /// Excluded directories from the compilation.
+        /// </summary>
+        static Regex[] _excludeDirectories = new Regex[] {
+            new Regex($".*/tests(/.*)?$"),
+            new Regex($".*/test(/.*)?$"),
+            new Regex($".*/cli(/.*)?$"),
+            new Regex($".*/composer-php52(/.*)?$"),
+            new Regex($".*/cli(/.*)?$"),
+            new Regex($".*/jetpack-autoloader/src$"),
+            new Regex($".*/Composer/Installers$")
+        };
 
         #endregion
 
@@ -389,11 +403,12 @@ namespace PeachPied.WordPress.HotPlug
         }
 
         IReadOnlyCollection<string> CollectSourceFiles()
-        {
-            return Directory
-                .EnumerateFiles(FullPath, "*.php", SearchOption.AllDirectories)
-                .Where(IsAllowedFile)
-                .ToList();
+        { 
+            return Directory.EnumerateDirectories(FullPath, "*", SearchOption.AllDirectories) // enumerate all directories
+            .Where(path => !_excludeDirectories.Any(dir => dir.IsMatch(path.Replace(Path.DirectorySeparatorChar,'/')))) // exclude someones
+            .SelectMany(dir => Directory.EnumerateFiles(dir, "*.php")) // enumerate files
+            .Where(IsAllowedFile) // filter them
+            .ToList();
         }
 
         void DisposeWatcher()
