@@ -111,6 +111,11 @@ namespace PeachPied.WordPress.HotPlug
             }
 
             // TODO: other excluded files - tests, etc.
+            string relativePath = Path.GetRelativePath(FullPath, fullpath);
+            string currentBaseFolderName = relativePath.Split(Path.DirectorySeparatorChar)[0];
+
+            if (_excludeFilesWhen.ContainsKey(Path.GetFileName(relativePath)) && _excludeFilesWhen[Path.GetFileName(relativePath)](currentBaseFolderName))
+                return false;
 
             return _ignored == null || !_ignored.Contains(Path.GetDirectoryName(fullpath));
         }
@@ -148,6 +153,16 @@ namespace PeachPied.WordPress.HotPlug
         /// </summary>
         public ImmutableArray<Diagnostic> LastDiagnostics { get; private set; } = ImmutableArray<Diagnostic>.Empty;
 
+        /// <summary>
+        /// Exclude files from compilation, when the predicates are true.
+        /// </summary>
+        public Dictionary<string, Func<string, bool>> _excludeFilesWhen;
+
+        /// <summary>
+        /// Contains names of folders(plugin/theme) in the compiling folder(plugins/themes).
+        /// </summary>
+        string[] relativeFolderNames;
+
         #endregion
 
         public FolderCompiler(CompilerProvider compiler, string subPath, string outputAssemblyName, IWpPluginLogger logger)
@@ -157,6 +172,10 @@ namespace PeachPied.WordPress.HotPlug
             this.Logger = logger;
 
             this.AssemblyNamePrefix = outputAssemblyName ?? throw new ArgumentNullException(nameof(outputAssemblyName));
+            _excludeFilesWhen = new Dictionary<string, Func<string, bool>> {
+                { "class-jetpack-search-debug-bar.php", (string pluginName) => { return pluginName == "jetpack" && !relativeFolderNames.Contains("query-monitor"); }}, //jetpack
+                { "class-fs-debug-bar-panel.php", (string pluginName) => { return pluginName == "gutenslider" && !relativeFolderNames.Contains("query-monitor"); }}, //gutenslider           
+            };
         }
 
         void LogMessage(string message)
@@ -339,6 +358,7 @@ namespace PeachPied.WordPress.HotPlug
 
             assembly = null;
 
+            relativeFolderNames = Directory.GetDirectories(FullPath).Select(x => x.Split(Path.DirectorySeparatorChar).Last()).ToArray();
             var sources = CollectSourceFiles();
             if (sources.Count == 0)
             {
