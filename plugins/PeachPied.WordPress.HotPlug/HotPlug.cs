@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace PeachPied.WordPress.HotPlug
 {
@@ -27,8 +28,8 @@ namespace PeachPied.WordPress.HotPlug
 
             _folders = new[]
             {
-                new FolderCompiler(compiler, "wp-content/plugins", "wp-plugins", logger),
-                new FolderCompiler(compiler, "wp-content/themes", "wp-themes", logger),
+                new FolderCompiler(compiler, $"wp-content{Path.DirectorySeparatorChar}plugins", "wp-plugins", logger),
+                new FolderCompiler(compiler, $"wp-content{Path.DirectorySeparatorChar}themes", "wp-themes", logger),
             };
         }
 
