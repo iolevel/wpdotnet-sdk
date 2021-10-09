@@ -180,7 +180,7 @@ namespace PeachPied.WordPress.Standard.Internal
                     if (data.Verify(uri))
                     {
                         _isRegistered = true;
-                        AdminNotice(app, $"Registration suceeded. Thank you!<br/>License is valid until {data.Expiration:d}, then it will be renewed automatically.", success: true);
+                        AdminNotice(app, $"Registration suceeded. Thank you! License is valid until {data.Expiration:d}, then it will be renewed automatically.", success: true);
                         return true;
                     }
                     else
