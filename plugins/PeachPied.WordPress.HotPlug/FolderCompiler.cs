@@ -279,7 +279,7 @@ namespace PeachPied.WordPress.HotPlug
 
                 _ignored = new HashSet<string>(
                     Directory
-                        .GetDirectories(Path.Combine(Compiler.RootPath, SubPath), "*", SearchOption.AllDirectories)
+                        .GetDirectories(FullPath, "*", SearchOption.AllDirectories)
                         .Where(d => Context.TryGetScriptsInDirectory(Compiler.RootPath, d, out _)),
                     StringComparer.InvariantCultureIgnoreCase);
             }
