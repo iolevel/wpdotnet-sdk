@@ -12,6 +12,7 @@
       This package is a dependency and does not work standalone.
     </Description>
     <DefineConstants>$(DefineConstants);OBJECT="OBJECT";</DefineConstants>
+    <LangVersion>7.4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.php" Exclude="
