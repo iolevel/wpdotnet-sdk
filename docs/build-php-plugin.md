@@ -6,7 +6,9 @@ By default, plugins are compiled automatically just by copying them into the Wor
 - you need to have source code of the plugin on the server (security).
 - eventual code errors are revealed upon starting the application (reliability).
 
-In order to avoid those issue, plugins can be pre-compiled during the deployment process. A single WordPress plugin or the `plugins` directory is then defined as a PHP class library project (below) which is then referenced by the application (see [overview](overview)). Application can have references to one or more plugin projects.
+In order to avoid those issues, plugins can be pre-compiled during the deployment process. A single WordPress plugin or the `plugins` directory is then defined as a PHP class library project (below) which is then referenced by the application (see [overview](overview)). Application can have references to one or more plugin projects.
+
+**Sample project**: https://github.com/iolevel/peachpie-wordpress/tree/master/MyContent
 
 ## Plugin source files
 

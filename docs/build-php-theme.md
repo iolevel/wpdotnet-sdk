@@ -4,6 +4,8 @@ Please see [Build a Plugin](build-php-plugin) for more details.
 
 Single theme for WordPress or the whole `themes` directory is defined as a PHP class library project (below) which is then referenced by the application. Application can have references to one or more themes.
 
+**Sample project**: https://github.com/iolevel/peachpie-wordpress/tree/master/MyContent
+
 ## Theme source files
 
 Sources of the theme complies with the regular WordPress codex. See [Theme Handbook](https://developer.wordpress.org/themes/) for more details.
