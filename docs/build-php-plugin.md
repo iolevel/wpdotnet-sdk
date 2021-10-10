@@ -1,6 +1,12 @@
 # Build a PHP plugin
 
-Single plugin for WordPress is defined as a class library project which is then referenced by the application. Application can have references to one or more plugins.
+By default, plugins are compiled automatically just by copying them into the WordPress `wp-content/plugins` directory. This automatic compilation has a few disadvantages:
+
+- plugin is compiled every time the application gets started (time penalty).
+- you need to have source code of the plugin on the server (security).
+- eventual code errors are revealed upon starting the application (reliability).
+
+In order to avoid those issue, plugins can be pre-compiled during the deployment process. A single WordPress plugin or the `plugins` directory is then defined as a PHP class library project (below) which is then referenced by the application (see [overview](overview)). Application can have references to one or more plugin projects.
 
 ## Plugin source files
 
@@ -45,14 +51,14 @@ Project file is an XML file with the following content:
 
 > *MyHelloDollyPlugin.msbuildproj:*
 ```xml
-<Project Sdk="PeachPied.WordPress.Build.Plugin/5.8.0-preview10">
+<Project Sdk="PeachPied.WordPress.Build.Plugin/5.8.1-preview11">
 
 </Project>
 ```
 
 For most cases, the project file does not specify anything else as all the properties are defined by default in the Sdk. In case a build property or a build item needs to be altered, add it to your project file.
 
-Note the project file specifies a version after the slash, i.e. `"/5.8.0-preview10"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
+Note the project file specifies a version after the slash, i.e. `"/5.8.1-preview11"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
 
 ## Build the plugin
 

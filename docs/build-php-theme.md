@@ -1,6 +1,8 @@
 # Build a PHP theme
 
-Single theme for WordPress is defined as a class library project which is then referenced by the application. Application can have references to one or more themes.
+Please see [Build a Plugin](build-php-plugin) for more details.
+
+Single theme for WordPress or the whole `themes` directory is defined as a PHP class library project (below) which is then referenced by the application. Application can have references to one or more themes.
 
 ## Theme source files
 
@@ -25,14 +27,14 @@ Project file is an XML file with the following content:
 
 > *MyWordPressTheme.msbuildproj:*
 ```xml
-<Project Sdk="PeachPied.WordPress.Build.Plugin/5.8.0-preview10">
+<Project Sdk="PeachPied.WordPress.Build.Plugin/5.8.1-preview11">
   <PropertyGroup>
     <WpContentTarget>themes</WpContentTarget>
   </PropertyGroup>
 </Project>
 ```
 
-Note the project file specifies a version after the slash, i.e. `"/5.8.0-preview10"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
+Note the project file specifies a version after the slash, i.e. `"/5.8.1-preview11"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
 
 ## Build the theme
 
