@@ -1726,7 +1726,7 @@ class wpdb {
 			 * This is due to the default value change from `MYSQLI_REPORT_OFF`
 			 * to `MYSQLI_REPORT_ERROR|MYSQLI_REPORT_STRICT` in PHP 8.1.
 			 */
-			mysqli_report( MYSQLI_REPORT_OFF );
+			//mysqli_report( MYSQLI_REPORT_OFF ); // PEACHPIE: will be uncommented once peachpie will support mysqli_report()
 
 			$this->dbh = mysqli_init();
 
