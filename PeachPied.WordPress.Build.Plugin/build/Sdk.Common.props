@@ -1,6 +1,6 @@
 <!-- This file has been generated. -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<Import Project="Sdk.props" Sdk="Peachpie.NET.Sdk" Version="1.0.16" />
+<Import Project="Sdk.props" Sdk="Peachpie.NET.Sdk" Version="1.0.17" />
 <PropertyGroup>
 <WpDotNetVersion Condition=" '$(WpDotNetVersion)'=='' ">5.9-preview14</WpDotNetVersion>
 </PropertyGroup>
