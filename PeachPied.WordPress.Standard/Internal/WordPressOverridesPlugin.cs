@@ -252,9 +252,14 @@ namespace PeachPied.WordPress.Standard.Internal
                 Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
             var process = System.Diagnostics.Process.GetCurrentProcess();
 
+            string licenseRow = "";
+
+#if WPDOTNET_LICENSE
             string licensehtml = IsRegistered
                 ? $@"<em>{app.GetSiteUrl()} is <a href='{WpDotNetUrl}#registered' target='_blank'>registered</a></em>"
                 : $@"<a href='#' onclick='return wpdotnet_register_open();' tooltip=''>Register</a> | <a href='{PurchaseLink}' target='_blank' tooltip=''>Purchase</a>";
+            licenseRow = $"<b>License:</b> {licensehtml}<br/>";
+#endif
 
             output.Write($@"
 <table style=""border:0;width:100%;""><tbody>
@@ -265,12 +270,13 @@ namespace PeachPied.WordPress.Standard.Internal
         <div>
             <b title=""Memory allocated by the whole process."">Memory usage:</b> {process.WorkingSet64 / 1024 / 1024} MB<br/>
             <b title=""CPU time consumed by the whole process."">CPU usage:</b> {process.TotalProcessorTime:c}<br/>
-            <b>License:</b> {licensehtml}<br/>
+            {licenseRow}
         </div>
     </td>
 </tr>
 </tbody></table>");
 
+#if WPDOTNET_LICENSE
             if (!IsRegistered)
             {
                 output.Write($@"
@@ -294,16 +300,19 @@ namespace PeachPied.WordPress.Standard.Internal
 </div>
 ");
             }
+#endif
         }
 
         static readonly string s_GeneratorHtml = $"<meta name=\"generator\" content=\"WpDotNet (PeachPie) {InformationalVersion} \" />";
 
         public void Configure(WpApp app)
         {
+#if WPDOTNET_LICENSE
             if (_isRegistered.HasValue == false || app.Context.Post.Count != 0)
             {
                 TryRegisterUser(app);
             }
+#endif
 
             //
             // Dashboard:
@@ -344,6 +353,7 @@ namespace PeachPied.WordPress.Standard.Internal
             // </style>");
             //             }));
 
+#if WPDOTNET_LICENSE
             if (!IsRegistered)
             {
                 app.Footer(output =>
@@ -371,6 +381,7 @@ namespace PeachPied.WordPress.Standard.Internal
                     }));
                 });
             }
+#endif
         }
     }
 }
