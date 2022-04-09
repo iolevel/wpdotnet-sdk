@@ -207,17 +207,17 @@ namespace Microsoft.AspNetCore.Builder
                 .LoadDefaults();    // 
 
             // get WP_HOME and WP_SITE
-            string siteurl = null;
-            string homeurl = null;
+            string sitepath = null;
+            string homepath = null;
 
             if (Uri.TryCreate(options.SiteUrl, UriKind.Absolute, out var siteuri))
             {
-                siteurl = siteuri.LocalPath;
+                sitepath = siteuri.LocalPath;
             }
             
             if (Uri.TryCreate(options.HomeUrl, UriKind.Absolute, out var homeuri))
             {
-                homeurl = homeuri.LocalPath;
+                homepath = homeuri.LocalPath;
             }
 
             bool siteProceed = false;
@@ -225,16 +225,16 @@ namespace Microsoft.AspNetCore.Builder
             app.UseWhen(
                 context =>
                 {
-                    siteProceed = string.IsNullOrEmpty(siteurl) || context.Request.Path.Value.StartsWith(siteurl);
+                    siteProceed = string.IsNullOrEmpty(sitepath) || context.Request.Path.Value.StartsWith(sitepath);
                     return siteProceed;
                 },
-                app => app.UsePathBase(siteurl).InstallWordPress(options, path, siteurl)
+                app => app.UsePathBase(sitepath).InstallWordPress(options, path, sitepath)
             );
 
             // use when the home path is a part of the requested path
             app.UseWhen(
-                context => !siteProceed && (string.IsNullOrEmpty(homeurl) || context.Request.Path.Value.StartsWith(homeurl)),
-                app => app.UsePathBase(homeurl).InstallWordPress(options, path, siteurl)
+                context => !siteProceed && (string.IsNullOrEmpty(homepath) || context.Request.Path.Value.StartsWith(homepath)),
+                app => app.UsePathBase(homepath).InstallWordPress(options, path, sitepath)
             );
 
             //
