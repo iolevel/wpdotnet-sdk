@@ -1932,7 +1932,9 @@ const getEditedPostTemplate = Object(external_wp_data_["createRegistrySelector"]
   if (currentTemplate) {
     var _select$getEntityReco;
 
-    const templateWithSameSlug = (_select$getEntityReco = select(external_wp_coreData_["store"]).getEntityRecords('postType', 'wp_template')) === null || _select$getEntityReco === void 0 ? void 0 : _select$getEntityReco.find(template => template.slug === currentTemplate);
+    const templateWithSameSlug = (_select$getEntityReco = select(external_wp_coreData_["store"]).getEntityRecords('postType', 'wp_template', {
+      per_page: -1
+    })) === null || _select$getEntityReco === void 0 ? void 0 : _select$getEntityReco.find(template => template.slug === currentTemplate);
 
     if (!templateWithSameSlug) {
       return templateWithSameSlug;
@@ -8207,7 +8209,8 @@ function TemplatePanel() {
     const _supportsTemplateMode = select(external_wp_editor_["store"]).getEditorSettings().supportsTemplateMode && _isViewable;
 
     const wpTemplates = getEntityRecords('postType', 'wp_template', {
-      post_type: currentPostType
+      post_type: currentPostType,
+      per_page: -1
     });
     const newAvailableTemplates = Object(external_lodash_["fromPairs"])((wpTemplates || []).map(_ref => {
       let {
@@ -9277,7 +9280,7 @@ function Editor(_ref) {
   const styles = Object(external_wp_element_["useMemo"])(() => {
     const themeStyles = [];
     const presetStyles = [];
-    settings.styles.forEach(style => {
+    Object(external_lodash_["forEach"])(settings.styles, style => {
       if (!style.__unstableType || style.__unstableType === 'theme') {
         themeStyles.push(style);
       } else {
