@@ -1,4 +1,4 @@
 <!-- This file has been generated. -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<Import Project="Sdk.targets" Sdk="Peachpie.NET.Sdk" Version="1.0.18" />
+<Import Project="Sdk.targets" Sdk="Peachpie.NET.Sdk" Version="1.0.19" />
 </Project>
