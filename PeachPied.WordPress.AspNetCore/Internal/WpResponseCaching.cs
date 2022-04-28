@@ -170,7 +170,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
         {
             foreach (var header in page.Headers)
             {
-                context.Response.Headers.Add(header);
+                context.Response.Headers[header.Key] = header.Value;
             }
 
             await context.Response.Body.WriteAsync(page.Content, 0, page.Content.Length);
