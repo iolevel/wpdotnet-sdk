@@ -36,7 +36,7 @@ Project file is an XML file with the following content:
 </Project>
 ```
 
-Note the project file specifies a version after the slash, i.e. `"/5.9.3-rc-002"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
+Note the project file specifies a version after the slash, i.e. `"/6.0.1-rc-005"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
 
 ## Build the theme
 
