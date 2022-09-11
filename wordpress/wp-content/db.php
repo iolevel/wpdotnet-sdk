@@ -1770,7 +1770,13 @@ HTML
 
             //long queries can really kill this
             $pattern = '/(?<!\\\\)([\'"])(.*?)(?<!\\\\)\\1/imsx';
-            $_limit = $limit = ini_get('pcre.backtrack_limit');
+            if (defined('PEACHPIE_VERSION')) 
+            {
+                $_limit = $limit = 10000000;
+            } else {
+                $_limit = $limit = ini_get('pcre.backtrack_limit');
+            }
+
             // if user's setting is more than default * 10, make PHP do the job.
             if ($limit > 10000000) {
                 $query = preg_replace_callback($pattern, [$this, 'replace_variables_with_placeholders'],
@@ -1781,7 +1787,10 @@ HTML
                         $this->set_error(__LINE__, __FUNCTION__, 'The query is too big to parse properly');
                         break; //no point in continuing execution, would get into a loop
                     } else {
-                        ini_set('pcre.backtrack_limit', $limit);
+                        if (!defined('PEACHPIE_VERSION')) 
+                        {
+                            ini_set('pcre.backtrack_limit', $limit);
+                        }
                         $query = preg_replace_callback($pattern, [$this, 'replace_variables_with_placeholders'],
                             $this->rewritten_query);
                     }
@@ -1789,7 +1798,10 @@ HTML
                 } while (is_null($query));
 
                 //reset the pcre.backtrack_limit
-                ini_set('pcre.backtrack_limit', $_limit);
+                if (!defined('PEACHPIE_VERSION')) 
+                {
+                    ini_set('pcre.backtrack_limit', $_limit);
+                }
             }
 
             if (isset($query)) {
@@ -1820,6 +1832,13 @@ HTML
             if (in_array($param[0], ["'", '"'])) {
                 $param = substr($param, 1); //start
             }
+
+            if (defined('PEACHPIE_VERSION')) 
+            {
+                $this->extracted_variables[] = $param;
+                return ' ? ';
+            }
+
             //$this->extracted_variables[] = $param;
             $key = ':param_' . $this->param_num++;
             $this->extracted_variables[] = $param;
@@ -2409,6 +2428,11 @@ HTML
          */
         private function get_sqlite_version()
         {
+            if (defined('PEACHPIE_VERSION')) 
+            {
+                return;
+            }
+
             try {
                 $statement = $this->pdo->prepare('SELECT sqlite_version()');
                 $statement->execute();
@@ -2428,6 +2452,10 @@ HTML
          */
         public function beginTransaction()
         {
+            if (defined('PEACHPIE_VERSION')) 
+            {
+                return;
+            }
             if ($this->has_active_transaction) {
                 return false;
             } else {
@@ -2444,6 +2472,10 @@ HTML
          */
         public function commit()
         {
+            if (defined('PEACHPIE_VERSION')) 
+            {
+                return;
+            }
             $this->pdo->commit();
             $this->has_active_transaction = false;
         }
@@ -2455,6 +2487,10 @@ HTML
          */
         public function rollBack()
         {
+            if (defined('PEACHPIE_VERSION')) 
+            {
+                return;
+            }
             $this->pdo->rollBack();
             $this->has_active_transaction = false;
         }
@@ -4900,5 +4936,6 @@ namespace {
     }
 
     $GLOBALS['wpdb'] = new WP_SQLite_DB\wpsqlitedb();
+    $GLOBALS['wpdb']->query('PRAGMA journal_mode = wal;');
 }
 
