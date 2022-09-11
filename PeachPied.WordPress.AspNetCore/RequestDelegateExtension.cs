@@ -312,6 +312,11 @@ namespace Microsoft.AspNetCore.Builder
             WpStandard.DB_PASSWORD = options.DbPassword;
             WpStandard.DB_USER = options.DbUser;
 
+            // SQLITE
+            WpStandard.USE_MYSQL = options.UseMySQL;
+            WpStandard.DB_DIR = options.SQLiteFolder;
+            WpStandard.DB_FILE = options.SQLiteFileName;
+
             //
             var env = app.ApplicationServices.GetService<IHostingEnvironment>();
             WpStandard.WP_DEBUG = options.Debug || env.IsDevelopment();

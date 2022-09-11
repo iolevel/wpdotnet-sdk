@@ -27,6 +27,24 @@ namespace PeachPied.WordPress.AspNetCore
         /// <summary>MySQL host.</summary>
         public string DbHost { get; set; } = "localhost";
 
+
+        /// <summary>Use MySQL, disabled use SQLite</summary>
+        public bool UseMySQL { get; set; } = true;
+        /// <summary>SQLite Database Folder</summary>
+        public string SQLiteFolder { get; set; } = "./Database/";
+        /// <summary>SQLite Database Filename</summary>
+        public string SQLiteFileName { get; set; } = "database.sqlite";
+
+        /// <summary>Autoinstall Wordpress if database dont exists - SQLite only</summary>
+        public bool WPInstall { get; set; } = true;
+        /// <summary>Autoinstall Wordpress Weblog Title</summary>
+        public string WPInstallWeblogTitle { get; set; } = "Wordpress";
+        /// <summary>Autoinstall Wordpress admin Username</summary>
+        public string WPInstallUserName { get; set; } = "admin";
+        /// <summary>Autoinstall Wordpress admin Password</summary>
+        public string WPInstallAdminPassword { get; set; } = "admin";
+        /// <summary>Autoinstall Wordpress admin eMail</summary>
+        public string WPInstallAdminEmail { get; set; } = "admin@localhost.com";
         //
 
         /// <summary>WordPress Database Table prefix.</summary>
