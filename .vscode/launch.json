@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/app/bin/Debug/net6.0/app.dll",
+            "program": "${workspaceFolder}/app/bin/Debug/net50/app.dll",
             "args": [],
             "cwd": "${workspaceFolder}/app",
             "console": "internalConsole",
@@ -17,7 +17,7 @@
             "internalConsoleOptions": "openOnSessionStart",
             "justMyCode": false,
             "symbolOptions": {
-                // "searchPaths": ["C:\\Users\\jmise\\Projects\\peachpie\\src\\Peachpie.Library\\bin\\Debug\\netstandard2.0"],
+                // "searchPaths": ["C:\\Users\\jmise\\Projects\\peachpie\\src\\Peachpie.Library\\bin\\Debug\\net50"],
                 "searchMicrosoftSymbolServer": false
             }
         },
