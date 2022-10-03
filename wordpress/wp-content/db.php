@@ -4835,7 +4835,7 @@ HTML
 } // WP_SQLite_DB namespace
 
 namespace {
-    if (!defined('USE_MYSQL') && !USE_MYSQL) {
+    if (defined('USE_MYSQL') && !USE_MYSQL) {
         /**
          * Installs the site.
          *
