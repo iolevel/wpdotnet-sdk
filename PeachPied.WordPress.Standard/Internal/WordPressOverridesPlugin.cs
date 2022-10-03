@@ -250,6 +250,11 @@ namespace PeachPied.WordPress.Standard.Internal
             var frameworkVersion =
                 System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription ??
                 Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
+            string databaseSystem = "MySQL";
+            if (!WpStandard.USE_MYSQL)
+            {
+                databaseSystem = "SQLite (Path: " + WpStandard.DB_DIR + WpStandard.DB_FILE + ")";
+            }
             var process = System.Diagnostics.Process.GetCurrentProcess();
 
             string licenseRow = "";
@@ -266,7 +271,8 @@ namespace PeachPied.WordPress.Standard.Internal
 <tr>
     <td><img src=""{LogoUrl}"" style=""width:76px;margin:8px;display:inline;""></td>
     <td>
-        <b>Your WordPress runs on {frameworkVersion}</b>
+        <b>Your WordPress runs on {frameworkVersion}</b><br/>
+        <b title=""Database System"">Database:</b> {databaseSystem}
         <div>
             <b title=""Memory allocated by the whole process."">Memory usage:</b> {process.WorkingSet64 / 1024 / 1024} MB<br/>
             <b title=""CPU time consumed by the whole process."">CPU usage:</b> {process.TotalProcessorTime:c}<br/>
