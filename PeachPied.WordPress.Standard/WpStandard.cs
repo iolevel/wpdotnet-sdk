@@ -82,11 +82,6 @@ namespace PeachPied.WordPress.Standard
         public const int MYSQL_CLIENT_FLAGS = 2048; // MYSQL_CLIENT_SSL
 
         /// <summary>
-        /// MySqli flag (not defined yet in PeachPie, so we'll define it here).
-        /// </summary>
-        public const int MYSQLI_REPORT_OFF = 0;
-
-        /// <summary>
         /// WordPress root path including the trailing slash. Always "/" at the end.
         /// </summary>
         [PhpConstant("{RootPath}/")]
