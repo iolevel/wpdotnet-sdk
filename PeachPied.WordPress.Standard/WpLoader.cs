@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Pchp.Core;
+using Pchp.Core.Reflection;
 
 namespace PeachPied.WordPress.Standard
 {
@@ -27,12 +30,12 @@ namespace PeachPied.WordPress.Standard
             }
         }
 
-        void AppStarted(WpApp app)
+        async ValueTask AppStartedAsync(WpApp app, CancellationToken token = default)
         {
             // activate plugins:
             foreach (var plugin in _plugins)
             {
-                plugin.Configure(app);
+                await plugin.ConfigureAsync(app, token);
             }
         }
 
@@ -43,7 +46,10 @@ namespace PeachPied.WordPress.Standard
         {
             if (ctx.Globals["peachpie_wp_loader"].AsObject() is WpLoader loader)
             {
-                loader.AppStarted(host);
+                loader
+                    .AppStartedAsync(host)
+                    .GetAwaiter()
+                    .GetResult();
             }
             else
             {

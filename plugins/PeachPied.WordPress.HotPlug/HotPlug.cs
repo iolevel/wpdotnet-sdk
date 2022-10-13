@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace PeachPied.WordPress.HotPlug
 {
@@ -89,7 +91,7 @@ namespace PeachPied.WordPress.HotPlug
             }
         }
 
-        void IWpPlugin.Configure(WpApp app)
+        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
         {
             if (app.Context.TryGetConstant("WPDOTNET_HOTPLUG_ENABLE", out var evalue) && (bool)evalue == false)
             {
@@ -103,7 +105,8 @@ namespace PeachPied.WordPress.HotPlug
                     app.AddFilter("themes_api", new Func<PhpValue, string, object, PhpValue>(EmptyApi), accepted_args: 3);
                 });
 
-                return;
+                //
+                return ValueTask.CompletedTask;
             }
 
             FirstRequest();
@@ -161,6 +164,8 @@ namespace PeachPied.WordPress.HotPlug
             //// in such case it refreshes the page
 
             // ...
+
+            return ValueTask.CompletedTask;
         }
 
         static string IconHtml(Diagnostic d) => IconHtml(d.Severity);

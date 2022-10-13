@@ -12,6 +12,8 @@ using System.Reflection;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace PeachPied.WordPress.Standard.Internal
 {
@@ -305,7 +307,7 @@ namespace PeachPied.WordPress.Standard.Internal
 
         static readonly string s_GeneratorHtml = $"<meta name=\"generator\" content=\"WpDotNet (PeachPie) {InformationalVersion} \" />";
 
-        public void Configure(WpApp app)
+        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
         {
 #if WPDOTNET_LICENSE
             if (_isRegistered.HasValue == false || app.Context.Post.Count != 0)
@@ -382,6 +384,9 @@ namespace PeachPied.WordPress.Standard.Internal
                 });
             }
 #endif
+
+            //
+            return ValueTask.CompletedTask;
         }
     }
 }

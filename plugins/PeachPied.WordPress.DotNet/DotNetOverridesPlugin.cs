@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace PeachPied.WordPress.DotNet
 {
@@ -12,7 +14,7 @@ namespace PeachPied.WordPress.DotNet
     /// </summary>
     sealed class DotNetOverridesPlugin : IWpPlugin
     {
-        void IWpPlugin.Configure(WpApp app)
+        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
         {
             // postpone admin actions
             app.AddFilter("admin_init", new Action(() =>
@@ -43,6 +45,9 @@ namespace PeachPied.WordPress.DotNet
                 try { Directory.CreateDirectory(plugindir.ToString(app.Context)); }
                 catch { }
             }
+
+            //
+            return ValueTask.CompletedTask;
         }
     }
 }

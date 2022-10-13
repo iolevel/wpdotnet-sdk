@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
@@ -468,7 +469,7 @@ namespace Peachpied.WordPress.NuGetPlugins
             _packages.ActivatePackage(new_theme.get_stylesheet().ToString());
         }
 
-        void IWpPlugin.Configure(WpApp app)
+        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
         {
             // postpone admin actions
             app.OnAdminInit(() =>
@@ -533,6 +534,9 @@ namespace Peachpied.WordPress.NuGetPlugins
                 //try { Directory.CreateDirectory(themedir.ToString(app.Context)); }
                 //catch { }
             });
+
+            //
+            return ValueTask.CompletedTask;
         }
     }
 }

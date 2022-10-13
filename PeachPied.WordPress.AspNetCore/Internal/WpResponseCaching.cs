@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
@@ -335,7 +336,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
     {
         public DateTime LastPostUpdate { get; private set; } = DateTime.UtcNow;
 
-        void IWpPlugin.Configure(WpApp app)
+        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
         {
             Action updated = () =>
             {
@@ -352,6 +353,9 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             // TODO: edit_comment
             // TODO: trashed_comment(comment id, comment)
             // TODO: spammed_comment
+
+            //
+            return ValueTask.CompletedTask;
         }
     }
 }
