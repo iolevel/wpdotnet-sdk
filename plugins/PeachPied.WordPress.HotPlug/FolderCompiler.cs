@@ -272,6 +272,15 @@ namespace PeachPied.WordPress.HotPlug
         {
             DisposeWatcher();
 
+            var fullpath = this.FullPath;
+
+            if (!Directory.Exists(fullpath))
+            {
+                // folder does not exist
+                // no compilation, no watch
+                return;
+            }
+
             if (_ignored == null)
             {
                 // remember directories that were compiled in advance
@@ -279,7 +288,7 @@ namespace PeachPied.WordPress.HotPlug
 
                 _ignored = new HashSet<string>(
                     Directory
-                        .GetDirectories(FullPath, "*", SearchOption.AllDirectories)
+                        .GetDirectories(fullpath, "*", SearchOption.AllDirectories)
                         .Where(d => Context.TryGetScriptsInDirectory(Compiler.RootPath, d, out _)),
                     StringComparer.InvariantCultureIgnoreCase);
             }
@@ -295,7 +304,7 @@ namespace PeachPied.WordPress.HotPlug
                 // recompile the directory if necessary and
                 // inject the newly compiled scripts once the compilation is successfull
 
-                _fsWatcher = new FileSystemWatcher(FullPath, "*.php")
+                _fsWatcher = new FileSystemWatcher(fullpath, "*.php")
                 {
                     IncludeSubdirectories = true,
                     NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime | NotifyFilters.DirectoryName,
@@ -432,7 +441,7 @@ namespace PeachPied.WordPress.HotPlug
         }
 
         IReadOnlyCollection<string> CollectSourceFiles()
-        { 
+        {
             return Directory.EnumerateDirectories(FullPath, "*", SearchOption.AllDirectories) // enumerate all directories
                 .Where(dir => IsAllowedDirectory(dir)) // exclude wellknown ignored directories
                 .SelectMany(dir => Directory.EnumerateFiles(dir, "*.php"))
