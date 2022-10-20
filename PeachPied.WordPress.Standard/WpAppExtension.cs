@@ -163,6 +163,14 @@ namespace PeachPied.WordPress.Standard
         }
 
         /// <summary>
+        /// <c>wp_enqueue_scripts</c> hook.
+        /// </summary>
+        public static void EnqueueScripts(this WpApp app, Action callback)
+        {
+            app.AddFilter("wp_enqueue_scripts", callback);
+        }
+
+        /// <summary>
         /// Enqueues .js script.
         /// </summary>
         /// <param name="app">WP app.</param>
@@ -176,6 +184,7 @@ namespace PeachPied.WordPress.Standard
             // wp_enqueue_style( 'style-name', get_stylesheet_uri() );
             app.Context.Call("wp_enqueue_style", handle, src);
         }
+
         /// <summary>
         /// Registers 'admin_init' hook.
         /// </summary>
