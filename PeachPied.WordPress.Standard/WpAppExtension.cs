@@ -147,6 +147,36 @@ namespace PeachPied.WordPress.Standard
         }
 
         /// <summary>
+        /// Enqueues .js script.
+        /// </summary>
+        /// <param name="app">WP app.</param>
+        /// <param name="handle">Name of the script. Should be unique.</param>
+        /// <param name="src">
+        /// Full URL of the script, or path of the script relative to the WordPress root directory.
+        /// Default: ''
+        /// </param>
+        /// <param name="inFooter">Enqueue the script to footer instead of header.</param>
+        public static void EnqueueScript(this WpApp app, string handle, string src, bool inFooter = false)
+        {
+            // wp_enqueue_script( string $handle, string $src = '', string[] $deps = array(), string|bool|null $ver = false, bool $in_footer = false )
+            app.Context.Call("wp_enqueue_script", handle, src, PhpArray.NewEmpty(), PhpValue.False, inFooter);
+        }
+
+        /// <summary>
+        /// Enqueues .js script.
+        /// </summary>
+        /// <param name="app">WP app.</param>
+        /// <param name="handle">Name of the script. Should be unique.</param>
+        /// <param name="src">
+        /// Full URL of the script, or path of the script relative to the WordPress root directory.
+        /// Default: ''
+        /// </param>
+        public static void EnqueueStyle(this WpApp app, string handle, string src)
+        {
+            // wp_enqueue_style( 'style-name', get_stylesheet_uri() );
+            app.Context.Call("wp_enqueue_style", handle, src);
+        }
+        /// <summary>
         /// Registers 'admin_init' hook.
         /// </summary>
         public static void OnAdminInit(this WpApp app, Action action) => app.AddFilter("admin_init", action);
