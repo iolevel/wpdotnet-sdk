@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net50</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Description>
       The API for integrating .NET plugins and to bridge between C# and WordPress PHP code.
     </Description>

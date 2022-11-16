@@ -336,7 +336,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
     {
         public DateTime LastPostUpdate { get; private set; } = DateTime.UtcNow;
 
-        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
+        void IWpPlugin.Configure(WpApp app)
         {
             Action updated = () =>
             {
@@ -353,9 +353,6 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             // TODO: edit_comment
             // TODO: trashed_comment(comment id, comment)
             // TODO: spammed_comment
-
-            //
-            return ValueTask.CompletedTask;
         }
     }
 }

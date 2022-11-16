@@ -469,7 +469,7 @@ namespace Peachpied.WordPress.NuGetPlugins
             _packages.ActivatePackage(new_theme.get_stylesheet().ToString());
         }
 
-        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
+        void IWpPlugin.Configure(WpApp app)
         {
             // postpone admin actions
             app.OnAdminInit(() =>
@@ -534,9 +534,6 @@ namespace Peachpied.WordPress.NuGetPlugins
                 //try { Directory.CreateDirectory(themedir.ToString(app.Context)); }
                 //catch { }
             });
-
-            //
-            return ValueTask.CompletedTask;
         }
     }
 }

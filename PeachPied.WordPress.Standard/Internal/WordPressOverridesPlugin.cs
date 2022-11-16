@@ -307,7 +307,7 @@ namespace PeachPied.WordPress.Standard.Internal
 
         static readonly string s_GeneratorHtml = $"<meta name=\"generator\" content=\"WpDotNet (PeachPie) {InformationalVersion} \" />";
 
-        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
+        void IWpPlugin.Configure(WpApp app)
         {
 #if WPDOTNET_LICENSE
             if (_isRegistered.HasValue == false || app.Context.Post.Count != 0)
@@ -384,9 +384,6 @@ namespace PeachPied.WordPress.Standard.Internal
                 });
             }
 #endif
-
-            //
-            return ValueTask.CompletedTask;
         }
     }
 }

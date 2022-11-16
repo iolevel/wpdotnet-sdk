@@ -91,7 +91,7 @@ namespace PeachPied.WordPress.HotPlug
             }
         }
 
-        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
+        void IWpPlugin.Configure(WpApp app)
         {
             if (app.Context.TryGetConstant("WPDOTNET_HOTPLUG_ENABLE", out var evalue) && (bool)evalue == false)
             {
@@ -106,7 +106,7 @@ namespace PeachPied.WordPress.HotPlug
                 });
 
                 //
-                return ValueTask.CompletedTask;
+                return;
             }
 
             FirstRequest();
@@ -164,8 +164,6 @@ namespace PeachPied.WordPress.HotPlug
             //// in such case it refreshes the page
 
             // ...
-
-            return ValueTask.CompletedTask;
         }
 
         static string IconHtml(Diagnostic d) => IconHtml(d.Severity);

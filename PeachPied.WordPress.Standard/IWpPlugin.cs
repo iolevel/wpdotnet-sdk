@@ -14,6 +14,6 @@ namespace PeachPied.WordPress.Standard
         /// <summary>
         /// Initializes request to WordPress site.
         /// </summary>
-        ValueTask ConfigureAsync(WpApp app, CancellationToken token);
+        void Configure(WpApp app);
     }
 }

@@ -17,7 +17,7 @@
   <!-- copy the task dll into temp dir (TODO: AppDomain and shadow copy) -->
   <PropertyGroup>
     <BuildPluginFramework Condition=" '$(MSBuildRuntimeType)'!='Core' ">net472</BuildPluginFramework>
-    <BuildPluginFramework Condition=" '$(BuildPluginFramework)'=='' ">net50</BuildPluginFramework>
+    <BuildPluginFramework Condition=" '$(BuildPluginFramework)'=='' ">netstandard2.1</BuildPluginFramework>
     <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)../$(BuildPlugin)/bin/$(Configuration)/$(BuildPluginFramework)/publish/$(BuildPlugin).dll</BuildPluginTaskAssembly>
     <BuildPluginTaskAssemblyOriginal>$(BuildPluginTaskAssembly)</BuildPluginTaskAssemblyOriginal>
     <_BuildPluginTmp>$([System.IO.Path]::GetTempPath())PhpPlugin.Build/$([System.Guid]::NewGuid())/</_BuildPluginTmp>

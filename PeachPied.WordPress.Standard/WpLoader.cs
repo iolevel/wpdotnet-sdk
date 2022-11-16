@@ -30,12 +30,12 @@ namespace PeachPied.WordPress.Standard
             }
         }
 
-        async ValueTask AppStartedAsync(WpApp app, CancellationToken token = default)
+        void AppStarted(WpApp app)
         {
             // activate plugins:
             foreach (var plugin in _plugins)
             {
-                await plugin.ConfigureAsync(app, token);
+                plugin.Configure(app);
             }
         }
 
@@ -46,10 +46,7 @@ namespace PeachPied.WordPress.Standard
         {
             if (ctx.Globals["peachpie_wp_loader"].AsObject() is WpLoader loader)
             {
-                loader
-                    .AppStartedAsync(host)
-                    .GetAwaiter()
-                    .GetResult();
+                loader.AppStarted(host);
             }
             else
             {

@@ -13,8 +13,6 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Pchp.Core;
 using Peachpie.AspNetCore.Web;
 using PeachPied.WordPress.AspNetCore;
@@ -314,7 +312,7 @@ namespace Microsoft.AspNetCore.Builder
             WpStandard.DB_USER = options.DbUser;
 
             //
-            var env = app.ApplicationServices.GetService<IWebHostEnvironment>();
+            var env = app.ApplicationServices.GetService<IHostingEnvironment>();
             WpStandard.WP_DEBUG = options.Debug || env.IsDevelopment();
 
             // handling php files:

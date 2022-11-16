@@ -14,7 +14,7 @@ namespace PeachPied.WordPress.DotNet
     /// </summary>
     sealed class DotNetOverridesPlugin : IWpPlugin
     {
-        ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
+        void IWpPlugin.Configure(WpApp app)
         {
             // postpone admin actions
             app.AddFilter("admin_init", new Action(() =>
@@ -45,9 +45,6 @@ namespace PeachPied.WordPress.DotNet
                 try { Directory.CreateDirectory(plugindir.ToString(app.Context)); }
                 catch { }
             }
-
-            //
-            return ValueTask.CompletedTask;
         }
     }
 }
