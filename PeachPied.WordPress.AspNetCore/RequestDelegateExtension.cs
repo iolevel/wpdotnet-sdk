@@ -198,7 +198,8 @@ namespace Microsoft.AspNetCore.Builder
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="path">Physical location of wordpress folder. Can be absolute or relative to the current directory.</param>
-        public static IApplicationBuilder UseWordPress(this IApplicationBuilder app, string path = null)
+        /// <param name="configure">Optional callback invoked every request when rendering WordPress page. Shortcut for implementing a plugin (<see cref="IWpPlugin"/>).</param>
+        public static IApplicationBuilder UseWordPress(this IApplicationBuilder app, string path = null, Action<WpApp> configure = null)
         {
             // load options
             var options = new WordPressConfig()
@@ -206,6 +207,12 @@ namespace Microsoft.AspNetCore.Builder
                 .LoadFromEnvironment(app.ApplicationServices)   // environment variables (known cloud hosts)
                 .LoadFromOptions(app.ApplicationServices)       // IConfigureOptions<WordPressConfig> service
                 .LoadDefaults();    // 
+
+            //
+            if (configure != null)
+            {
+                options.PluginContainer.Add(new WpPluginAsCallback(configure));
+            }
 
             // get WP_HOME and WP_SITE
             string sitepath = null;
