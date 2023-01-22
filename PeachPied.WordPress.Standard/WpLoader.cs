@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,16 +27,16 @@ namespace PeachPied.WordPress.Standard
         {
             if (plugins != null)
             {
-                _plugins.AddRange(plugins);
+                _plugins.AddRange(plugins.Where(p => p != null));
             }
         }
 
         async ValueTask AppStartedAsync(WpApp app, CancellationToken token = default)
         {
             // activate plugins:
-            foreach (var plugin in _plugins)
+            for (int i = 0; i < _plugins.Count; i++)
             {
-                await plugin.ConfigureAsync(app, token);
+                await _plugins[i].ConfigureAsync(app, token);
             }
         }
 
