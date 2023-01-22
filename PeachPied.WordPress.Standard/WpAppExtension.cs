@@ -147,7 +147,7 @@ namespace PeachPied.WordPress.Standard
         }
 
         /// <summary>
-        /// Enqueues .js script.
+        /// Registers .js script to be enqueued.
         /// </summary>
         /// <param name="app">WP app.</param>
         /// <param name="handle">Name of the script. Should be unique.</param>
@@ -155,34 +155,35 @@ namespace PeachPied.WordPress.Standard
         /// Full URL of the script, or path of the script relative to the WordPress root directory.
         /// Default: ''
         /// </param>
-        /// <param name="inFooter">Enqueue the script to footer instead of header.</param>
-        public static void EnqueueScript(this WpApp app, string handle, string src, bool inFooter = false)
+        /// <param name="in_footer">Enqueue the script to footer instead of header.</param>
+        public static void EnqueueScript(this WpApp app, string handle, string src, bool in_footer = false)
         {
             // wp_enqueue_script( string $handle, string $src = '', string[] $deps = array(), string|bool|null $ver = false, bool $in_footer = false )
-            app.Context.Call("wp_enqueue_script", handle, src, PhpArray.NewEmpty(), PhpValue.False, inFooter);
+            app.Context.Call("wp_enqueue_script", handle, src, PhpArray.NewEmpty(), PhpValue.False, in_footer);
         }
 
         /// <summary>
-        /// <c>wp_enqueue_scripts</c> hook.
-        /// </summary>
-        public static void EnqueueScripts(this WpApp app, Action callback)
-        {
-            app.AddFilter("wp_enqueue_scripts", callback);
-        }
-
-        /// <summary>
-        /// Enqueues .js script.
+        /// Registers .css style to be enqueued.
         /// </summary>
         /// <param name="app">WP app.</param>
-        /// <param name="handle">Name of the script. Should be unique.</param>
+        /// <param name="handle">Name of the style. Should be unique.</param>
         /// <param name="src">
-        /// Full URL of the script, or path of the script relative to the WordPress root directory.
+        /// Full URL of the style, or path of the style relative to the WordPress root directory.
         /// Default: ''
         /// </param>
         public static void EnqueueStyle(this WpApp app, string handle, string src)
         {
             // wp_enqueue_style( 'style-name', get_stylesheet_uri() );
             app.Context.Call("wp_enqueue_style", handle, src);
+        }
+
+        /// <summary>
+        /// <c>wp_enqueue_scripts</c> hook.
+        /// The callback is responsible for enqueuing .js and .css files through <see cref="EnqueueScript"/> and <see cref="EnqueueStyle"/>.
+        /// </summary>
+        public static void EnqueueScripts(this WpApp app, Action callback)
+        {
+            app.AddFilter("wp_enqueue_scripts", callback);
         }
 
         /// <summary>
