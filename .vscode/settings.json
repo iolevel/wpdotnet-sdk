@@ -4,5 +4,8 @@
         "/obj": true,
         "/app": true,
     },
-    "php.stubs": ["*", "zip", "zlib"]
+    "php.problems.excludeGitIgnore": true,
+    "php.stubs": ["*", "zip", "zlib"],
+    "php.problems.scope": "opened",
+    "php.version": "8.1.8"
 }
