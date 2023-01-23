@@ -6,12 +6,12 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -298,7 +298,11 @@ namespace Microsoft.AspNetCore.Builder
             // }
 
             var wploader = new WpLoader(plugins:
+                // MEF exports
                 CompositionHelpers.GetPlugins(options.CompositionContainers.CreateContainer(), app.ApplicationServices, root)
+                // IWpPluginProvider services
+                .Concat(app.ApplicationServices.GetServices<IWpPluginProvider>().SelectMany(provider => provider.GetPlugins(app.ApplicationServices, root)))
+                // user defined
                 .Concat(plugins.GetPlugins(app.ApplicationServices)));
 
             // url rewriting:
@@ -321,8 +325,7 @@ namespace Microsoft.AspNetCore.Builder
             WpStandard.DB_USER = options.DbUser;
 
             //
-            var env = app.ApplicationServices.GetService<IWebHostEnvironment>();
-            WpStandard.WP_DEBUG = options.Debug || env.IsDevelopment();
+            WpStandard.WP_DEBUG = options.Debug || (app.ApplicationServices.TryGetService<IWebHostEnvironment>(out var env) && env.IsDevelopment());
 
             // handling php files:
             var startup = new Action<Context>(ctx =>
