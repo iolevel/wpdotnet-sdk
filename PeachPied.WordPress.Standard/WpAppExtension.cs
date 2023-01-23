@@ -20,8 +20,9 @@ namespace PeachPied.WordPress.Standard
     /// <summary>Delegate to handle shortcode, used in "add_shortcode" function.</summary>
     /// <param name="attrs">Given dictionary of attributes used in shortcode.</param>
     /// <param name="content">Content of the shortcode if any.</param>
+    /// <param name="shortcode_tag">Shortcode tag itself.</param>
     /// <returns>Text to be inserted instead of the shortcode in post.</returns>
-    public delegate string shortcode_handler(System.Collections.IDictionary attrs, string content);
+    public delegate string shortcode_handler(IDictionary<IntStringKey, PhpValue> attrs, string content, string shortcode_tag);
 
     /// <summary>
     /// Provides extension functions to <see cref="WpApp"/> instances.
