@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PeachPied.WordPress.Standard
 {
@@ -12,6 +14,6 @@ namespace PeachPied.WordPress.Standard
         /// <summary>
         /// Initializes request to WordPress site.
         /// </summary>
-        void Configure(WpApp app);
+        ValueTask ConfigureAsync(WpApp app, CancellationToken token);
     }
 }

@@ -20,7 +20,7 @@
 
   <PropertyGroup Condition=" '$(BuildPluginTaskAssembly)'=='' ">
     <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)netstandard2.0\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
-    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)netcoreapp2.1\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
+    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)net50\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
   </PropertyGroup>
 
   <UsingTask AssemblyFile="$(BuildPluginTaskAssembly)" TaskName="WpPluginTask" />
@@ -85,7 +85,7 @@
 
     <!-- include plugin files as contentFiles -->
     <Content Update="**" CopyToOutputDirectory="PreserveNewest">
-      <PackagePath>contentFiles/any/netcoreapp3.0/wordpress/$(PhpRelativePath)</PackagePath>
+      <PackagePath>contentFiles/any/net5.0/wordpress/$(PhpRelativePath)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
       <Link>wordpress\$(PhpRelativePath)%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>

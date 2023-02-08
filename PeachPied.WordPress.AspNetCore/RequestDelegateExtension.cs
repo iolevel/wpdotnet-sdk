@@ -6,13 +6,14 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Pchp.Core;
 using Peachpie.AspNetCore.Web;
@@ -197,7 +198,8 @@ namespace Microsoft.AspNetCore.Builder
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="path">Physical location of wordpress folder. Can be absolute or relative to the current directory.</param>
-        public static IApplicationBuilder UseWordPress(this IApplicationBuilder app, string path = null)
+        /// <param name="configure">Optional callback invoked every request when rendering WordPress page. Shortcut for implementing a plugin (<see cref="IWpPlugin"/>).</param>
+        public static IApplicationBuilder UseWordPress(this IApplicationBuilder app, string path = null, Action<WpApp> configure = null)
         {
             // load options
             var options = new WordPressConfig()
@@ -205,6 +207,12 @@ namespace Microsoft.AspNetCore.Builder
                 .LoadFromEnvironment(app.ApplicationServices)   // environment variables (known cloud hosts)
                 .LoadFromOptions(app.ApplicationServices)       // IConfigureOptions<WordPressConfig> service
                 .LoadDefaults();    // 
+
+            //
+            if (configure != null)
+            {
+                options.PluginContainer.Add(new WpPluginAsCallback(configure));
+            }
 
             // get WP_HOME and WP_SITE
             string sitepath = null;
@@ -290,7 +298,11 @@ namespace Microsoft.AspNetCore.Builder
             // }
 
             var wploader = new WpLoader(plugins:
+                // MEF exports
                 CompositionHelpers.GetPlugins(options.CompositionContainers.CreateContainer(), app.ApplicationServices, root)
+                // IWpPluginProvider services
+                .Concat(app.ApplicationServices.GetServices<IWpPluginProvider>().SelectMany(provider => provider.GetPlugins(app.ApplicationServices, root)))
+                // user defined
                 .Concat(plugins.GetPlugins(app.ApplicationServices)));
 
             // url rewriting:
@@ -318,8 +330,7 @@ namespace Microsoft.AspNetCore.Builder
             WpStandard.DB_FILE = options.SQLiteFileName;
 
             //
-            var env = app.ApplicationServices.GetService<IHostingEnvironment>();
-            WpStandard.WP_DEBUG = options.Debug || env.IsDevelopment();
+            WpStandard.WP_DEBUG = options.Debug || (app.ApplicationServices.TryGetService<IWebHostEnvironment>(out var env) && env.IsDevelopment());
 
             // handling php files:
             var startup = new Action<Context>(ctx =>
