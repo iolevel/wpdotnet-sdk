@@ -28,6 +28,17 @@ namespace PeachPied.WordPress.AspNetCore
             string viewName,
             Func<IDictionary<IntStringKey, PhpValue>, object?>? viewModelFunc = null)
         {
+            if (viewName == null)
+            {
+                throw new ArgumentNullException(nameof(viewName));
+            }
+
+            // sanitize shortcode id
+            viewName = viewName
+                .Replace('/', '_')
+                ;
+
+            //
             app.AddShortcode(viewName, new shortcode_handler((attrs, _, _) =>
             {
                 //
