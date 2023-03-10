@@ -47,6 +47,7 @@
       <_PropsLine Include="&lt;/Project&gt;" />
     </ItemGroup>
     <WriteLinesToFile File="build\Sdk.Common.props" Overwrite="true" Lines="@(_PropsLine)" />
+    <WriteLinesToFile File="Sdk\Version.props" Overwrite="true" Lines="@(_PropsLine)" />
   </Target>
 
   <!-- generate "Sdk.Common.targets" file with current Sdk version -->
