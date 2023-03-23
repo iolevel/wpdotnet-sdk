@@ -1,0 +1,7 @@
+<!-- This file has been generated. -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Import Project="Sdk.props" Sdk="Peachpie.NET.Sdk" Version="1.1.7" />
+<PropertyGroup>
+<WpDotNetVersion Condition=" '$(WpDotNetVersion)'=='' ">6.1.1-rc-014</WpDotNetVersion>
+</PropertyGroup>
+</Project>
