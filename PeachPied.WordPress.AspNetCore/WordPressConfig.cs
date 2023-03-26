@@ -132,10 +132,16 @@ namespace PeachPied.WordPress.AspNetCore
         /// </summary>
         public bool EnableResponseCaching { get; set; } = true;
 
-        /// <summary>
-        /// Overrides <c>WP_DEBUG</c> constant.
-        /// </summary>
-        public bool Debug { get; set; } = false;
+		/// <summary>
+		/// Enable embedding Wordpress into a razor view - Requires existing Pages/Wordpress.cshtml
+		/// Disabled by default.
+		/// </summary>
+		public bool EnableRazor { get; set; } = false;
+
+		/// <summary>
+		/// Overrides <c>WP_DEBUG</c> constant.
+		/// </summary>
+		public bool Debug { get; set; } = false;
 
         /// <summary>
         /// Enumeration of assembly names with compiled PHP plugins, themes or other additions.
