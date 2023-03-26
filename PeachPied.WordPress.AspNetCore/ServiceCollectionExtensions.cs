@@ -21,6 +21,7 @@ namespace Microsoft.AspNetCore.Builder
                 throw new ArgumentNullException(nameof(services));
             }
 
+            services.AddHttpContextAccessor();
             // 
             services.AddPhp(options =>
             {

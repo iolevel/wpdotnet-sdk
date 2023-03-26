@@ -23,6 +23,13 @@ namespace WordpressRazor
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddRazorPages();
+
+			services.AddWordPress(options =>
+			{
+				options.EnableRazor = true;
+				options.HomeUrl = $"http://localhost:5000/wp";
+				options.SiteUrl = $"http://localhost:5000/wp";
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +54,8 @@ namespace WordpressRazor
 			{
 				endpoints.MapRazorPages();
 			});
+
+			app.UseWordPress();
 		}
 	}
 }
