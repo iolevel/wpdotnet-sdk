@@ -63,10 +63,10 @@ const VARIABLE_PATH_SEPARATOR_TOKEN_STYLE = '--';
 /**
  * Returns a JSON representation of the generated CSS rules.
  *
- * @param  style   Style object.
- * @param  options Options object with settings to adjust how the styles are generated.
- * @param  path    An array of strings representing the path to the style value in the style object.
- * @param  ruleKey A CSS property key.
+ * @param style   Style object.
+ * @param options Options object with settings to adjust how the styles are generated.
+ * @param path    An array of strings representing the path to the style value in the style object.
+ * @param ruleKey A CSS property key.
  *
  * @return GeneratedCSSRule[] CSS rules.
  */
@@ -74,7 +74,7 @@ const VARIABLE_PATH_SEPARATOR_TOKEN_STYLE = '--';
 function generateRule(style, options, path, ruleKey) {
   const styleValue = (0,external_lodash_namespaceObject.get)(style, path);
   return styleValue ? [{
-    selector: options === null || options === void 0 ? void 0 : options.selector,
+    selector: options?.selector,
     key: ruleKey,
     value: getCSSVarFromStyleValue(styleValue)
   }] : [];
@@ -82,17 +82,16 @@ function generateRule(style, options, path, ruleKey) {
 /**
  * Returns a JSON representation of the generated CSS rules taking into account box model properties, top, right, bottom, left.
  *
- * @param  style                Style object.
- * @param  options              Options object with settings to adjust how the styles are generated.
- * @param  path                 An array of strings representing the path to the style value in the style object.
- * @param  ruleKeys             An array of CSS property keys and patterns.
- * @param  individualProperties The "sides" or individual properties for which to generate rules.
+ * @param style                Style object.
+ * @param options              Options object with settings to adjust how the styles are generated.
+ * @param path                 An array of strings representing the path to the style value in the style object.
+ * @param ruleKeys             An array of CSS property keys and patterns.
+ * @param individualProperties The "sides" or individual properties for which to generate rules.
  *
  * @return GeneratedCSSRule[]  CSS rules.
  */
 
-function generateBoxRules(style, options, path, ruleKeys) {
-  let individualProperties = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : ['top', 'right', 'bottom', 'left'];
+function generateBoxRules(style, options, path, ruleKeys, individualProperties = ['top', 'right', 'bottom', 'left']) {
   const boxStyle = (0,external_lodash_namespaceObject.get)(style, path);
 
   if (!boxStyle) {
@@ -103,7 +102,7 @@ function generateBoxRules(style, options, path, ruleKeys) {
 
   if (typeof boxStyle === 'string') {
     rules.push({
-      selector: options === null || options === void 0 ? void 0 : options.selector,
+      selector: options?.selector,
       key: ruleKeys.default,
       value: boxStyle
     });
@@ -113,8 +112,8 @@ function generateBoxRules(style, options, path, ruleKeys) {
 
       if (value) {
         acc.push({
-          selector: options === null || options === void 0 ? void 0 : options.selector,
-          key: ruleKeys === null || ruleKeys === void 0 ? void 0 : ruleKeys.individual.replace('%s', upperFirst(side)),
+          selector: options?.selector,
+          key: ruleKeys?.individual.replace('%s', upperFirst(side)),
           value
         });
       }
@@ -129,7 +128,7 @@ function generateBoxRules(style, options, path, ruleKeys) {
 /**
  * Returns a CSS var value from incoming style value following the pattern `var:description|context|slug`.
  *
- * @param  styleValue A raw style value.
+ * @param styleValue A raw style value.
  *
  * @return string A CSS var value.
  */
@@ -145,14 +144,26 @@ function getCSSVarFromStyleValue(styleValue) {
 /**
  * Capitalizes the first letter in a string.
  *
- * @param {string} str The string whose first letter the function will capitalize.
+ * @param string The string whose first letter the function will capitalize.
  *
- * @return string A CSS var value.
+ * @return String with the first letter capitalized.
  */
 
-function upperFirst(_ref) {
-  let [firstLetter, ...rest] = _ref;
+function upperFirst(string) {
+  const [firstLetter, ...rest] = string;
   return firstLetter.toUpperCase() + rest.join('');
+}
+/**
+ * Converts an array of strings into a camelCase string.
+ *
+ * @param strings The strings to join into a camelCase string.
+ *
+ * @return camelCase string.
+ */
+
+function camelCaseJoin(strings) {
+  const [firstItem, ...rest] = strings;
+  return firstItem.toLowerCase() + rest.map(upperFirst).join('');
 }
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/style-engine/build-module/styles/border/index.js
@@ -160,13 +171,38 @@ function upperFirst(_ref) {
  * Internal dependencies
  */
 
+/**
+ * Creates a function for generating CSS rules when the style path is the same as the camelCase CSS property used in React.
+ *
+ * @param path An array of strings representing the path to the style value in the style object.
+ *
+ * @return A function that generates CSS rules.
+ */
+
+function createBorderGenerateFunction(path) {
+  return (style, options) => generateRule(style, options, path, camelCaseJoin(path));
+}
+/**
+ * Creates a function for generating border-{top,bottom,left,right}-{color,style,width} CSS rules.
+ *
+ * @param edge The edge to create CSS rules for.
+ *
+ * @return A function that generates CSS rules.
+ */
+
+
+function createBorderEdgeGenerateFunction(edge) {
+  return (style, options) => {
+    return ['color', 'style', 'width'].flatMap(key => {
+      const path = ['border', edge, key];
+      return createBorderGenerateFunction(path)(style, options);
+    });
+  };
+}
+
 const color = {
   name: 'color',
-  generate: function (style, options) {
-    let path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ['border', 'color'];
-    let ruleKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'borderColor';
-    return generateRule(style, options, path, ruleKey);
-  }
+  generate: createBorderGenerateFunction(['border', 'color'])
 };
 const radius = {
   name: 'radius',
@@ -179,67 +215,29 @@ const radius = {
 };
 const borderStyle = {
   name: 'style',
-  generate: function (style, options) {
-    let path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ['border', 'style'];
-    let ruleKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'borderStyle';
-    return generateRule(style, options, path, ruleKey);
-  }
+  generate: createBorderGenerateFunction(['border', 'style'])
 };
 const width = {
   name: 'width',
-  generate: function (style, options) {
-    let path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ['border', 'width'];
-    let ruleKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'borderWidth';
-    return generateRule(style, options, path, ruleKey);
-  }
+  generate: createBorderGenerateFunction(['border', 'width'])
 };
-const borderDefinitionsWithIndividualStyles = [color, borderStyle, width];
-/**
- * Returns a curried generator function with the individual border property ('top' | 'right' | 'bottom' | 'left') baked in.
- *
- * @param  individualProperty Individual border property ('top' | 'right' | 'bottom' | 'left').
- *
- * @return StyleDefinition[ 'generate' ]
- */
-
-const createBorderGenerateFunction = individualProperty => (style, options) => {
-  var _style$border;
-
-  const styleValue = style === null || style === void 0 ? void 0 : (_style$border = style.border) === null || _style$border === void 0 ? void 0 : _style$border[individualProperty];
-
-  if (!styleValue) {
-    return [];
-  }
-
-  return borderDefinitionsWithIndividualStyles.reduce((acc, borderDefinition) => {
-    const key = borderDefinition.name;
-
-    if (styleValue.hasOwnProperty(key) && typeof borderDefinition.generate === 'function') {
-      const ruleKey = `border${upperFirst(individualProperty)}${upperFirst(key)}`;
-      acc.push(...borderDefinition.generate(style, options, ['border', individualProperty, key], ruleKey));
-    }
-
-    return acc;
-  }, []);
-};
-
 const borderTop = {
   name: 'borderTop',
-  generate: createBorderGenerateFunction('top')
+  generate: createBorderEdgeGenerateFunction('top')
 };
 const borderRight = {
   name: 'borderRight',
-  generate: createBorderGenerateFunction('right')
+  generate: createBorderEdgeGenerateFunction('right')
 };
 const borderBottom = {
   name: 'borderBottom',
-  generate: createBorderGenerateFunction('bottom')
+  generate: createBorderEdgeGenerateFunction('bottom')
 };
 const borderLeft = {
   name: 'borderLeft',
-  generate: createBorderGenerateFunction('left')
+  generate: createBorderEdgeGenerateFunction('left')
 };
-/* harmony default export */ var border = ([...borderDefinitionsWithIndividualStyles, radius, borderTop, borderRight, borderBottom, borderLeft]);
+/* harmony default export */ var border = ([color, borderStyle, width, radius, borderTop, borderRight, borderBottom, borderLeft]);
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/style-engine/build-module/styles/color/background.js
 /**
@@ -289,6 +287,19 @@ const text_text = {
 
 /* harmony default export */ var styles_color = ([color_text, color_gradient, color_background]);
 
+;// CONCATENATED MODULE: ./node_modules/@wordpress/style-engine/build-module/styles/dimensions/index.js
+/**
+ * Internal dependencies
+ */
+
+const minHeight = {
+  name: 'minHeight',
+  generate: (style, options) => {
+    return generateRule(style, options, ['dimensions', 'minHeight'], 'minHeight');
+  }
+};
+/* harmony default export */ var dimensions = ([minHeight]);
+
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/style-engine/build-module/styles/shadow/index.js
 /**
  * Internal dependencies
@@ -309,33 +320,25 @@ const shadow = {
 
 const outline_color = {
   name: 'color',
-  generate: function (style, options) {
-    let path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ['outline', 'color'];
-    let ruleKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'outlineColor';
+  generate: (style, options, path = ['outline', 'color'], ruleKey = 'outlineColor') => {
     return generateRule(style, options, path, ruleKey);
   }
 };
 const offset = {
   name: 'offset',
-  generate: function (style, options) {
-    let path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ['outline', 'offset'];
-    let ruleKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'outlineOffset';
+  generate: (style, options, path = ['outline', 'offset'], ruleKey = 'outlineOffset') => {
     return generateRule(style, options, path, ruleKey);
   }
 };
 const outlineStyle = {
   name: 'style',
-  generate: function (style, options) {
-    let path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ['outline', 'style'];
-    let ruleKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'outlineStyle';
+  generate: (style, options, path = ['outline', 'style'], ruleKey = 'outlineStyle') => {
     return generateRule(style, options, path, ruleKey);
   }
 };
 const outline_width = {
   name: 'width',
-  generate: function (style, options) {
-    let path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ['outline', 'width'];
-    let ruleKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'outlineWidth';
+  generate: (style, options, path = ['outline', 'width'], ruleKey = 'outlineWidth') => {
     return generateRule(style, options, path, ruleKey);
   }
 };
@@ -417,9 +420,15 @@ const letterSpacing = {
   }
 };
 const lineHeight = {
-  name: 'letterSpacing',
+  name: 'lineHeight',
   generate: (style, options) => {
     return generateRule(style, options, ['typography', 'lineHeight'], 'lineHeight');
+  }
+};
+const textColumns = {
+  name: 'textColumns',
+  generate: (style, options) => {
+    return generateRule(style, options, ['typography', 'textColumns'], 'columnCount');
   }
 };
 const textDecoration = {
@@ -434,7 +443,7 @@ const textTransform = {
     return generateRule(style, options, ['typography', 'textTransform'], 'textTransform');
   }
 };
-/* harmony default export */ var typography = ([fontFamily, fontSize, fontStyle, fontWeight, letterSpacing, lineHeight, textDecoration, textTransform]);
+/* harmony default export */ var typography = ([fontFamily, fontSize, fontStyle, fontWeight, letterSpacing, lineHeight, textColumns, textDecoration, textTransform]);
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/style-engine/build-module/styles/index.js
 /**
@@ -446,7 +455,8 @@ const textTransform = {
 
 
 
-const styleDefinitions = [...border, ...styles_color, ...outline, ...spacing, ...typography, ...styles_shadow];
+
+const styleDefinitions = [...border, ...styles_color, ...dimensions, ...outline, ...spacing, ...typography, ...styles_shadow];
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/style-engine/build-module/index.js
 /**
@@ -463,17 +473,16 @@ const styleDefinitions = [...border, ...styles_color, ...outline, ...spacing, ..
  *
  * @since 6.1.0 Introduced in WordPress core.
  *
- * @param  style   Style object, for example, the value of a block's attributes.style object or the top level styles in theme.json
- * @param  options Options object with settings to adjust how the styles are generated.
+ * @param style   Style object, for example, the value of a block's attributes.style object or the top level styles in theme.json
+ * @param options Options object with settings to adjust how the styles are generated.
  *
  * @return A generated stylesheet or inline style declarations.
  */
 
-function compileCSS(style) {
-  let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+function compileCSS(style, options = {}) {
   const rules = getCSSRules(style, options); // If no selector is provided, treat generated rules as inline styles to be returned as a single string.
 
-  if (!(options !== null && options !== void 0 && options.selector)) {
+  if (!options?.selector) {
     const inlineRules = [];
     rules.forEach(rule => {
       inlineRules.push(`${(0,external_lodash_namespaceObject.kebabCase)(rule.key)}: ${rule.value};`);
@@ -481,7 +490,22 @@ function compileCSS(style) {
     return inlineRules.join(' ');
   }
 
-  const groupedRules = (0,external_lodash_namespaceObject.groupBy)(rules, 'selector');
+  const groupedRules = rules.reduce((acc, rule) => {
+    const {
+      selector
+    } = rule;
+
+    if (!selector) {
+      return acc;
+    }
+
+    if (!acc[selector]) {
+      acc[selector] = [];
+    }
+
+    acc[selector].push(rule);
+    return acc;
+  }, {});
   const selectorRules = Object.keys(groupedRules).reduce((acc, subSelector) => {
     acc.push(`${subSelector} { ${groupedRules[subSelector].map(rule => `${(0,external_lodash_namespaceObject.kebabCase)(rule.key)}: ${rule.value};`).join(' ')} }`);
     return acc;
@@ -493,14 +517,13 @@ function compileCSS(style) {
  *
  * @since 6.1.0 Introduced in WordPress core.
  *
- * @param  style   Style object, for example, the value of a block's attributes.style object or the top level styles in theme.json
- * @param  options Options object with settings to adjust how the styles are generated.
+ * @param style   Style object, for example, the value of a block's attributes.style object or the top level styles in theme.json
+ * @param options Options object with settings to adjust how the styles are generated.
  *
  * @return A collection of objects containing the selector, if any, the CSS property key (camelcase) and parsed CSS value.
  */
 
-function getCSSRules(style) {
-  let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+function getCSSRules(style, options = {}) {
   const rules = [];
   styleDefinitions.forEach(definition => {
     if (typeof definition.generate === 'function') {

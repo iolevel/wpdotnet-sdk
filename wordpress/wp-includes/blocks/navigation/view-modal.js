@@ -30,6 +30,10 @@ function navigationToggleModal(modal) {
   htmlElement.classList.toggle('has-modal-open');
 }
 
+function isLinkToAnchorOnCurrentPage(node) {
+  return node.hash && node.protocol === window.location.protocol && node.host === window.location.host && node.pathname === window.location.pathname && node.search === window.location.search;
+}
+
 window.addEventListener('load', () => {
   micromodal_es.init({
     onShow: navigationToggleModal,
@@ -39,10 +43,8 @@ window.addEventListener('load', () => {
 
   const navigationLinks = document.querySelectorAll('.wp-block-navigation-item__content');
   navigationLinks.forEach(function (link) {
-    var _link$getAttribute, _link$attributes;
-
     // Ignore non-anchor links and anchor links which open on a new tab.
-    if (!((_link$getAttribute = link.getAttribute('href')) !== null && _link$getAttribute !== void 0 && _link$getAttribute.startsWith('#')) || ((_link$attributes = link.attributes) === null || _link$attributes === void 0 ? void 0 : _link$attributes.target) === '_blank') {
+    if (!isLinkToAnchorOnCurrentPage(link) || link.attributes?.target === '_blank') {
       return;
     } // Find the specific parent modal for this link
     // since .close() won't work without an ID if there are
@@ -50,7 +52,7 @@ window.addEventListener('load', () => {
 
 
     const modal = link.closest('.wp-block-navigation__responsive-container');
-    const modalId = modal === null || modal === void 0 ? void 0 : modal.getAttribute('id');
+    const modalId = modal?.getAttribute('id');
     link.addEventListener('click', () => {
       // check if modal exists and is open before trying to close it
       // otherwise Micromodal will toggle the `has-modal-open` class
