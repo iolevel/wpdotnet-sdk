@@ -43,16 +43,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "revokeBlobURL": function() { return /* binding */ revokeBlobURL; }
 /* harmony export */ });
 /**
- * Browser dependencies
- */
-const {
-  createObjectURL,
-  revokeObjectURL
-} = window.URL;
-/**
  * @type {Record<string, File|undefined>}
  */
-
 const cache = {};
 /**
  * Create a blob URL from a file.
@@ -63,7 +55,7 @@ const cache = {};
  */
 
 function createBlobURL(file) {
-  const url = createObjectURL(file);
+  const url = window.URL.createObjectURL(file);
   cache[url] = file;
   return url;
 }
@@ -91,9 +83,7 @@ function getBlobByURL(url) {
  */
 
 function getBlobTypeByURL(url) {
-  var _getBlobByURL;
-
-  return (_getBlobByURL = getBlobByURL(url)) === null || _getBlobByURL === void 0 ? void 0 : _getBlobByURL.type.split('/')[0]; // 0: media type , 1: file extension eg ( type: 'image/jpeg' ).
+  return getBlobByURL(url)?.type.split('/')[0]; // 0: media type , 1: file extension eg ( type: 'image/jpeg' ).
 }
 /**
  * Remove the resource and file cache from memory.
@@ -103,7 +93,7 @@ function getBlobTypeByURL(url) {
 
 function revokeBlobURL(url) {
   if (cache[url]) {
-    revokeObjectURL(url);
+    window.URL.revokeObjectURL(url);
   }
 
   delete cache[url];
