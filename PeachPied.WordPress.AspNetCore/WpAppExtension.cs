@@ -23,7 +23,7 @@ namespace PeachPied.WordPress.AspNetCore
         /// </summary>
         /// <param name="app">WordPress request instance.</param>
         /// <param name="viewName">Name of the shared partial view. Also name of the registered shortcode.</param>
-        /// <param name="shortCodeName">
+        /// <param name="shortCodeName">Name for the short code.</param>
         /// <param name="viewModelFact">Optional function that provides model for the view. The input parameter is a dictionary of shortcode arguments provided by WordPress.</param>
         public static void RegisterPartialViewAsShortcode(
             this WpApp app,
