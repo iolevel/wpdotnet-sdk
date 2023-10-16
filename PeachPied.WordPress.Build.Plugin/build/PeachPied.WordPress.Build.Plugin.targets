@@ -20,7 +20,7 @@
 
   <PropertyGroup Condition=" '$(BuildPluginTaskAssembly)'=='' ">
     <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)netstandard2.0\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
-    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)net50\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
+    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)net5.0\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
   </PropertyGroup>
 
   <UsingTask AssemblyFile="$(BuildPluginTaskAssembly)" TaskName="WpPluginTask" />
