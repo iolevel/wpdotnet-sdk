@@ -133,6 +133,11 @@ namespace PeachPied.WordPress.AspNetCore
         public bool EnableResponseCaching { get; set; } = true;
 
         /// <summary>
+        /// Enable embedding Wordpress into a razor view - Requires existing Pages/Wordpress.cshtml
+        /// Disabled by default.
+        /// </summary>
+        public bool EnableRazor { get; set; } = false;
+        /// <summary>
         /// Overrides <c>WP_DEBUG</c> constant.
         /// </summary>
         public bool Debug { get; set; } = false;

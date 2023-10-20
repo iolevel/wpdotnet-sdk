@@ -1,0 +1,6 @@
+﻿@page "/wordpressInternal"
+@using System.IO
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@Html.Raw(HttpContextAccessor.HttpContext.Items["WordpressContent"])

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29920.165
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6E1CEF7D-93BD-45D8-92AE-CDA550BAB928}"
 	ProjectSection(SolutionItems) = preProject
@@ -39,6 +39,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeachPied.WordPress.HotPlug", "plugins\PeachPied.WordPress.HotPlug\PeachPied.WordPress.HotPlug.csproj", "{36FC3271-CCD6-4B00-A2DD-9130775E5E5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeachPied.WordPress.DotNet", "plugins\PeachPied.WordPress.DotNet\PeachPied.WordPress.DotNet.csproj", "{2A32BBFC-BC21-4F13-9578-B5C01AF2851F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordpressRazor", "WordpressRazor\WordpressRazor.csproj", "{F98649E5-1DCF-4642-B66F-A740CEE66B95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +88,10 @@ Global
 		{2A32BBFC-BC21-4F13-9578-B5C01AF2851F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A32BBFC-BC21-4F13-9578-B5C01AF2851F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A32BBFC-BC21-4F13-9578-B5C01AF2851F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F98649E5-1DCF-4642-B66F-A740CEE66B95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F98649E5-1DCF-4642-B66F-A740CEE66B95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F98649E5-1DCF-4642-B66F-A740CEE66B95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F98649E5-1DCF-4642-B66F-A740CEE66B95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
