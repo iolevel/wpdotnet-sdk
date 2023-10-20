@@ -56,5 +56,6 @@
     <!--PackageReference Include="Peachpie.RequestHandler" Version="$(PeachpieVersion)" /-->
     <ProjectReference Include="..\PeachPied.WordPress.Standard\PeachPied.WordPress.Standard.csproj" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Peachpie.Library.PDO.Sqlite" Version="$(PeachpieVersion)" />
   </ItemGroup>
 </Project>
