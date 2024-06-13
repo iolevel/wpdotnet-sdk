@@ -23,6 +23,15 @@ namespace PeachPied.WordPress.Standard
         /// <summary>MySQL hostname</summary>
         public static string DB_HOST { get; set; } = "localhost";
 
+        /// <summary>Use MySQL, disabled use SQLite</summary>
+        public static bool USE_MYSQL { get; set; } = true;
+
+        /// <summary>SQLite Database Folder</summary>
+        public static string DB_DIR { get; set; } = "./Database/";
+
+        /// <summary>SQLite Database Filename</summary>
+        public static string DB_FILE { get; set; } = "database.sqlite";
+
         /// <summary>Database Charset to use in creating database tables</summary>
         public const string DB_CHARSET = "utf8";
 
