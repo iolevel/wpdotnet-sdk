@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
@@ -20,6 +25,8 @@ namespace PeachPied.WordPress.AspNetCore.Internal
         readonly WpResponseCachePolicy _policy;
         readonly ILogger _logger;
         readonly IMemoryCache _cache;
+        readonly IHttpContextAccessor _contextAccessor;
+        readonly bool _enableRazor;
 
         class CacheKey : IEquatable<CacheKey>
         {
@@ -102,8 +109,8 @@ namespace PeachPied.WordPress.AspNetCore.Internal
 
             byte[] bytes;
 
-            // gzip response
-            if (ShouldCompressResponse(context))
+            // gzip response, dont use on _enableRazor
+            if (ShouldCompressResponse(context) && !_enableRazor)
             {
                 context.Response.Headers.Append(HeaderNames.ContentEncoding, "gzip");
                 context.Response.Headers.Remove(HeaderNames.ContentMD5); // Reset the MD5 because the content changed.
@@ -126,8 +133,24 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             var cached = IsResponseCacheable(context) ? new CachedPage(context, bytes) : null;
 
             //
-            await responseStream.WriteAsync(bytes, 0, bytes.Length);
+            if (!_enableRazor)
+            {
+                await responseStream.WriteAsync(bytes, 0, bytes.Length);
+            }
+
             return cached;
+        }
+
+        public bool ShouldUseRazor()
+        {
+            if (_enableRazor &&
+                !_contextAccessor.HttpContext.Request.Path.ToString().Contains("wp-content/") &&
+                !_contextAccessor.HttpContext.Request.Path.ToString().Contains("wp-includes/") &&
+                !_contextAccessor.HttpContext.Request.Path.ToString().Contains("wp-admin/"))
+            {
+                return true;
+            }
+            return false;
         }
 
         static bool ShouldCompressResponse(HttpContext context)
@@ -176,8 +199,10 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             await context.Response.Body.WriteAsync(page.Content, 0, page.Content.Length);
         }
 
-        public WpResponseCacheMiddleware(RequestDelegate next, IMemoryCache cache, WpResponseCachePolicy policy, ILoggerFactory loggerFactory)
+        public WpResponseCacheMiddleware(RequestDelegate next, IMemoryCache cache, bool enableRazor, IHttpContextAccessor contextAccessor, WpResponseCachePolicy policy, ILoggerFactory loggerFactory)
         {
+            _contextAccessor = contextAccessor;
+            _enableRazor = enableRazor;
             _next = next;
             _cache = cache;
             _policy = policy;
@@ -291,6 +316,20 @@ namespace PeachPied.WordPress.AspNetCore.Internal
             return true;
         }
 
+        private async Task GetViewResultTask(string viewName, string page)
+        {
+            var viewResult = new ViewResult()
+            {
+                ViewName = viewName
+            };
+
+            var executor = _contextAccessor.HttpContext.RequestServices.GetRequiredService<IActionResultExecutor<ViewResult>>();
+            var routeData = _contextAccessor.HttpContext.GetRouteData() ?? new Microsoft.AspNetCore.Routing.RouteData();
+            _contextAccessor.HttpContext.Items.Add("WordpressContent", page);
+            var actionContext = new ActionContext(_contextAccessor.HttpContext, new RouteData(), new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+            await executor.ExecuteAsync(actionContext, viewResult);
+        }
+
         public async Task Invoke(HttpContext context)
         {
             if (AllowCacheLookup(context))
@@ -300,7 +339,15 @@ namespace PeachPied.WordPress.AspNetCore.Internal
                 if (_cache.TryGetValue(key, out CachedPage page) && _policy.LastPostUpdate < page.TimeStamp)
                 {
                     _logger.LogInformation("Response served from cache.");
-                    await WriteResponse(context, page);
+                    if (ShouldUseRazor())
+                    {
+                        await GetViewResultTask("~/Pages/Wordpress.cshtml", Encoding.UTF8.GetString(page.Content));
+                    }
+                    else
+                    {
+                        await WriteResponse(context, page);
+                    }
+
                     return;
                 }
 
@@ -320,8 +367,26 @@ namespace PeachPied.WordPress.AspNetCore.Internal
 
                         //     _cache.Set(key, page, serverCacheDuration.Value, tags);
                         // }
+                        if (_enableRazor)
+                        {
+                            if (!context.Request.Path.ToString().Contains("wp-content/") && !context.Request.Path.ToString().Contains("wp-includes/") && !context.Request.Path.ToString().Contains("wp-admin/"))
+                            {
+                                await GetViewResultTask("~/Pages/Wordpress.cshtml", Encoding.UTF8.GetString(page.Content));
+
+                            }
+                        }
                     }
 
+                    return;
+                }
+            }
+
+            if (ShouldUseRazor())
+            {
+                var page = await CaptureResponse(_contextAccessor.HttpContext);
+                if (page != null)
+                {
+                    await GetViewResultTask("~/Pages/Wordpress.cshtml", Encoding.UTF8.GetString(page.Content));
                     return;
                 }
             }

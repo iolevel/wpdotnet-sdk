@@ -289,7 +289,7 @@ namespace Microsoft.AspNetCore.Builder
                 plugins.Add(cachepolicy);
 
                 // app.UseMiddleware<ResponseCachingMiddleware>(cachepolicy, cachekey);
-                app.UseMiddleware<WpResponseCacheMiddleware>(new MemoryCache(new MemoryCacheOptions { }), cachepolicy);
+                app.UseMiddleware<WpResponseCacheMiddleware>(new MemoryCache(new MemoryCacheOptions { }), cachepolicy, options.EnableRazor);
             }
 
             // if (options.LegacyPluginAssemblies != null)
