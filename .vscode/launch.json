@@ -2,6 +2,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch built-in server",
+            "type": "php",
+            "request": "launch",
+            "runtimeArgs": [
+                "-S",
+                "localhost:5004",
+                "-t",
+                "wordpress"
+            ],
+            "port": 9003,
+            "serverReadyAction": {
+                "action": "openExternally"
+            }
+        },
+        {
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
@@ -14,12 +29,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart",
-            "justMyCode": false,
-            "symbolOptions": {
-                // "searchPaths": ["C:\\Users\\jmise\\Projects\\peachpie\\src\\Peachpie.Library\\bin\\Debug\\net5.0"],
-                "searchMicrosoftSymbolServer": false
-            }
+            "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "name": ".NET Core Attach",
