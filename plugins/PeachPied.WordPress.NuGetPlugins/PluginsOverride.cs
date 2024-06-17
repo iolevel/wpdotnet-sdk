@@ -463,10 +463,10 @@ namespace Peachpied.WordPress.NuGetPlugins
 
         void SwitchTheme(string new_name, WP_Theme new_theme, WP_Theme old_theme = null)
         {
-            Trace.WriteLine($"Switching theme from {old_theme.get_stylesheet()} to {new_theme.get_stylesheet()} ...");
+            Trace.WriteLine($"Switching theme from {old_theme.stylesheet} to {new_theme.stylesheet} ...");
 
-            _packages.DeactivatePackage(old_theme.get_stylesheet().ToString());
-            _packages.ActivatePackage(new_theme.get_stylesheet().ToString());
+            _packages.DeactivatePackage(old_theme.stylesheet.ToString());
+            _packages.ActivatePackage(new_theme.stylesheet.ToString());
         }
 
         ValueTask IWpPlugin.ConfigureAsync(WpApp app, CancellationToken token)
