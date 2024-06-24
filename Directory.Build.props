@@ -10,7 +10,7 @@
     <!-- common version -->
     <VersionFileContent>$([System.IO.File]::ReadAllText($(MSBuildThisFileDirectory)wordpress/wp-includes/version.php) )</VersionFileContent>
     <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">$([System.Text.RegularExpressions.Regex]::Match($(VersionFileContent), "\$wp_version\s*=\s*'([0-9\.]+)';").Groups.get_Item(1) )</VersionPrefix>
-    <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">rc-017</VersionSuffix>
+    <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">rc-018</VersionSuffix>
     <!--PeachpieVersion> specified in global.json </PeachpieVersion-->
 
     <!-- metadata generation -->
