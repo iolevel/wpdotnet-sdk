@@ -39,7 +39,7 @@
       <_VLine Include="&lt;!-- This file has been generated. --&gt;" />
       <_VLine Include="&lt;Project xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;" />
       <!-- <Import Project="Version.props" Sdk="Peachpie.NET.Sdk" Version="1.0.0" /> -->
-      <_VLine Include="  &lt;Import Project=&quot;Version.props&quot; Sdk=&quot;Peachpie.NET.Sdk&quot; Version=&quot;$(PeachpieVersion)&quot; /&gt;" />
+      <_VLine Include="  &lt;Import Project=&quot;Version.props&quot; Sdk=&quot;Peachpie.NET.Sdk&quot; Version=&quot;$(PeachpieVersion)&quot; Condition=&quot; '%24(PeachpieVersion)'=='' &quot; /&gt;" />
       <_VLine Include="  &lt;PropertyGroup&gt;" />
       <!-- <WpDotNetVersion Condition=" '$(WpDotNetVersion)'=='' ">1.0.0</WpDotNetVersion> -->
       <_VLine Include="    &lt;WpDotNetVersion Condition=&quot; '%24(WpDotNetVersion)'=='' &quot;&gt;$(PackageVersion)&lt;/WpDotNetVersion&gt;" />
@@ -69,7 +69,7 @@
       <_TargetsLine Include="&lt;!-- This file has been generated. --&gt;" />
       <_TargetsLine Include="&lt;Project xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;" />
       <!-- <Import Project="Sdk.targets" Sdk="Peachpie.NET.Sdk" Version="1.0.0" /> -->
-      <_TargetsLine Include="  &lt;Import Project=&quot;Sdk.targets&quot; Sdk=&quot;Peachpie.NET.Sdk&quot; Version=&quot;$(PeachpieVersion)&quot; /&gt;" />
+      <_TargetsLine Include="  &lt;Import Project=&quot;Sdk.targets&quot; Sdk=&quot;Peachpie.NET.Sdk&quot; Version=&quot;%24(PeachpieVersion)&quot; /&gt;" />
       <_TargetsLine Include="&lt;/Project&gt;" />
     </ItemGroup>
     <WriteLinesToFile File="build/Sdk.Common.targets" Overwrite="true" Lines="@(_TargetsLine)" />
