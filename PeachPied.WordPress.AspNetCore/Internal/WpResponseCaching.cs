@@ -299,7 +299,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
 
                 if (_cache.TryGetValue(key, out CachedPage page) && _policy.LastPostUpdate < page.TimeStamp)
                 {
-                    _logger.LogInformation("Response served from cache.");
+                    _logger.LogTrace("Response served from cache.");
                     await WriteResponse(context, page);
                     return;
                 }
@@ -310,7 +310,7 @@ namespace PeachPied.WordPress.AspNetCore.Internal
 
                     if (page != null) // response is cacheable
                     {
-                        _logger.LogInformation("Response cached.");
+                        _logger.LogTrace("Response cached.");
                         _cache.Set(key, page, TimeSpan.FromMinutes(60.0));
                         // var serverCacheDuration = GetCacheDuration(context, Constants.ServerDuration);
 
