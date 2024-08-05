@@ -41,7 +41,7 @@
       wp-content/mu-plugins/**/*.php;
       ##wp-content/plugins/**/*.php;
       wp-content/plugins/akismet/**;
-      wp-content/plugins/*.php;
+      wp-content/plugins/hello.php;
       ##wp-content/themes/**/*.php;
       *.php;
       *.msbuildproj;*.msbuildproj.user;
