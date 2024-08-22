@@ -5,7 +5,10 @@
         "/app": true,
     },
     "php.problems.excludeGitIgnore": true,
-    "php.stubs": ["*", "zip", "zlib"],
+    "php.stubs": [
+        "memcached",
+        "*"
+    ],
     "php.problems.scope": "opened",
     "php.version": "8.1.8",
     "dotnet.defaultSolution": "wpdotnet-sdk.sln"
