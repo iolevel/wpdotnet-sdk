@@ -1,7 +1,7 @@
 <!-- This file has been generated. -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<Import Project="Version.props" Sdk="Peachpie.NET.Sdk" Version="1.2.0-r18129" Condition=" '$(PeachpieVersion)'=='' " />
+<Import Project="Version.props" Sdk="Peachpie.NET.Sdk" Version="1.1.10" Condition=" '$(PeachpieVersion)'=='' " />
 <PropertyGroup>
-<WpDotNetVersion Condition=" '$(WpDotNetVersion)'=='' ">6.5.4-rc-019</WpDotNetVersion>
+<WpDotNetVersion Condition=" '$(WpDotNetVersion)'=='' ">6.5.4-rc-020</WpDotNetVersion>
 </PropertyGroup>
 </Project>
