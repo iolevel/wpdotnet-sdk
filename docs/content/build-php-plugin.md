@@ -6,7 +6,7 @@ By default, plugins are compiled automatically just by copying them into the Wor
 - you need to have source code of the plugin on the server (security).
 - eventual code errors are revealed upon starting the application (reliability).
 
-In order to avoid those issues, plugins can be pre-compiled during the deployment process. A single WordPress plugin or the `plugins` directory is then defined as a PHP class library project (below) which is then referenced by the application (see [overview](overview)). Application can have references to one or more plugin projects.
+In order to avoid those issues, plugins can be pre-compiled during the deployment process. A single WordPress plugin or the `plugins` directory is then defined as a PHP class library project (below) which is then referenced by the application (see [overview](index.md)). Application can have references to one or more plugin projects.
 
 **Sample project**: https://github.com/iolevel/peachpie-wordpress/tree/master/MyContent
 
@@ -76,7 +76,7 @@ The process will build the plugin project. Eventual warnings will be outputed. A
 
 ### Add plugin to the application
 
-Assuming you have ASP.NET Core Application (called *app*) with WordPress (see [quick start](../overview/#quick-start)). Adding plugins to the application is equivalent to adding project references or package references.
+Assuming you have ASP.NET Core Application (called *app*) with WordPress (see [quick start](index.md#quick-start)). Adding plugins to the application is equivalent to adding project references or package references.
 
 Either add project reference to the plugin in Visual Studio IDE, or on command line, or edit the application's project file:
 

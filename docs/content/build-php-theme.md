@@ -1,6 +1,6 @@
 # Build a PHP theme
 
-Please see [Build a Plugin](build-php-plugin) for more details.
+Please see [Build a Plugin](build-php-plugin.md) for more details.
 
 Single theme for WordPress or the whole `themes` directory is defined as a PHP class library project (below) which is then referenced by the application. Application can have references to one or more themes.
 
@@ -52,7 +52,7 @@ The process will build the theme project. Eventual warnings will be outputed. An
 
 ### Add theme to the application
 
-Assuming you have ASP.NET Core Application (called *app*) with WordPress (see [quick start](../overview/#quick-start)). Adding themes to the application is equivalent to adding project references or package references.
+Assuming you have ASP.NET Core Application (called *app*) with WordPress (see [quick start](index.md#quick-start)). Adding themes to the application is equivalent to adding project references or package references.
 
 Either add project reference to the theme in Visual Studio IDE, or on command line, or edit the application's project file:
 

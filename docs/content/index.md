@@ -1,3 +1,10 @@
+---
+title: Overview
+social:
+  cards_layout_options:
+    title: Documentation that simply works
+---
+
 # Overview
 
 [WpDotNet](https://wpdotnet.peachpie.io/) is the unmodified WordPress, running compiled purely on .NET, provided as a NuGet package & ready to be used as a part of an ASP NET Core application. WpDotNet comes with additional components and features, making it easy to be used from C# and a .NET development environment in general.
@@ -6,7 +13,7 @@ The project does not require PHP to be installed, and is purely built on top of 
 
 ## Requirements
 
-- .NET CoreSDK 3.0, .NET SDK 5.0, or newer. ([dotnet.microsoft.com](https://dotnet.microsoft.com/download) or [visualstudio.microsoft.com](https://visualstudio.microsoft.com/vs/))
+- .NET SDK 6.0, or newer. ([dotnet.microsoft.com](https://dotnet.microsoft.com/download) or [visualstudio.microsoft.com](https://visualstudio.microsoft.com/vs/))
 - MySQL Server ([dev.mysql.com](https://dev.mysql.com/downloads/mysql/) or [docker](https://hub.docker.com/_/mysql))
 
 Make sure you have valid credentials to your MySQL server and you have created a database in it. The following quick start expects a database named `"wordpress"`. Database charset `"UTF-8"` is recommended.
@@ -20,7 +27,7 @@ Open or create an ASP NET Core application, version 3.0 or newer.
 Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/) (note it is a **pre-release** package):
 
 ```shell
-dotnet add package PeachPied.WordPress.AspNetCore --version 6.3.1-rc-016
+dotnet add package PeachPied.WordPress.AspNetCore --version 6.5.4-rc-020
 ```
 
 Add the WordPress middleware within your request pipeline, in the `Configure` startup method:
@@ -54,7 +61,7 @@ public partial class Startup
 }
 ```
 
-> Note: the recommended approach is to place the configuration within the `appsettings.json` configuration file. See [configuration](../configuration) for more details.
+> Note: the recommended approach is to place the configuration within the `appsettings.json` configuration file. See [configuration](configuration.md) for more details.
 
 ## Dashboard
 

@@ -40,5 +40,5 @@ Using **Visual Studio**, right click on your project and click command `Manage N
 
  Package is created from regular PHP WordPress plugin or theme. Refer to following instructions on how to create a .NET project and eventually a NuGet package from sources:
 
-- [Build a plugin](../build-php-plugin/)
-- [Build a theme](../build-php-theme/)
+- [Build a plugin](build-php-plugin.md)
+- [Build a theme](build-php-theme.md)
