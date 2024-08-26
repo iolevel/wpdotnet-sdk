@@ -21,6 +21,12 @@
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
+        },
+        {
+            "name": "mkdocs serve",
+            "request": "launch",
+            "type": "node-terminal",
+            "command": "mkdocs serve"
         }
     ]
 }
