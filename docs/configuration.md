@@ -151,17 +151,3 @@ public partial class Startup
     }
 }
 ```
-
-## Extra Settings
-
-**WPDOTNET_HOTPLUG_ENABLE** is an option which enables or disables the compilation on the fly (hotplug). This effectively disallows downloading plugins from the dashboard, improves memory efficiency, improve startup time. Enabled by default.
-
-```json
-{
-    "WordPress": {
-        "Constants": {
-            "WPDOTNET_HOTPLUG_ENABLE": 0,
-        }
-    }
-}
-```
