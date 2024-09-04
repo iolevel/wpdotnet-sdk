@@ -3,7 +3,7 @@ site_name: WpDotNet - WordPress on .NET
 site_url: https://www.wpdotnet.com/
 site_author: PeachPie Team
 site_description: >-
-  This site provides WpDotNet project documentation and useful tips.
+  This site provides WpDotNet project documentation.
 
 # Repository
 repo_name: iolevel/wpdotnet
@@ -17,8 +17,8 @@ theme:
   name: material
   features:
     - announce.dismiss
-    #- content.action.edit
-    #- content.action.view
+    - content.action.edit
+    - content.action.view
     - content.code.annotate
     - content.code.copy
     - content.code.select
@@ -93,9 +93,9 @@ extra:
   generator: false
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/peachpiecompiler
+      link: https://github.com/iolevel/wpdotnet-sdk
     - icon: fontawesome/brands/x-twitter
-      link: https://x.com/pchpcompiler    
+      link: https://x.com/pchpcompiler
     - icon: fontawesome/brands/facebook
       link: https://facebook.com/pchpcompiler    
     - icon: fontawesome/brands/youtube
