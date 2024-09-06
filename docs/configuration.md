@@ -42,6 +42,8 @@ The configuration is placed in the section `"WordPress": { ... }`. This allows t
 | *HomeUrl* | Optional value which represents the public URL of the WordPress blog. It should include the http(s):// part, without the trailing slash `"/"` at the end. Adding this can reduce the number of database calls when loading the site. |
 | *Constants* | Object with name-values allowing to define additional runtime constants. |
 | *LegacyPluginAssemblies* | an array of assembly name values; each assembly represents a compiled PHP plugin, theme, or `wp-content` in general. This option will become deprecated as it won't be needed anymore, but for now it is needed to be specified. |
+| *Multisite* | Multisite configuration. See below. |
+| *EnableResponseCaching* | Whether to use built-in in-memory response caching. Enable by default. |
 
 > Note, since the setting files are hierarchical, the best practice is to set the common options in *appsettings.json*, and an environment-specific options in *appsettings.`{Environment}`.json*. This allows to maintain multiple environments, i.e. a different database connection for different host providers, staging, and development environments, at once.
 
