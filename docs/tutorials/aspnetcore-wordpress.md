@@ -41,7 +41,7 @@ The following tutorial is shown in Visual Studio 2019.
 
     ```
 
-    The optional `services.AddWordPress( ... )` can be used to alter the WordPress configuration, such as the Site URL, database connection credentials and others, as described in [configuration](configuration.md).
+    The optional `services.AddWordPress( ... )` can be used to alter the WordPress configuration, such as the Site URL, database connection credentials and others, as described in [configuration](../configuration.md).
 
 5. Prepare the MySQL server. Make sure you have MySQL server running:
 

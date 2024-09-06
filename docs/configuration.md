@@ -1,9 +1,9 @@
 # Configuration
 
-The WpDotNet application configuration is performed using 
+WpDotNet configuration respects the ASP.NET Core fundamentals:
 
 - ASP.NET Core configuration providers and settings files, such as `appsettings.json`
-- Registering options in the `ConfigureServices` startup method.
+- Specifying options programically in your startup method.
 
 Read more about the [configuration on docs.microsoft.com](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/).
 
@@ -31,21 +31,23 @@ The `{Environment}` value is controlled using the process's environment variable
 
 The configuration is placed in the section `"WordPress": { ... }`. This allows to set the following options:
 
-- *DbHost*: MySql database server address, including an optional port number. Default is `"localhost:3306"`.
-- *DbUser*: database user name to connect with.
-- *DbPassword*: database password.
-- *DbName*: database name. It is expected that the database had already been created, using charset `utf8`.
-- *DbTablePrefix*: optional prefix to database tables.
-- *SiteUrl*: Optional URL where WordPress core files reside. It should include the http(s):// part, without the trailing slash `"/"` at the end.
-- *HomeUrl*: Optional value which represents the public URL of the WordPress blog. It should include the http(s):// part, without the trailing slash `"/"` at the end. Adding this can reduce the number of database calls when loading the site.
-- *Constants*: Object with name-values allowing to define additional runtime constants.
-- *LegacyPluginAssemblies*: an array of assembly name values; each assembly represents a compiled PHP plugin, theme, or `wp-content` in general. This option will become deprecated as it won't be needed anymore, but for now it is needed to be specified.
+| Option Name | Derscription |
+| ---         | ---          |
+| *DbHost* | MySql database server address, including an optional port number. Default is `"localhost:3306"`. |
+| *DbUser* | database user name to connect with. |
+| *DbPassword* | database password. |
+| *DbName* | database name. It is expected that the database had already been created, using charset `utf8`. |
+| *DbTablePrefix* | optional prefix to database tables. |
+| *SiteUrl* | Optional URL where WordPress core files reside. It should include the http(s):// part, without the trailing slash `"/"` at the end. |
+| *HomeUrl* | Optional value which represents the public URL of the WordPress blog. It should include the http(s):// part, without the trailing slash `"/"` at the end. Adding this can reduce the number of database calls when loading the site. |
+| *Constants* | Object with name-values allowing to define additional runtime constants. |
+| *LegacyPluginAssemblies* | an array of assembly name values; each assembly represents a compiled PHP plugin, theme, or `wp-content` in general. This option will become deprecated as it won't be needed anymore, but for now it is needed to be specified. |
 
 > Note, since the setting files are hierarchical, the best practice is to set the common options in *appsettings.json*, and an environment-specific options in *appsettings.`{Environment}`.json*. This allows to maintain multiple environments, i.e. a different database connection for different host providers, staging, and development environments, at once.
 
-## ConfigureServices
+## Programically
 
-Register options in the `ConfigureServices` startup method to programically control the application settings.
+Specifying options in your startup method to programically control the application settings.
 
 **Sample ConfigureServices method**
 

@@ -43,7 +43,7 @@ builder.Services.AddWordPress(options =>
 });
 ```
 
-> Note: the recommended approach is to place the configuration within the `appsettings.json` configuration file. See [configuration](configuration) for more details.
+> Note: the recommended approach is to place the configuration within the `appsettings.json` configuration file. See [configuration](configuration.md) for more details.
 
 Add the WordPress middleware within your request pipeline:
 
