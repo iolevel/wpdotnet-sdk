@@ -65,7 +65,15 @@ Besides regular WordPress dashboard pages, WpDotNet adds an informational panel 
 
 The panel provides information about the current .NET runtime version, consumed memory, or total CPU time spent in the whole application. Note that the values are reset if the process is restarted.
 
-## Remarks
+## Differences
+
+The main differences between regular WordPress running on PHP and WpDotNet running on .NET are:
+
+- The .NET application and all its [plugins/themes](plugins-php.md) need to be compiled before running. Plugins and themes cannot be added after building the project.
+- The WordPress configuration is not set in `wp-config.php` file anymore. WpDotNet uses ASP.NET Core configuration providers like `appsettings.json`. See [configuration](configuration.md).
+- There is literally no `php` intepreter; all the PHP standard functions and extensions are re-implemented in .NET and their behavior may differ, i.e. break some functionality. In such case please let us know.
+
+## Notes
 
 - Permalinks are implicitly enabled through the URL rewriting feature.
 - WordPress debugging is implicitly enabled when running in a *Development* environment (debugging in your IDE).
@@ -73,8 +81,12 @@ The panel provides information about the current .NET runtime version, consumed 
 - Response caching and response compression are enabled by default when user is not logged in.
 - Most of the original `.php` files are not present on the file system and cannot be edited.
 
-## Related links
+## Next Steps
 
-- https://www.wpdotnet.com/
-- https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/   
+- [Tutorial: Build ASP.NET Core app with WordPress](tutorials/aspnetcore-wordpress.md): Step-by-step creating WordPress app in Visual Studio.
+- [Add WordPress Plugins/Themes](plugins-php.md): Extend WpDotNet with WordPress/PHP plugins and themes from `.php` sources.
+- [Public NuGet Release](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/): Free WpDotNet release versions.
+
+---
+
 [![NuGet](https://img.shields.io/nuget/v/PeachPied.WordPress.AspNetCore.svg)](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/)
