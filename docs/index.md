@@ -7,59 +7,68 @@ social:
 
 # Overview
 
+<div align="center">
+  <img src="img/logo.png" width="150">
+</div>
+
 [WpDotNet](https://www.wpdotnet.com/) is the unmodified WordPress, running compiled purely on .NET, provided as a NuGet package & ready to be used as a part of an ASP NET Core application. WpDotNet comes with additional components and features, making it easy to be used from C# and a .NET development environment in general.
 
 The project does not require PHP to be installed, and is purely built on top of the .NET platform.
 
-## Prerequisites
+## Features and Use Cases
+<div class="grid cards" markdown>
 
-- .NET SDK 6.0, or newer. ([dotnet.microsoft.com](https://dotnet.microsoft.com/download))
-- MySQL Server ([dev.mysql.com](https://dev.mysql.com/downloads/mysql/) or [docker](https://hub.docker.com/_/mysql))
+-   :material-clock-fast:{ .lg .middle } __Improved Performance__
 
-Make sure you have valid credentials to your MySQL server and you have created a database in it. The following quick start expects a database named `"wordpress"`. Database charset `"UTF-8"` is recommended.
+    ---
 
-## Quick Start
+    Compiled code is fast and also optimized by the .NET 'JITter' for your actual system. Additionally, the .NET performance profiler may be used to resolve bottlenecks.
 
-Open or create an ASP NET Core application, version 6.0 or newer.
+-   :material-vector-combine:{ .lg .middle } __Integrated with .NET__
 
-```shell
-dotnet new web
-```
+    ---
 
-Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/) (note it is a **pre-release** package):
+     Integrate WordPress into a C# app, and drive its life cycle within the Kestrel Web Server.
 
-```shell
-dotnet add package PeachPied.WordPress.AspNetCore --version 6.5.4-rc-020
-```
+-   :material-google-circles-extended:{ .lg .middle } __Extensible by C#__
 
-Add the WordPress services and set up your database connection (here or in `appsettings.json`):
+    ---
 
-```C#
-builder.Services.AddWordPress(options =>
-{
-    options.DbHost = "localhost";
-    options.DbName = "wordpress";
-    // ...
-});
-```
+    Implement plugins in a separate C# project or have your WP plugins use .NET libraries with type safe and compiled code, optimized and checked for each platform.
 
-> Note: the recommended approach is to place the configuration within the `appsettings.json` configuration file. See [configuration](configuration.md) for more details.
+-   :material-code-block-braces:{ .lg .middle } __Distributed Without Sources__
 
-Add the WordPress middleware within your request pipeline:
+    ---
 
-```C#
-// ...
-app.UseWordPress();
-// ...
-```
+    After the compilation, most of the source files are not needed. Some files contain meta-data (like plugins and themes) and should be kept in the output.
 
-## Sample App
+</div>
 
-The sources of a demo WordPress application are available at [github.com/iolevel/peachpie-wordpress](https://github.com/iolevel/peachpie-wordpress).
+## Patreon
+The WpDotNet project is free and open source, and you can always build it from its sources (check out [how to get started](getting-started.md)). However, you can unlock a ton of additional value by becoming [a patron on Patreon](https://www.patreon.com/pchpcompiler). We have two tiers that give you a number of benefits on top of what the open source community gets:
+
+=== "Poweruser"
+
+    * Dedicated, private Discord channel
+    * Blogs & Video Tutorials
+    * Issue resolution
+    * Nightly builds
+    * Release builds
+    * Access to private NuGet feeds
+    * Shout-outs at the end of blogs & videos
+
+=== "Superfan"
+
+    * Everything in the Poweruser tier, plus:
+    * Priority issue resolution
+    * Private continuous testing
+    * Listed as sponsor on our homepage
+    * On demand video lessons & tutorials
+    * Dedicated, private Discord channel only for Superfans
 
 ## Dashboard
 
-Besides regular WordPress dashboard pages, WpDotNet adds an informational panel on the Dashboard Home page, within the *At a Glance* widget.
+Once you deploy WpDotNet, you'll get an informational panel on the Dashboard Home page, within the *At a Glance* widget.
 
 ![WpDotNet At Glance](img/wp-dashboard-glance.png)
 
@@ -73,20 +82,9 @@ The main differences between regular WordPress running on PHP and WpDotNet runni
 - The WordPress configuration is not set in `wp-config.php` file anymore. WpDotNet uses ASP.NET Core configuration providers like `appsettings.json`. See [configuration](configuration.md).
 - There is literally no `php` intepreter; all the PHP standard functions and extensions are re-implemented in .NET and their behavior may differ, i.e. break some functionality. In such case please let us know.
 
-## Notes
-
-- Permalinks are implicitly enabled through the URL rewriting feature.
-- WordPress debugging is implicitly enabled when running in a *Development* environment (debugging in your IDE).
-- When running on Azure Web App with _MySql in App_ enabled, the database connection is automatically configured.
-- Response caching and response compression are enabled by default when user is not logged in.
-- Most of the original `.php` files are not present on the file system and cannot be edited.
-
 ## Next Steps
 
+- [Get Started](getting-started.md): See a quick tutorial that will get you started with WpDotNet.
 - [Tutorial: Build ASP.NET Core app with WordPress](tutorials/aspnetcore-wordpress.md): Step-by-step creating WordPress app in Visual Studio.
 - [Add WordPress Plugins/Themes](plugins-php.md): Extend WpDotNet with WordPress/PHP plugins and themes from `.php` sources.
 - [Public NuGet Release](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/): Free WpDotNet release versions.
-
----
-
-[![NuGet](https://img.shields.io/nuget/v/PeachPied.WordPress.AspNetCore.svg)](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/)
