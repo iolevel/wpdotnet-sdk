@@ -24,7 +24,7 @@ Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuge
 dotnet add package PeachPied.WordPress.AspNetCore --version 6.5.4-rc-020
 ```
 !!! tip "Always have access to the latest build!"
-    If you want the absolute latest release build with the most recent implementations and bug fixes, please consider becoming a [Patron](patron.md) for this and many other benefits.
+    If you want the absolute latest release build with the most recent implementations and bug fixes, please consider becoming a [Patron](patreon.md) for this and many other benefits.
 
 
 Add the WordPress services and set up your database connection (here or in `appsettings.json`):
