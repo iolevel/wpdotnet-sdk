@@ -45,13 +45,13 @@ Project file is an XML file with the following content:
 
 > *MyContent.msbuildproj:*
 ```xml
-<Project Sdk="PeachPied.WordPress.Build.Plugin/6.5.4-rc-020">
+<Project Sdk="PeachPied.WordPress.Build.Plugin/{{ wpdotnet.stable }}">
 </Project>
 ```
 
 For most cases, the project file does not specify anything else as all the properties are defined by default in the Sdk. In case a build property or a build item needs to be altered, add it to your project file.
 
-Note the project file specifies a version after the slash, i.e. `"/6.5.4-rc-020"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
+Note the project file specifies a version after the slash, i.e. `"/{{ wpdotnet.stable }}"`. This corresponds to the version of *PeachPied.WordPress.** packages which should be identical across all your application.
 
 ## Build
 

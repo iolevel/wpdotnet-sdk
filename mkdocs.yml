@@ -76,6 +76,7 @@ plugins:
      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
  - minify:
       minify_html: true
+ - markdownextradata: {}
 
 # Hooks
 # hooks:
@@ -91,6 +92,11 @@ extra:
     provider: google
     property: !ENV GOOGLE_ANALYTICS_KEY
   generator: false
+  wpdotnet:
+    stable: 6.5.4-rc-020
+    stable_peachpie: 1.1.10
+    patreon: 6.5.4-rc-021
+    patreon_peachpie: 1.2.0-r18312
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/iolevel/wpdotnet-sdk
@@ -102,8 +108,6 @@ extra:
       link: https://youtube.com/@PEACHPIE
     - icon: fontawesome/brands/discord
       link: https://discord.com/channels/1198334116182102177/1198334116182102180
-
-
 
 # Extensions
 markdown_extensions:

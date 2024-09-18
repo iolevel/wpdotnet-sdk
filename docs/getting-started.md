@@ -21,7 +21,7 @@ dotnet new web
 Add a package reference to [`"Peachpied.WordPress.AspNetCore"`](https://www.nuget.org/packages/PeachPied.WordPress.AspNetCore/) (note it is a **pre-release** package):
 
 ```shell
-dotnet add package PeachPied.WordPress.AspNetCore --version 6.5.4-rc-020
+dotnet add package PeachPied.WordPress.AspNetCore --version {{ wpdotnet.stable }}
 ```
 !!! tip "Always have access to the latest build!"
     If you want the absolute latest release build with the most recent implementations and bug fixes, please consider becoming a [Patron](patreon.md) for this and many other benefits.
