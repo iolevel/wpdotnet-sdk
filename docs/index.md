@@ -45,7 +45,7 @@ The project does not require PHP to be installed, and is purely built on top of 
 </div>
 
 ## Patreon
-The WpDotNet project is free and open source, and you can always build it from its sources (check out [how to get started](getting-started.md)). However, you can unlock a ton of additional value by becoming [a patron on Patreon](https://www.patreon.com/pchpcompiler). We have two tiers that give you a number of benefits on top of what the open source community gets:
+In general, the WpDotNet project is free and open source, and you can always build it from its sources or use our public NuGet feed, where a stable version is available (check out [how to get started](getting-started.md)). However, you can get access to the most recent versions with all the latest bug fixes and unlock a ton of additional value by becoming [a patron on Patreon](https://www.patreon.com/pchpcompiler). We have two tiers that give you a number of benefits on top of what the open source community gets:
 
 === "Poweruser"
 
