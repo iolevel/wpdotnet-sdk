@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <!-- Import the default versions if not specified by user  -->
-    <Import Project="../Sdk/Version.props" />
+    <Import Project="../Sdk/Version.props" Condition=" '$(WpDotNetVersion)'=='' or '$(PeachpieVersion)'=='' " />
     <Import Project="Sdk.props" Sdk="Peachpie.NET.Sdk" Version="$(PeachpieVersion)" />
     
 </Project>
