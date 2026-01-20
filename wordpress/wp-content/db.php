@@ -2852,7 +2852,19 @@ HTML
          */
         public function db_version()
         {
-            return '5.5';
+            // WordPress currently requires this to be 5.5.5 or greater.
+            // See https://github.com/WordPress/wordpress-develop/blob/308271cd35c3c71548f6bece6746e67fc4aa6d89/src/wp-includes/version.php#L47
+            return '5.5.5';
+        }
+
+        /**
+         * Retrieves full database server information.
+         *
+         * @return string|false Server info on success, false on failure.
+         */
+        public function db_server_info()
+        {
+            return 'SQLite3';
         }
     }
 
