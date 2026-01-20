@@ -3,7 +3,7 @@
     <ProjectGuid>0e51d101-0992-4aa6-a134-26ea3f2e3934</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <NoWarn>PHP0125,PHP5011,PHP6002,PHP5018,PHP5026,PHP6006</NoWarn>
     <Copyright>WordPress</Copyright>
     <Description>
@@ -41,8 +41,8 @@
       wp-content/mu-plugins/**/*.php;
       ##wp-content/plugins/**/*.php;
       wp-content/plugins/akismet/**;
-      wp-content/plugins/*.php;
-      wp-content/themes/**/*.php;
+      wp-content/plugins/hello.php;
+      ##wp-content/themes/**/*.php;
       *.php;
       *.msbuildproj;*.msbuildproj.user;
       " CopyToOutputDirectory="PreserveNewest">

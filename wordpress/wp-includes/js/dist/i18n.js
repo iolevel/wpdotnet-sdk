@@ -1,176 +1,8 @@
-/******/ (function() { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 9756:
-/***/ (function(module) {
-
-/**
- * Memize options object.
- *
- * @typedef MemizeOptions
- *
- * @property {number} [maxSize] Maximum size of the cache.
- */
-
-/**
- * Internal cache entry.
- *
- * @typedef MemizeCacheNode
- *
- * @property {?MemizeCacheNode|undefined} [prev] Previous node.
- * @property {?MemizeCacheNode|undefined} [next] Next node.
- * @property {Array<*>}                   args   Function arguments for cache
- *                                               entry.
- * @property {*}                          val    Function result.
- */
-
-/**
- * Properties of the enhanced function for controlling cache.
- *
- * @typedef MemizeMemoizedFunction
- *
- * @property {()=>void} clear Clear the cache.
- */
-
-/**
- * Accepts a function to be memoized, and returns a new memoized function, with
- * optional options.
- *
- * @template {Function} F
- *
- * @param {F}             fn        Function to memoize.
- * @param {MemizeOptions} [options] Options object.
- *
- * @return {F & MemizeMemoizedFunction} Memoized function.
- */
-function memize( fn, options ) {
-	var size = 0;
-
-	/** @type {?MemizeCacheNode|undefined} */
-	var head;
-
-	/** @type {?MemizeCacheNode|undefined} */
-	var tail;
-
-	options = options || {};
-
-	function memoized( /* ...args */ ) {
-		var node = head,
-			len = arguments.length,
-			args, i;
-
-		searchCache: while ( node ) {
-			// Perform a shallow equality test to confirm that whether the node
-			// under test is a candidate for the arguments passed. Two arrays
-			// are shallowly equal if their length matches and each entry is
-			// strictly equal between the two sets. Avoid abstracting to a
-			// function which could incur an arguments leaking deoptimization.
-
-			// Check whether node arguments match arguments length
-			if ( node.args.length !== arguments.length ) {
-				node = node.next;
-				continue;
-			}
-
-			// Check whether node arguments match arguments values
-			for ( i = 0; i < len; i++ ) {
-				if ( node.args[ i ] !== arguments[ i ] ) {
-					node = node.next;
-					continue searchCache;
-				}
-			}
-
-			// At this point we can assume we've found a match
-
-			// Surface matched node to head if not already
-			if ( node !== head ) {
-				// As tail, shift to previous. Must only shift if not also
-				// head, since if both head and tail, there is no previous.
-				if ( node === tail ) {
-					tail = node.prev;
-				}
-
-				// Adjust siblings to point to each other. If node was tail,
-				// this also handles new tail's empty `next` assignment.
-				/** @type {MemizeCacheNode} */ ( node.prev ).next = node.next;
-				if ( node.next ) {
-					node.next.prev = node.prev;
-				}
-
-				node.next = head;
-				node.prev = null;
-				/** @type {MemizeCacheNode} */ ( head ).prev = node;
-				head = node;
-			}
-
-			// Return immediately
-			return node.val;
-		}
-
-		// No cached value found. Continue to insertion phase:
-
-		// Create a copy of arguments (avoid leaking deoptimization)
-		args = new Array( len );
-		for ( i = 0; i < len; i++ ) {
-			args[ i ] = arguments[ i ];
-		}
-
-		node = {
-			args: args,
-
-			// Generate the result from original function
-			val: fn.apply( null, args ),
-		};
-
-		// Don't need to check whether node is already head, since it would
-		// have been returned above already if it was
-
-		// Shift existing head down list
-		if ( head ) {
-			head.prev = node;
-			node.next = head;
-		} else {
-			// If no head, follows that there's no tail (at initial or reset)
-			tail = node;
-		}
-
-		// Trim tail if we're reached max size and are pending cache insertion
-		if ( size === /** @type {MemizeOptions} */ ( options ).maxSize ) {
-			tail = /** @type {MemizeCacheNode} */ ( tail ).prev;
-			/** @type {MemizeCacheNode} */ ( tail ).next = null;
-		} else {
-			size++;
-		}
-
-		head = node;
-
-		return node.val;
-	}
-
-	memoized.clear = function() {
-		head = null;
-		tail = null;
-		size = 0;
-	};
-
-	if ( false ) {}
-
-	// Ignore reason: There's not a clear solution to create an intersection of
-	// the function with additional properties, where the goal is to retain the
-	// function signature of the incoming argument and add control properties
-	// on the return value.
-
-	// @ts-ignore
-	return memoized;
-}
-
-module.exports = memize;
-
-
-/***/ }),
-
-/***/ 124:
-/***/ (function(module, exports, __webpack_require__) {
+/***/ 2058:
+/***/ ((module, exports, __webpack_require__) => {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/* global window, exports, define */
 
@@ -436,80 +268,240 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/* global window, exports, define */
 /******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat get default export */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = function(module) {
+/******/ 		__webpack_require__.n = (module) => {
 /******/ 			var getter = module && module.__esModule ?
-/******/ 				function() { return module['default']; } :
-/******/ 				function() { return module; };
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/define property getters */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 		__webpack_require__.d = (exports, definition) => {
 /******/ 			for(var key in definition) {
 /******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	!function() {
-/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
-/******/ 	}();
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = function(exports) {
+/******/ 		__webpack_require__.r = (exports) => {
 /******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
 /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
-!function() {
+(() => {
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "__": function() { return /* reexport */ __; },
-  "_n": function() { return /* reexport */ _n; },
-  "_nx": function() { return /* reexport */ _nx; },
-  "_x": function() { return /* reexport */ _x; },
-  "createI18n": function() { return /* reexport */ createI18n; },
-  "defaultI18n": function() { return /* reexport */ default_i18n; },
-  "getLocaleData": function() { return /* reexport */ getLocaleData; },
-  "hasTranslation": function() { return /* reexport */ hasTranslation; },
-  "isRTL": function() { return /* reexport */ isRTL; },
-  "resetLocaleData": function() { return /* reexport */ resetLocaleData; },
-  "setLocaleData": function() { return /* reexport */ setLocaleData; },
-  "sprintf": function() { return /* reexport */ sprintf_sprintf; },
-  "subscribe": function() { return /* reexport */ subscribe; }
+  __: () => (/* reexport */ __),
+  _n: () => (/* reexport */ _n),
+  _nx: () => (/* reexport */ _nx),
+  _x: () => (/* reexport */ _x),
+  createI18n: () => (/* reexport */ createI18n),
+  defaultI18n: () => (/* reexport */ default_i18n),
+  getLocaleData: () => (/* reexport */ getLocaleData),
+  hasTranslation: () => (/* reexport */ hasTranslation),
+  isRTL: () => (/* reexport */ isRTL),
+  resetLocaleData: () => (/* reexport */ resetLocaleData),
+  setLocaleData: () => (/* reexport */ setLocaleData),
+  sprintf: () => (/* reexport */ sprintf_sprintf),
+  subscribe: () => (/* reexport */ subscribe)
 });
 
-// EXTERNAL MODULE: ./node_modules/memize/index.js
-var memize = __webpack_require__(9756);
-var memize_default = /*#__PURE__*/__webpack_require__.n(memize);
+;// CONCATENATED MODULE: ./node_modules/memize/dist/index.js
+/**
+ * Memize options object.
+ *
+ * @typedef MemizeOptions
+ *
+ * @property {number} [maxSize] Maximum size of the cache.
+ */
+
+/**
+ * Internal cache entry.
+ *
+ * @typedef MemizeCacheNode
+ *
+ * @property {?MemizeCacheNode|undefined} [prev] Previous node.
+ * @property {?MemizeCacheNode|undefined} [next] Next node.
+ * @property {Array<*>}                   args   Function arguments for cache
+ *                                               entry.
+ * @property {*}                          val    Function result.
+ */
+
+/**
+ * Properties of the enhanced function for controlling cache.
+ *
+ * @typedef MemizeMemoizedFunction
+ *
+ * @property {()=>void} clear Clear the cache.
+ */
+
+/**
+ * Accepts a function to be memoized, and returns a new memoized function, with
+ * optional options.
+ *
+ * @template {(...args: any[]) => any} F
+ *
+ * @param {F}             fn        Function to memoize.
+ * @param {MemizeOptions} [options] Options object.
+ *
+ * @return {((...args: Parameters<F>) => ReturnType<F>) & MemizeMemoizedFunction} Memoized function.
+ */
+function memize(fn, options) {
+	var size = 0;
+
+	/** @type {?MemizeCacheNode|undefined} */
+	var head;
+
+	/** @type {?MemizeCacheNode|undefined} */
+	var tail;
+
+	options = options || {};
+
+	function memoized(/* ...args */) {
+		var node = head,
+			len = arguments.length,
+			args,
+			i;
+
+		searchCache: while (node) {
+			// Perform a shallow equality test to confirm that whether the node
+			// under test is a candidate for the arguments passed. Two arrays
+			// are shallowly equal if their length matches and each entry is
+			// strictly equal between the two sets. Avoid abstracting to a
+			// function which could incur an arguments leaking deoptimization.
+
+			// Check whether node arguments match arguments length
+			if (node.args.length !== arguments.length) {
+				node = node.next;
+				continue;
+			}
+
+			// Check whether node arguments match arguments values
+			for (i = 0; i < len; i++) {
+				if (node.args[i] !== arguments[i]) {
+					node = node.next;
+					continue searchCache;
+				}
+			}
+
+			// At this point we can assume we've found a match
+
+			// Surface matched node to head if not already
+			if (node !== head) {
+				// As tail, shift to previous. Must only shift if not also
+				// head, since if both head and tail, there is no previous.
+				if (node === tail) {
+					tail = node.prev;
+				}
+
+				// Adjust siblings to point to each other. If node was tail,
+				// this also handles new tail's empty `next` assignment.
+				/** @type {MemizeCacheNode} */ (node.prev).next = node.next;
+				if (node.next) {
+					node.next.prev = node.prev;
+				}
+
+				node.next = head;
+				node.prev = null;
+				/** @type {MemizeCacheNode} */ (head).prev = node;
+				head = node;
+			}
+
+			// Return immediately
+			return node.val;
+		}
+
+		// No cached value found. Continue to insertion phase:
+
+		// Create a copy of arguments (avoid leaking deoptimization)
+		args = new Array(len);
+		for (i = 0; i < len; i++) {
+			args[i] = arguments[i];
+		}
+
+		node = {
+			args: args,
+
+			// Generate the result from original function
+			val: fn.apply(null, args),
+		};
+
+		// Don't need to check whether node is already head, since it would
+		// have been returned above already if it was
+
+		// Shift existing head down list
+		if (head) {
+			head.prev = node;
+			node.next = head;
+		} else {
+			// If no head, follows that there's no tail (at initial or reset)
+			tail = node;
+		}
+
+		// Trim tail if we're reached max size and are pending cache insertion
+		if (size === /** @type {MemizeOptions} */ (options).maxSize) {
+			tail = /** @type {MemizeCacheNode} */ (tail).prev;
+			/** @type {MemizeCacheNode} */ (tail).next = null;
+		} else {
+			size++;
+		}
+
+		head = node;
+
+		return node.val;
+	}
+
+	memoized.clear = function () {
+		head = null;
+		tail = null;
+		size = 0;
+	};
+
+	// Ignore reason: There's not a clear solution to create an intersection of
+	// the function with additional properties, where the goal is to retain the
+	// function signature of the incoming argument and add control properties
+	// on the return value.
+
+	// @ts-ignore
+	return memoized;
+}
+
+
+
 // EXTERNAL MODULE: ./node_modules/sprintf-js/src/sprintf.js
-var sprintf = __webpack_require__(124);
+var sprintf = __webpack_require__(2058);
 var sprintf_default = /*#__PURE__*/__webpack_require__.n(sprintf);
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/i18n/build-module/sprintf.js
 /**
  * External dependencies
  */
+
 
 
 /**
@@ -519,8 +511,7 @@ var sprintf_default = /*#__PURE__*/__webpack_require__.n(sprintf);
  *
  * @param {...*} args Arguments to pass to `console.error`
  */
-
-const logErrorOnce = memize_default()(console.error); // eslint-disable-line no-console
+const logErrorOnce = memize(console.error); // eslint-disable-line no-console
 
 /**
  * Returns a formatted string. If an error occurs in applying the format, the
@@ -533,19 +524,13 @@ const logErrorOnce = memize_default()(console.error); // eslint-disable-line no-
  *
  * @return {string} The formatted string.
  */
-
-function sprintf_sprintf(format) {
+function sprintf_sprintf(format, ...args) {
   try {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
     return sprintf_default().sprintf(format, ...args);
   } catch (error) {
     if (error instanceof Error) {
       logErrorOnce('sprintf error: \n\n' + error.toString());
     }
-
     return format;
   }
 }
@@ -1059,6 +1044,7 @@ Tannin.prototype.dcnpgettext = function( domain, context, singular, plural, n ) 
  * External dependencies
  */
 
+
 /**
  * @typedef {Record<string,any>} LocaleData
  */
@@ -1069,22 +1055,21 @@ Tannin.prototype.dcnpgettext = function( domain, context, singular, plural, n ) 
  *
  * @type {LocaleData}
  */
-
 const DEFAULT_LOCALE_DATA = {
   '': {
     /** @param {number} n */
     plural_forms(n) {
       return n === 1 ? 0 : 1;
     }
-
   }
 };
+
 /*
  * Regular expression that matches i18n hooks like `i18n.gettext`, `i18n.ngettext`,
  * `i18n.gettext_domain` or `i18n.ngettext_with_context` or `i18n.has_translation`.
  */
-
 const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
+
 /**
  * @typedef {(domain?: string) => LocaleData} GetLocaleData
  *
@@ -1093,7 +1078,6 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  *
  * @see http://messageformat.github.io/Jed/
  */
-
 /**
  * @typedef {(data?: LocaleData, domain?: string) => void} SetLocaleData
  *
@@ -1103,7 +1087,6 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  *
  * @see http://messageformat.github.io/Jed/
  */
-
 /**
  * @typedef {(data?: LocaleData, domain?: string) => void} AddLocaleData
  *
@@ -1113,7 +1096,6 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  *
  * @see http://messageformat.github.io/Jed/
  */
-
 /**
  * @typedef {(data?: LocaleData, domain?: string) => void} ResetLocaleData
  *
@@ -1122,22 +1104,17 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  *
  * @see http://messageformat.github.io/Jed/
  */
-
 /** @typedef {() => void} SubscribeCallback */
-
 /** @typedef {() => void} UnsubscribeCallback */
-
 /**
  * @typedef {(callback: SubscribeCallback) => UnsubscribeCallback} Subscribe
  *
  * Subscribes to changes of locale data
  */
-
 /**
  * @typedef {(domain?: string) => string} GetFilterDomain
  * Retrieve the domain to use when calling domain-specific filters.
  */
-
 /**
  * @typedef {(text: string, domain?: string) => string} __
  *
@@ -1145,7 +1122,6 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  *
  * @see https://developer.wordpress.org/reference/functions/__/
  */
-
 /**
  * @typedef {(text: string, context: string, domain?: string) => string} _x
  *
@@ -1153,7 +1129,6 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  *
  * @see https://developer.wordpress.org/reference/functions/_x/
  */
-
 /**
  * @typedef {(single: string, plural: string, number: number, domain?: string) => string} _n
  *
@@ -1162,7 +1137,6 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  *
  * @see https://developer.wordpress.org/reference/functions/_n/
  */
-
 /**
  * @typedef {(single: string, plural: string, number: number, context: string, domain?: string) => string} _nx
  *
@@ -1171,7 +1145,6 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  *
  * @see https://developer.wordpress.org/reference/functions/_nx/
  */
-
 /**
  * @typedef {() => boolean} IsRtl
  *
@@ -1182,13 +1155,11 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  * language written RTL. The opposite of RTL, LTR (Left To Right) is used in other languages,
  * including English (`en`, `en-US`, `en-GB`, etc.), Spanish (`es`), and French (`fr`).
  */
-
 /**
  * @typedef {(single: string, context?: string, domain?: string) => boolean} HasTranslation
  *
  * Check if there is a translation for a given string in singular form.
  */
-
 /** @typedef {import('@wordpress/hooks').Hooks} Hooks */
 
 /**
@@ -1224,7 +1195,6 @@ const I18N_HOOK_REGEXP = /^i18n\.(n?gettext|has_translation)(_|$)/;
  *
  * @return {I18n} I18n instance.
  */
-
 const createI18n = (initialData, initialDomain, hooks) => {
   /**
    * The underlying instance of Tannin to which exported functions interface.
@@ -1233,87 +1203,80 @@ const createI18n = (initialData, initialDomain, hooks) => {
    */
   const tannin = new Tannin({});
   const listeners = new Set();
-
   const notifyListeners = () => {
     listeners.forEach(listener => listener());
   };
+
   /**
    * Subscribe to changes of locale data.
    *
    * @param {SubscribeCallback} callback Subscription callback.
    * @return {UnsubscribeCallback} Unsubscribe callback.
    */
-
-
   const subscribe = callback => {
     listeners.add(callback);
     return () => listeners.delete(callback);
   };
+
   /** @type {GetLocaleData} */
+  const getLocaleData = (domain = 'default') => tannin.data[domain];
 
-
-  const getLocaleData = function () {
-    let domain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
-    return tannin.data[domain];
-  };
   /**
    * @param {LocaleData} [data]
    * @param {string}     [domain]
    */
-
-
-  const doSetLocaleData = function (data) {
-    var _tannin$data$domain;
-
-    let domain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'default';
-    tannin.data[domain] = { ...tannin.data[domain],
+  const doSetLocaleData = (data, domain = 'default') => {
+    tannin.data[domain] = {
+      ...tannin.data[domain],
       ...data
-    }; // Populate default domain configuration (supported locale date which omits
+    };
+
+    // Populate default domain configuration (supported locale date which omits
     // a plural forms expression).
+    tannin.data[domain][''] = {
+      ...DEFAULT_LOCALE_DATA[''],
+      ...tannin.data[domain]?.['']
+    };
 
-    tannin.data[domain][''] = { ...DEFAULT_LOCALE_DATA[''],
-      ...((_tannin$data$domain = tannin.data[domain]) === null || _tannin$data$domain === void 0 ? void 0 : _tannin$data$domain[''])
-    }; // Clean up cached plural forms functions cache as it might be updated.
-
+    // Clean up cached plural forms functions cache as it might be updated.
     delete tannin.pluralForms[domain];
   };
+
   /** @type {SetLocaleData} */
-
-
   const setLocaleData = (data, domain) => {
     doSetLocaleData(data, domain);
     notifyListeners();
   };
+
   /** @type {AddLocaleData} */
-
-
-  const addLocaleData = function (data) {
-    var _tannin$data$domain2;
-
-    let domain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'default';
-    tannin.data[domain] = { ...tannin.data[domain],
+  const addLocaleData = (data, domain = 'default') => {
+    tannin.data[domain] = {
+      ...tannin.data[domain],
       ...data,
       // Populate default domain configuration (supported locale date which omits
       // a plural forms expression).
-      '': { ...DEFAULT_LOCALE_DATA[''],
-        ...((_tannin$data$domain2 = tannin.data[domain]) === null || _tannin$data$domain2 === void 0 ? void 0 : _tannin$data$domain2['']),
-        ...(data === null || data === void 0 ? void 0 : data[''])
+      '': {
+        ...DEFAULT_LOCALE_DATA[''],
+        ...tannin.data[domain]?.[''],
+        ...data?.['']
       }
-    }; // Clean up cached plural forms functions cache as it might be updated.
+    };
 
+    // Clean up cached plural forms functions cache as it might be updated.
     delete tannin.pluralForms[domain];
     notifyListeners();
   };
+
   /** @type {ResetLocaleData} */
-
-
   const resetLocaleData = (data, domain) => {
     // Reset all current Tannin locale data.
-    tannin.data = {}; // Reset cached plural forms functions cache.
+    tannin.data = {};
 
+    // Reset cached plural forms functions cache.
     tannin.pluralForms = {};
     setLocaleData(data, domain);
   };
+
   /**
    * Wrapper for Tannin's `dcnpgettext`. Populates default locale data if not
    * otherwise previously assigned.
@@ -1329,38 +1292,24 @@ const createI18n = (initialData, initialDomain, hooks) => {
    *
    * @return {string} The translated string.
    */
-
-
-  const dcnpgettext = function () {
-    let domain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
-    let context = arguments.length > 1 ? arguments[1] : undefined;
-    let single = arguments.length > 2 ? arguments[2] : undefined;
-    let plural = arguments.length > 3 ? arguments[3] : undefined;
-    let number = arguments.length > 4 ? arguments[4] : undefined;
-
+  const dcnpgettext = (domain = 'default', context, single, plural, number) => {
     if (!tannin.data[domain]) {
       // Use `doSetLocaleData` to set silently, without notifying listeners.
       doSetLocaleData(undefined, domain);
     }
-
     return tannin.dcnpgettext(domain, context, single, plural, number);
   };
+
   /** @type {GetFilterDomain} */
+  const getFilterDomain = (domain = 'default') => domain;
 
-
-  const getFilterDomain = function () {
-    let domain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
-    return domain;
-  };
   /** @type {__} */
-
-
   const __ = (text, domain) => {
     let translation = dcnpgettext(domain, undefined, text);
-
     if (!hooks) {
       return translation;
     }
+
     /**
      * Filters text with its translation.
      *
@@ -1368,29 +1317,20 @@ const createI18n = (initialData, initialDomain, hooks) => {
      * @param {string} text        Text to translate.
      * @param {string} domain      Text domain. Unique identifier for retrieving translated strings.
      */
-
-
-    translation =
-    /** @type {string} */
-
-    /** @type {*} */
-    hooks.applyFilters('i18n.gettext', translation, text, domain);
-    return (
-      /** @type {string} */
-
-      /** @type {*} */
-      hooks.applyFilters('i18n.gettext_' + getFilterDomain(domain), translation, text, domain)
+    translation = /** @type {string} */
+    /** @type {*} */hooks.applyFilters('i18n.gettext', translation, text, domain);
+    return /** @type {string} */(
+      /** @type {*} */hooks.applyFilters('i18n.gettext_' + getFilterDomain(domain), translation, text, domain)
     );
   };
+
   /** @type {_x} */
-
-
   const _x = (text, context, domain) => {
     let translation = dcnpgettext(domain, context, text);
-
     if (!hooks) {
       return translation;
     }
+
     /**
      * Filters text with its translation based on context information.
      *
@@ -1399,29 +1339,20 @@ const createI18n = (initialData, initialDomain, hooks) => {
      * @param {string} context     Context information for the translators.
      * @param {string} domain      Text domain. Unique identifier for retrieving translated strings.
      */
-
-
-    translation =
-    /** @type {string} */
-
-    /** @type {*} */
-    hooks.applyFilters('i18n.gettext_with_context', translation, text, context, domain);
-    return (
-      /** @type {string} */
-
-      /** @type {*} */
-      hooks.applyFilters('i18n.gettext_with_context_' + getFilterDomain(domain), translation, text, context, domain)
+    translation = /** @type {string} */
+    /** @type {*} */hooks.applyFilters('i18n.gettext_with_context', translation, text, context, domain);
+    return /** @type {string} */(
+      /** @type {*} */hooks.applyFilters('i18n.gettext_with_context_' + getFilterDomain(domain), translation, text, context, domain)
     );
   };
+
   /** @type {_n} */
-
-
   const _n = (single, plural, number, domain) => {
     let translation = dcnpgettext(domain, undefined, single, plural, number);
-
     if (!hooks) {
       return translation;
     }
+
     /**
      * Filters the singular or plural form of a string.
      *
@@ -1431,29 +1362,20 @@ const createI18n = (initialData, initialDomain, hooks) => {
      * @param {string} number      The number to compare against to use either the singular or plural form.
      * @param {string} domain      Text domain. Unique identifier for retrieving translated strings.
      */
-
-
-    translation =
-    /** @type {string} */
-
-    /** @type {*} */
-    hooks.applyFilters('i18n.ngettext', translation, single, plural, number, domain);
-    return (
-      /** @type {string} */
-
-      /** @type {*} */
-      hooks.applyFilters('i18n.ngettext_' + getFilterDomain(domain), translation, single, plural, number, domain)
+    translation = /** @type {string} */
+    /** @type {*} */hooks.applyFilters('i18n.ngettext', translation, single, plural, number, domain);
+    return /** @type {string} */(
+      /** @type {*} */hooks.applyFilters('i18n.ngettext_' + getFilterDomain(domain), translation, single, plural, number, domain)
     );
   };
+
   /** @type {_nx} */
-
-
   const _nx = (single, plural, number, context, domain) => {
     let translation = dcnpgettext(domain, context, single, plural, number);
-
     if (!hooks) {
       return translation;
     }
+
     /**
      * Filters the singular or plural form of a string with gettext context.
      *
@@ -1464,35 +1386,22 @@ const createI18n = (initialData, initialDomain, hooks) => {
      * @param {string} context     Context information for the translators.
      * @param {string} domain      Text domain. Unique identifier for retrieving translated strings.
      */
-
-
-    translation =
-    /** @type {string} */
-
-    /** @type {*} */
-    hooks.applyFilters('i18n.ngettext_with_context', translation, single, plural, number, context, domain);
-    return (
-      /** @type {string} */
-
-      /** @type {*} */
-      hooks.applyFilters('i18n.ngettext_with_context_' + getFilterDomain(domain), translation, single, plural, number, context, domain)
+    translation = /** @type {string} */
+    /** @type {*} */hooks.applyFilters('i18n.ngettext_with_context', translation, single, plural, number, context, domain);
+    return /** @type {string} */(
+      /** @type {*} */hooks.applyFilters('i18n.ngettext_with_context_' + getFilterDomain(domain), translation, single, plural, number, context, domain)
     );
   };
+
   /** @type {IsRtl} */
-
-
   const isRTL = () => {
     return 'rtl' === _x('ltr', 'text direction');
   };
+
   /** @type {HasTranslation} */
-
-
   const hasTranslation = (single, context, domain) => {
-    var _tannin$data, _tannin$data2;
-
     const key = context ? context + '\u0004' + single : single;
-    let result = !!((_tannin$data = tannin.data) !== null && _tannin$data !== void 0 && (_tannin$data2 = _tannin$data[domain !== null && domain !== void 0 ? domain : 'default']) !== null && _tannin$data2 !== void 0 && _tannin$data2[key]);
-
+    let result = !!tannin.data?.[domain !== null && domain !== void 0 ? domain : 'default']?.[key];
     if (hooks) {
       /**
        * Filters the presence of a translation in the locale data.
@@ -1502,25 +1411,16 @@ const createI18n = (initialData, initialDomain, hooks) => {
        * @param {string}  context        Context information for the translators.
        * @param {string}  domain         Text domain. Unique identifier for retrieving translated strings.
        */
-      result =
-      /** @type { boolean } */
-
-      /** @type {*} */
-      hooks.applyFilters('i18n.has_translation', result, single, context, domain);
-      result =
-      /** @type { boolean } */
-
-      /** @type {*} */
-      hooks.applyFilters('i18n.has_translation_' + getFilterDomain(domain), result, single, context, domain);
+      result = /** @type { boolean } */
+      /** @type {*} */hooks.applyFilters('i18n.has_translation', result, single, context, domain);
+      result = /** @type { boolean } */
+      /** @type {*} */hooks.applyFilters('i18n.has_translation_' + getFilterDomain(domain), result, single, context, domain);
     }
-
     return result;
   };
-
   if (initialData) {
     setLocaleData(initialData, initialDomain);
   }
-
   if (hooks) {
     /**
      * @param {string} hookName
@@ -1530,11 +1430,9 @@ const createI18n = (initialData, initialDomain, hooks) => {
         notifyListeners();
       }
     };
-
     hooks.addAction('hookAdded', 'core/i18n', onHookAddedOrRemoved);
     hooks.addAction('hookRemoved', 'core/i18n', onHookAddedOrRemoved);
   }
-
   return {
     getLocaleData,
     setLocaleData,
@@ -1551,23 +1449,24 @@ const createI18n = (initialData, initialDomain, hooks) => {
 };
 
 ;// CONCATENATED MODULE: external ["wp","hooks"]
-var external_wp_hooks_namespaceObject = window["wp"]["hooks"];
+const external_wp_hooks_namespaceObject = window["wp"]["hooks"];
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/i18n/build-module/default-i18n.js
 /**
  * Internal dependencies
  */
 
+
 /**
  * WordPress dependencies
  */
 
-
 const i18n = createI18n(undefined, undefined, external_wp_hooks_namespaceObject.defaultHooks);
+
 /**
  * Default, singleton instance of `I18n`.
  */
+/* harmony default export */ const default_i18n = (i18n);
 
-/* harmony default export */ var default_i18n = (i18n);
 /*
  * Comments in this file are duplicated from ./i18n due to
  * https://github.com/WordPress/gutenberg/pull/20318#issuecomment-590837722
@@ -1587,8 +1486,8 @@ const i18n = createI18n(undefined, undefined, external_wp_hooks_namespaceObject.
  * @param {string} [domain] Domain for which to get the data.
  * @return {LocaleData} Locale data.
  */
-
 const getLocaleData = i18n.getLocaleData.bind(i18n);
+
 /**
  * Merges locale data into the Tannin instance by domain. Accepts data in a
  * Jed-formatted JSON object shape.
@@ -1598,8 +1497,8 @@ const getLocaleData = i18n.getLocaleData.bind(i18n);
  * @param {LocaleData} [data]   Locale data configuration.
  * @param {string}     [domain] Domain for which configuration applies.
  */
-
 const setLocaleData = i18n.setLocaleData.bind(i18n);
+
 /**
  * Resets all current Tannin instance locale data and sets the specified
  * locale data for the domain. Accepts data in a Jed-formatted JSON object shape.
@@ -1609,16 +1508,16 @@ const setLocaleData = i18n.setLocaleData.bind(i18n);
  * @param {LocaleData} [data]   Locale data configuration.
  * @param {string}     [domain] Domain for which configuration applies.
  */
-
 const resetLocaleData = i18n.resetLocaleData.bind(i18n);
+
 /**
  * Subscribes to changes of locale data
  *
  * @param {SubscribeCallback} callback Subscription callback
  * @return {UnsubscribeCallback} Unsubscribe callback
  */
-
 const subscribe = i18n.subscribe.bind(i18n);
+
 /**
  * Retrieve the translation of text.
  *
@@ -1629,8 +1528,8 @@ const subscribe = i18n.subscribe.bind(i18n);
  *
  * @return {string} Translated text.
  */
-
 const __ = i18n.__.bind(i18n);
+
 /**
  * Retrieve translated string with gettext context.
  *
@@ -1642,8 +1541,8 @@ const __ = i18n.__.bind(i18n);
  *
  * @return {string} Translated context string without pipe.
  */
-
 const _x = i18n._x.bind(i18n);
+
 /**
  * Translates and retrieves the singular or plural form based on the supplied
  * number.
@@ -1658,8 +1557,8 @@ const _x = i18n._x.bind(i18n);
  *
  * @return {string} The translated singular or plural form.
  */
-
 const _n = i18n._n.bind(i18n);
+
 /**
  * Translates and retrieves the singular or plural form based on the supplied
  * number, with gettext context.
@@ -1675,8 +1574,8 @@ const _n = i18n._n.bind(i18n);
  *
  * @return {string} The translated singular or plural form.
  */
-
 const _nx = i18n._nx.bind(i18n);
+
 /**
  * Check if current locale is RTL.
  *
@@ -1687,8 +1586,8 @@ const _nx = i18n._nx.bind(i18n);
  *
  * @return {boolean} Whether locale is RTL.
  */
-
 const isRTL = i18n.isRTL.bind(i18n);
+
 /**
  * Check if there is a translation for a given string (in singular form).
  *
@@ -1697,7 +1596,6 @@ const isRTL = i18n.isRTL.bind(i18n);
  * @param {string} [domain]  Domain to retrieve the translated text.
  * @return {boolean} Whether the translation exists or not.
  */
-
 const hasTranslation = i18n.hasTranslation.bind(i18n);
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/i18n/build-module/index.js
@@ -1705,7 +1603,8 @@ const hasTranslation = i18n.hasTranslation.bind(i18n);
 
 
 
-}();
+})();
+
 (window.wp = window.wp || {}).i18n = __webpack_exports__;
 /******/ })()
 ;

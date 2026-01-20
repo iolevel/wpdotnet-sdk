@@ -257,6 +257,6 @@ wordpress/wp-content/plugins/akismet
 wordpress/wp-content/plugins/hello.php
 wordpress/wp-content/themes/twentysixteen
 wordpress/wp-content/uploads/
-
+site
 # Sqlite Database
 app/Database/*

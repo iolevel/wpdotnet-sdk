@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/app/bin/Debug/net60/app.dll",
+            "program": "${workspaceFolder}/app/bin/Debug/net8.0/app.dll",
             "args": [],
             "cwd": "${workspaceFolder}/app",
             "console": "internalConsole",
@@ -14,18 +14,19 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart",
-            "justMyCode": false,
-            "symbolOptions": {
-                // "searchPaths": ["C:\\Users\\jmise\\Projects\\peachpie\\src\\Peachpie.Library\\bin\\Debug\\net50"],
-                "searchMicrosoftSymbolServer": false
-            }
+            "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
+        },
+        {
+            "name": "mkdocs serve",
+            "request": "launch",
+            "type": "node-terminal",
+            "command": "mkdocs serve"
         }
     ]
 }
