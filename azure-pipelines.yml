@@ -16,7 +16,7 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '8.x'
+    version: '9.x'
 - script: dotnet build -c $(buildConfiguration) -p:Version=$(version),VersionSuffix=$(versionsuffix)
   displayName: 'dotnet build $(buildConfiguration)'
 - task: PublishBuildArtifacts@1

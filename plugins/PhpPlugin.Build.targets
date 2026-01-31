@@ -24,7 +24,7 @@
     <BuildPluginTaskAssembly>$(_BuildPluginTmp)$(BuildPlugin).dll</BuildPluginTaskAssembly>
   </PropertyGroup>
 
-  <!-- ensure PeachPied.WordPress.Build.Plugin us built -->
+  <!-- ensure PeachPied.WordPress.Build.Plugin is built -->
   <Target Name="BuildPluginTaskAssembly" BeforeTargets="CopyBuildPluginTaskAssembly">
     <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Restore" Properties="TargetFramework=$(BuildPluginFramework)" />
     <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Publish" Properties="TargetFramework=$(BuildPluginFramework);IsPackable=false;" />
