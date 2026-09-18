@@ -19,11 +19,18 @@
   <!-- use netstandard2.0 for full .NET just in case -->
 
   <PropertyGroup Condition=" '$(BuildPluginTaskAssembly)'=='' or 'Exists($(BuildPluginTaskAssembly))'=='false' ">
-    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)netstandard2.0\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
-    <BuildPluginTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)net6.0\PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
+    <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)netstandard2.0/PeachPied.WordPress.Build.Plugin.dll</BuildPluginTaskAssembly>
   </PropertyGroup>
 
-  <UsingTask AssemblyFile="$(BuildPluginTaskAssembly)" TaskName="WpPluginTask" />
+  <!--
+    Runtime="NET" + TaskHostFactory needs a separate task host process and (per MSBuild 18 docs) is only
+    supported when the *consuming* project uses Sdk="Microsoft.NET.Sdk", which our .msbuildproj files don't.
+    When already running under the .NET (Core) MSBuild (dotnet build/dotnet msbuild), the netstandard2.0
+    task assembly can simply be loaded in-process, so only fall back to the out-of-proc task host when
+    running under full-framework MSBuild (e.g. Visual Studio).
+  -->
+  <UsingTask AssemblyFile="$(BuildPluginTaskAssembly)" TaskName="WpPluginTask" Condition=" '$(MSBuildRuntimeType)' == 'Core' " />
+  <UsingTask AssemblyFile="$(BuildPluginTaskAssembly)" TaskName="WpPluginTask" Runtime="CLR4" TaskFactory="TaskHostFactory" Condition=" '$(MSBuildRuntimeType)' != 'Core' " />
 
   <Target Name="WpPropertiesCore">
     <WpPluginTask
@@ -85,7 +92,7 @@
 
     <!-- include plugin files as contentFiles -->
     <Content Update="**" CopyToOutputDirectory="PreserveNewest">
-      <PackagePath>contentFiles/any/net6.0/wordpress/$(PhpRelativePath)</PackagePath>
+      <PackagePath>contentFiles/any/net10.0/wordpress/$(PhpRelativePath)</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
       <Link>wordpress\$(PhpRelativePath)%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>

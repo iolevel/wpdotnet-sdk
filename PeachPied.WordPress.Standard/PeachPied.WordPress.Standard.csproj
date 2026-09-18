@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Description>
       The API for integrating .NET plugins and to bridge between C# and WordPress PHP code.
     </Description>
@@ -11,7 +11,7 @@
     <PackageReference Include="Peachpie.Runtime" Version="$(PeachpieVersion)" />
     <PackageReference Include="System.Composition" Version="1.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
-    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    <!--PackageReference Include="System.Text.Json" Version="5.0.2" /-->
   </ItemGroup>
 
   <ItemGroup>

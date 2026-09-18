@@ -10,6 +10,6 @@
         "*"
     ],
     "php.problems.scope": "opened",
-    "php.version": "8.1.8",
+    "php.version": "8.3",
     "dotnet.defaultSolution": "wpdotnet-sdk.sln"
 }

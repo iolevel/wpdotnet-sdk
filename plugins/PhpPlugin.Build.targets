@@ -16,18 +16,15 @@
 
   <!-- copy the task dll into temp dir (TODO: AppDomain and shadow copy) -->
   <PropertyGroup>
-    <BuildPluginFramework Condition=" '$(MSBuildRuntimeType)'!='Core' ">net472</BuildPluginFramework>
-    <BuildPluginFramework Condition=" '$(BuildPluginFramework)'=='' ">net6.0</BuildPluginFramework>
+    <BuildPluginFramework>netstandard2.0</BuildPluginFramework>
     <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)../$(BuildPlugin)/bin/$(Configuration)/$(BuildPluginFramework)/publish/$(BuildPlugin).dll</BuildPluginTaskAssembly>
     <BuildPluginTaskAssemblyOriginal>$(BuildPluginTaskAssembly)</BuildPluginTaskAssemblyOriginal>
     <_BuildPluginTmp>$([System.IO.Path]::GetTempPath())PhpPlugin.Build/$([System.Guid]::NewGuid())/</_BuildPluginTmp>
     <BuildPluginTaskAssembly>$(_BuildPluginTmp)$(BuildPlugin).dll</BuildPluginTaskAssembly>
   </PropertyGroup>
 
-  <!-- ensure PeachPied.WordPress.Build.Plugin is built -->
   <Target Name="BuildPluginTaskAssembly" BeforeTargets="CopyBuildPluginTaskAssembly">
-    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Restore" Properties="TargetFramework=$(BuildPluginFramework)" />
-    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Publish" Properties="TargetFramework=$(BuildPluginFramework);IsPackable=false;" />
+    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Publish" />
   </Target>
 
   <!-- try to cleanup previous tmp files and copy new build output -->
