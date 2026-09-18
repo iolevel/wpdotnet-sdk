@@ -19,10 +19,10 @@
 function network_domain_check() {
 	global $wpdb;
 
-	$sql = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $wpdb->site ) );
-	if ( $wpdb->get_var( $sql ) ) {
+	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $wpdb->site ) ) ) ) {
 		return $wpdb->get_var( "SELECT domain FROM $wpdb->site ORDER BY id ASC LIMIT 1" );
 	}
+
 	return false;
 }
 
@@ -198,6 +198,9 @@ function network_step1( $errors = false ) {
 	} else {
 		$subdomain_install = false;
 		$got_mod_rewrite   = got_mod_rewrite();
+		$message_class     = '';
+		$message           = '';
+
 		if ( $got_mod_rewrite ) { // Dangerous assumptions.
 			$message_class = 'updated';
 			$message       = '<p><strong>' . __( 'Warning:' ) . '</strong> ';

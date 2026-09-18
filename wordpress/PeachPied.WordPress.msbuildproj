@@ -11,15 +11,15 @@
       
       This package is a dependency and does not work standalone.
     </Description>
-    <DefineConstants>$(DefineConstants);OBJECT="OBJECT";</DefineConstants>
-    <LangVersion>7.4</LangVersion>
     <DefineConstants>$(DefineConstants);OBJECT=OBJECT;</DefineConstants>
+    <LangVersion>8.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.php" Exclude="
       obj/**;
       bin/**;
       wp-includes/class-json.php;
+      wp-includes\php-ai-client\third-party\Nyholm\Psr7\Factory\HttplugFactory.php;
       wp-config-sample.php;
       wp-content/uploads/**;
       wp-content/plugins/hello.php;
@@ -27,7 +27,7 @@
       wp-content/plugins/**/Tests/**;
       **/jetpack-autoloader/src/*.php;
       **/SplFixedArray.php;
-      **/Composer/Installers/*.php
+      **/Composer/Installers/*.php;
       " />
     <Content Include="**" Exclude="
       obj/**;
