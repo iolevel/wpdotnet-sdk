@@ -61,8 +61,6 @@ WordPress on .NET can be configured using the standard [`appsettings.json`](http
 }
 ```
 
-To generate your unique set of `SALT`, feel free to use Daniel Llewellyn's tool on https://wpdotnet-salts.azurewebsites.net/.
-
 Note: WordPress expects the MySql database to be running, with the database `dbname` (`wordpress` by default) already created. Any of the configuration values can be omitted to use the default value.
 
 ### ConfigureServices method
