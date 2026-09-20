@@ -9,22 +9,28 @@
     <!-- tells the Sdk to reference WordPress from source as well -->
     <WpDotNetVersion>current</WpDotNetVersion>
     <BuildPlugin>PeachPied.WordPress.Build.Plugin</BuildPlugin>
+    <BuildPluginDir>$(MSBuildThisFileDirectory)../$(BuildPlugin)</BuildPluginDir>
   </PropertyGroup>
 
   <!-- Sdk PeachPied.WordPress.Build.Plugin  -->
-  <Import Project="$(MSBuildThisFileDirectory)../$(BuildPlugin)/Sdk/Sdk.props" />
+  <Import Project="$(BuildPluginDir)/Sdk/Sdk.props" />
 
   <!-- copy the task dll into temp dir (TODO: AppDomain and shadow copy) -->
   <PropertyGroup>
     <BuildPluginFramework>netstandard2.0</BuildPluginFramework>
-    <BuildPluginTaskAssembly>$(MSBuildThisFileDirectory)../$(BuildPlugin)/bin/$(Configuration)/$(BuildPluginFramework)/publish/$(BuildPlugin).dll</BuildPluginTaskAssembly>
+    <BuildPluginTaskAssembly>$(BuildPluginDir)/bin/$(Configuration)/$(BuildPluginFramework)/publish/$(BuildPlugin).dll</BuildPluginTaskAssembly>
     <BuildPluginTaskAssemblyOriginal>$(BuildPluginTaskAssembly)</BuildPluginTaskAssemblyOriginal>
     <_BuildPluginTmp>$([System.IO.Path]::GetTempPath())PhpPlugin.Build/$([System.Guid]::NewGuid())/</_BuildPluginTmp>
     <BuildPluginTaskAssembly>$(_BuildPluginTmp)$(BuildPlugin).dll</BuildPluginTaskAssembly>
   </PropertyGroup>
 
   <Target Name="BuildPluginTaskAssembly" BeforeTargets="CopyBuildPluginTaskAssembly">
-    <MSBuild Projects="$(MSBuildThisFileDirectory)../$(BuildPlugin)/$(BuildPlugin).csproj" Targets="Publish" />
+    <!--MSBuild Projects="$(BuildPluginDir)/$(BuildPlugin).csproj" Targets="Publish" Properties="
+      Configuration=$(Configuration);
+      TargetFramework=$(BuildPluginFramework);
+      EnableDefaultCompileItems=true;
+      " /-->
+    <Exec Command="dotnet publish &quot;$(BuildPluginDir)/$(BuildPlugin).csproj&quot; -c $(Configuration) -f $(BuildPluginFramework)" />  
   </Target>
 
   <!-- try to cleanup previous tmp files and copy new build output -->
